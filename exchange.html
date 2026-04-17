@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exchange & Register — Hash Digital Payment Solutions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* ── LEFT PANEL ── */
+    .left-panel {
+      width: 45%;
+      min-height: 100vh;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 3rem 3.5rem;
+      position: relative;
+    }
+
+    .back-link {
+      position: absolute;
+      top: 1.5rem;
+      left: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: #4F8EF7;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: opacity .2s;
+    }
+    .back-link:hover { opacity: 0.7; }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+    }
+    .logo-area img { height: 48px; width: auto; }
+
+    .form-title {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #0A1628;
+      margin-bottom: 0.4rem;
+    }
+    .form-sub {
+      color: #8A97B0;
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+    }
+
+    /* STEPS */
+    .steps-bar {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+    }
+    .step-dot {
+      flex: 1;
+      height: 4px;
+      border-radius: 4px;
+      background: #E5E7EB;
+      transition: background .3s;
+    }
+    .step-dot.active { background: linear-gradient(90deg, #4F8EF7, #7B5CF0); }
+
+    /* FORM */
+    .form-group {
+      margin-bottom: 1.2rem;
+      position: relative;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #556080;
+      margin-bottom: 0.4rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      background: #F5F7FA;
+      border: 1.5px solid #E5E7EB;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      color: #0A1628;
+      font-family: 'Inter', sans-serif;
+      transition: border-color .2s;
+      outline: none;
+    }
+    .form-group input:focus, .form-group select:focus {
+      border-color: #7B5CF0;
+      background: #fff;
+    }
+    .form-group .eye-icon {
+      position: absolute;
+      right: 1rem;
+      top: 2.4rem;
+      cursor: pointer;
+      color: #8A97B0;
+      font-size: 1rem;
+    }
+
+    /* Phone row */
+    .phone-row { display: flex; gap: 0.5rem; }
+    .phone-row select { width: 110px; flex-shrink: 0; }
+    .phone-row input { flex: 1; }
+
+    /* Two cols */
+    .two-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+
+    /* Checkbox */
+    .checkbox-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      margin-bottom: 1.5rem;
+    }
+    .checkbox-row input[type=checkbox] { width: 18px; height: 18px; margin-top: 2px; accent-color: #7B5CF0; flex-shrink: 0; cursor: pointer; }
+    .checkbox-row label { font-size: 0.85rem; color: #556080; cursor: pointer; line-height: 1.5; }
+    .checkbox-row label a { color: #4F8EF7; text-decoration: underline; }
+
+    /* Buttons */
+    .btn-primary {
+      width: 100%;
+      padding: 0.9rem;
+      background: linear-gradient(135deg, #4F8EF7, #7B5CF0);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity .2s, transform .2s;
+      font-family: 'Inter', sans-serif;
+    }
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    .divider {
+      text-align: center;
+      color: #8A97B0;
+      font-size: 0.85rem;
+      margin: 1rem 0;
+      position: relative;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 40%;
+      height: 1px;
+      background: #E5E7EB;
+    }
+    .divider::before { left: 0; }
+    .divider::after { right: 0; }
+
+    .btn-google {
+      width: 100%;
+      padding: 0.8rem;
+      background: #fff;
+      border: 1.5px solid #E5E7EB;
+      border-radius: 50px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #0A1628;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-family: 'Inter', sans-serif;
+      transition: border-color .2s;
+    }
+    .btn-google:hover { border-color: #4F8EF7; }
+
+    .switch-link {
+      text-align: center;
+      margin-top: 1.2rem;
+      font-size: 0.9rem;
+      color: #8A97B0;
+    }
+    .switch-link a { color: #4F8EF7; font-weight: 600; text-decoration: none; }
+    .switch-link a:hover { text-decoration: underline; }
+
+    /* TABS */
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      background: #F5F7FA;
+      border-radius: 50px;
+      padding: 4px;
+    }
+    .tab {
+      flex: 1;
+      padding: 0.6rem;
+      text-align: center;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      color: #8A97B0;
+      border: none;
+      background: transparent;
+      font-family: 'Inter', sans-serif;
+    }
+    .tab.active {
+      background: linear-gradient(135deg, #4F8EF7, #7B5CF0);
+      color: #fff;
+    }
+
+    /* ── RIGHT PANEL ── */
+    .right-panel {
+      flex: 1;
+      background: linear-gradient(135deg, #1A0A3B 0%, #3D1A6B 40%, #7B2D6B 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .right-panel::before {
+      content: '';
+      position: absolute;
+      top: -100px; right: -100px;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .right-panel::after {
+      content: '';
+      position: absolute;
+      bottom: -100px; left: -100px;
+      width: 350px; height: 350px;
+      background: radial-gradient(circle, rgba(123,92,240,0.3) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .right-logo {
+      position: absolute;
+      top: 2rem;
+      left: 2rem;
+    }
+    .right-logo img { height: 55px; filter: brightness(0) invert(1); }
+
+    .exchange-display {
+      text-align: center;
+      z-index: 1;
+    }
+    .exchange-pair {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+    .currency-box {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 20px;
+      padding: 1.5rem 2rem;
+      text-align: center;
+      backdrop-filter: blur(10px);
+    }
+    .currency-flag { font-size: 2.5rem; margin-bottom: 0.5rem; }
+    .currency-name { font-size: 1.4rem; font-weight: 800; color: #fff; }
+    .currency-label { font-size: 0.8rem; color: rgba(255,255,255,0.6); margin-top: 0.2rem; }
+    .exchange-arrow {
+      font-size: 2rem;
+      color: #F5C842;
+      font-weight: 900;
+    }
+    .exchange-tagline {
+      color: rgba(255,255,255,0.9);
+      font-size: 1.1rem;
+      line-height: 1.6;
+      max-width: 320px;
+      margin: 0 auto 2.5rem;
+    }
+
+    /* Stats */
+    .right-stats {
+      display: flex;
+      gap: 2rem;
+      z-index: 1;
+    }
+    .right-stat {
+      text-align: center;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 16px;
+      padding: 1rem 1.5rem;
+      backdrop-filter: blur(10px);
+    }
+    .right-stat-num { font-size: 1.5rem; font-weight: 800; color: #F5C842; }
+    .right-stat-label { font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-top: 0.2rem; }
+
+    /* HIDDEN panels */
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      body { flex-direction: column; }
+      .left-panel { width: 100%; padding: 2rem 1.5rem; min-height: auto; }
+      .right-panel { min-height: 250px; padding: 2rem; }
+      .right-stats { gap: 1rem; }
+      .exchange-pair { gap: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LEFT PANEL -->
+<div class="left-panel">
+  <a href="index.html" class="back-link">← Back to Home</a>
+
+  <div class="logo-area">
+    <img src="logo_light.png" alt="Hash Digital" />
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="showPanel('register')">Create Account</button>
+    <button class="tab" onclick="showPanel('login')">Sign In</button>
+  </div>
+
+  <!-- REGISTER PANEL -->
+  <div id="panel-register" class="panel active">
+    <div class="steps-bar">
+      <div class="step-dot active" id="step1"></div>
+      <div class="step-dot" id="step2"></div>
+      <div class="step-dot" id="step3"></div>
+    </div>
+
+    <!-- STEP 1: Personal info -->
+    <div id="reg-step1">
+      <div class="form-title">Create your account</div>
+      <div class="form-sub">Start your digital financial journey today</div>
+
+      <div class="two-cols">
+        <div class="form-group">
+          <label>First Name</label>
+          <input type="text" placeholder="John" />
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input type="text" placeholder="Doe" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" placeholder="john@example.com" />
+      </div>
+
+      <div class="form-group">
+        <label>Phone Number</label>
+        <div class="phone-row">
+          <select>
+            <option>🇺🇸 +1</option>
+            <option>🇨🇷 +506</option>
+            <option>🇲🇽 +52</option>
+            <option>🇨🇴 +57</option>
+            <option>🇧🇷 +55</option>
+            <option>🇦🇷 +54</option>
+            <option>🇪🇸 +34</option>
+            <option>🇮🇳 +91</option>
+            <option>🇬🇧 +44</option>
+          </select>
+          <input type="tel" placeholder="(555) 000-0000" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" placeholder="Min. 8 characters" id="reg-pass" />
+        <span class="eye-icon" onclick="togglePass('reg-pass')">👁</span>
+      </div>
+
+      <div class="checkbox-row">
+        <input type="checkbox" id="terms" />
+        <label for="terms">By creating an account I agree to the <a href="#">Terms & Conditions</a> and <a href="#">Privacy Policy</a></label>
+      </div>
+
+      <button class="btn-primary" onclick="nextStep()">Continue →</button>
+
+      <div class="divider">or sign up with</div>
+
+      <button class="btn-google">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Continue with Google
+      </button>
+
+      <div class="switch-link">Already have an account? <a href="#" onclick="showPanel('login')">Sign In</a></div>
+    </div>
+
+    <!-- STEP 2: KYC -->
+    <div id="reg-step2" style="display:none">
+      <div class="form-title">Verify your identity</div>
+      <div class="form-sub">We need to verify your identity to comply with regulations</div>
+
+      <div class="form-group">
+        <label>Country of Residence</label>
+        <select>
+          <option>🇺🇸 United States</option>
+          <option>🇨🇷 Costa Rica</option>
+          <option>🇲🇽 Mexico</option>
+          <option>🇨🇴 Colombia</option>
+          <option>🇧🇷 Brazil</option>
+          <option>🇦🇷 Argentina</option>
+          <option>🇪🇸 Spain</option>
+          <option>🇮🇳 India</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Document Type</label>
+        <select>
+          <option>Passport</option>
+          <option>National ID</option>
+          <option>Driver's License</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Document Number</label>
+        <input type="text" placeholder="Enter your document number" />
+      </div>
+
+      <div class="form-group">
+        <label>Date of Birth</label>
+        <input type="date" />
+      </div>
+
+      <button class="btn-primary" onclick="nextStep()">Continue →</button>
+      <div class="switch-link" style="margin-top:0.75rem"><a href="#" onclick="prevStep()">← Go back</a></div>
+    </div>
+
+    <!-- STEP 3: Referral + Confirm -->
+    <div id="reg-step3" style="display:none">
+      <div class="form-title">Almost done! 🎉</div>
+      <div class="form-sub">You're one step away from the future of finance</div>
+
+      <div class="form-group">
+        <label>Referral Code (optional)</label>
+        <input type="text" value="4EQXDGSF" placeholder="Enter referral code" />
+      </div>
+
+      <div class="form-group">
+        <label>How did you hear about us?</label>
+        <select>
+          <option>TikTok</option>
+          <option>Instagram</option>
+          <option>Facebook</option>
+          <option>Friend / Referral</option>
+          <option>Google</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <div style="background:#F5F7FA;border-radius:16px;padding:1.25rem;margin-bottom:1.5rem;">
+        <div style="font-size:0.85rem;font-weight:700;color:#0A1628;margin-bottom:0.75rem;">What you get with Hash Digital:</div>
+        <div style="display:flex;flex-direction:column;gap:0.5rem;">
+          <div style="font-size:0.85rem;color:#556080;display:flex;gap:0.5rem;align-items:center;"><span style="color:#4F8EF7;font-weight:700;">✓</span> Visa/Mastercard crypto card</div>
+          <div style="font-size:0.85rem;color:#556080;display:flex;gap:0.5rem;align-items:center;"><span style="color:#4F8EF7;font-weight:700;">✓</span> Crypto ↔ USD exchange to US bank</div>
+          <div style="font-size:0.85rem;color:#556080;display:flex;gap:0.5rem;align-items:center;"><span style="color:#4F8EF7;font-weight:700;">✓</span> Digital remittances worldwide</div>
+          <div style="font-size:0.85rem;color:#556080;display:flex;gap:0.5rem;align-items:center;"><span style="color:#4F8EF7;font-weight:700;">✓</span> BANC Token staking rewards</div>
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="window.location.href='dashboard.html'">
+        🚀 Create My Account
+      </button>
+      <div class="switch-link" style="margin-top:0.75rem"><a href="#" onclick="prevStep()">← Go back</a></div>
+    </div>
+  </div>
+
+  <!-- LOGIN PANEL -->
+  <div id="panel-login" class="panel">
+    <div class="form-title">Welcome back!</div>
+    <div class="form-sub">Sign in to your Hash Digital account</div>
+
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" placeholder="john@example.com" />
+    </div>
+
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" placeholder="••••••••" id="login-pass" />
+      <span class="eye-icon" onclick="togglePass('login-pass')">👁</span>
+    </div>
+
+    <div style="text-align:right;margin-bottom:1.5rem;">
+      <a href="#" style="color:#4F8EF7;font-size:0.85rem;text-decoration:none;">← Forgot password?</a>
+    </div>
+
+    <button class="btn-primary" onclick="window.location.href='dashboard.html'">Sign In</button>
+
+    <div class="divider">or sign in with</div>
+
+    <button class="btn-google">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Continue with Google
+    </button>
+
+    <div class="switch-link">Don't have an account? <a href="#" onclick="showPanel('register')">Create one</a></div>
+  </div>
+</div>
+
+<!-- RIGHT PANEL -->
+<div class="right-panel">
+  <div class="right-logo">
+    <img src="logo_dark.png" alt="Hash Digital" />
+  </div>
+
+  <div class="exchange-display">
+    <div class="exchange-pair">
+      <div class="currency-box">
+        <div class="currency-flag">💵</div>
+        <div class="currency-name">USD</div>
+        <div class="currency-label">US Dollar</div>
+      </div>
+      <div class="exchange-arrow">⇄</div>
+      <div class="currency-box">
+        <div class="currency-flag">₿</div>
+        <div class="currency-name">BTC</div>
+        <div class="currency-label">Bitcoin</div>
+      </div>
+    </div>
+
+    <div class="exchange-tagline">
+      Buy, sell, send and exchange crypto to your local currency. Fast, secure and borderless.
+    </div>
+
+    <div class="right-stats">
+      <div class="right-stat">
+        <div class="right-stat-num">50+</div>
+        <div class="right-stat-label">Countries</div>
+      </div>
+      <div class="right-stat">
+        <div class="right-stat-num">10K+</div>
+        <div class="right-stat-label">Users</div>
+      </div>
+      <div class="right-stat">
+        <div class="right-stat-num">$500M+</div>
+        <div class="right-stat-label">Processed</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let currentStep = 1;
+  const totalSteps = 3;
+
+  function showPanel(name) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('panel-' + name).classList.add('active');
+    const tabs = document.querySelectorAll('.tab');
+    if (name === 'register') tabs[0].classList.add('active');
+    else tabs[1].classList.add('active');
+    currentStep = 1;
+    updateSteps();
+  }
+
+  function nextStep() {
+    if (currentStep < totalSteps) {
+      document.getElementById('reg-step' + currentStep).style.display = 'none';
+      currentStep++;
+      document.getElementById('reg-step' + currentStep).style.display = 'block';
+      updateSteps();
+    }
+  }
+
+  function prevStep() {
+    if (currentStep > 1) {
+      document.getElementById('reg-step' + currentStep).style.display = 'none';
+      currentStep--;
+      document.getElementById('reg-step' + currentStep).style.display = 'block';
+      updateSteps();
+    }
+  }
+
+  function updateSteps() {
+    for (let i = 1; i <= totalSteps; i++) {
+      document.getElementById('step' + i).classList.toggle('active', i <= currentStep);
+    }
+  }
+
+  function togglePass(id) {
+    const input = document.getElementById(id);
+    input.type = input.type === 'password' ? 'text' : 'password';
+  }
+</script>
+</body>
+</html>

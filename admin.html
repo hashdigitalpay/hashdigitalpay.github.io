@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Hash Digital — Admin Panel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#050A18;--bg2:#0A1628;--bg3:#0F1F3D;
+  --accent:#4F8EF7;--accent2:#7B5CF0;
+  --text:#E8EDF5;--muted:#8A97B0;
+  --card:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);
+  --grad:linear-gradient(135deg,#4F8EF7,#7B5CF0);
+  --green:#22C55E;--red:#EF4444;--yellow:#F5C842;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.hidden{display:none!important}
+.en,.es{display:none}
+body.lang-en .en{display:revert}
+body.lang-es .es{display:revert}
+/* LOGIN */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;
+  background:radial-gradient(circle at 50% 20%,rgba(79,142,247,0.12) 0%,transparent 60%)}
+.login-card{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:2.5rem;width:100%;max-width:400px}
+.login-card .logo{text-align:center;margin-bottom:1.5rem;font-size:1.4rem;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.login-card h2{text-align:center;font-size:1.4rem;font-weight:700;margin-bottom:0.5rem}
+.login-card p{text-align:center;color:var(--muted);font-size:0.9rem;margin-bottom:2rem}
+.form-group{margin-bottom:1.2rem}
+.form-group label{display:block;font-size:0.85rem;color:var(--muted);margin-bottom:0.4rem}
+.form-group input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:0.75rem 1rem;color:var(--text);font-size:0.95rem;outline:none;transition:border-color .2s}
+.form-group input:focus{border-color:var(--accent)}
+.btn-full{width:100%;background:var(--grad);color:#fff;border:none;padding:0.85rem;border-radius:50px;font-weight:700;font-size:1rem;cursor:pointer;transition:opacity .2s}
+.btn-full:hover{opacity:0.85}
+.login-err{color:var(--red);font-size:0.85rem;text-align:center;margin-top:0.75rem}
+/* ADMIN LAYOUT */
+.admin-layout{display:flex;min-height:100vh}
+.sidebar{width:240px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:50;transition:transform .3s}
+.sidebar-logo{padding:1.5rem 1.5rem 1rem;border-bottom:1px solid var(--border);font-size:1rem;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sidebar-logo small{display:block;font-size:0.65rem;color:var(--muted);font-weight:400;-webkit-text-fill-color:var(--muted)}
+.sidebar-nav{flex:1;padding:1rem 0}
+.sidebar-nav a{display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1.5rem;color:var(--muted);text-decoration:none;font-size:0.9rem;font-weight:500;transition:all .2s;cursor:pointer;border:none;background:none;width:100%;text-align:left}
+.sidebar-nav a:hover,.sidebar-nav a.active{color:var(--text);background:rgba(79,142,247,0.1);border-right:3px solid var(--accent)}
+.sidebar-nav a .icon{font-size:1.1rem;width:1.5rem;text-align:center}
+.sidebar-footer{padding:1.5rem;border-top:1px solid var(--border)}
+.sidebar-footer .admin-info{font-size:0.8rem;color:var(--muted);margin-bottom:0.75rem}
+.btn-logout{background:transparent;border:1px solid var(--border);color:var(--muted);padding:0.5rem 1rem;border-radius:8px;font-size:0.85rem;cursor:pointer;width:100%;transition:all .2s}
+.btn-logout:hover{border-color:var(--red);color:var(--red)}
+.main-content{margin-left:240px;flex:1;padding:2rem;min-height:100vh}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem}
+.topbar h1{font-size:1.5rem;font-weight:800}
+.lang-toggle{display:flex;gap:0.5rem}
+.lang-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:0.3rem 0.7rem;border-radius:20px;font-size:0.8rem;cursor:pointer;transition:all .2s}
+.lang-btn.active,.lang-btn:hover{border-color:var(--accent);color:var(--accent)}
+/* SECTIONS */
+.section{display:none}
+.section.active{display:block}
+/* STATS GRID */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;margin-bottom:2rem}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.5rem}
+.stat-card .s-label{font-size:0.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem}
+.stat-card .s-val{font-size:2rem;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat-card .s-sub{font-size:0.8rem;color:var(--muted);margin-top:0.3rem}
+/* TABLE */
+.table-wrap{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:2rem}
+.table-header{padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:0.75rem}
+.table-header h3{font-size:1rem;font-weight:700}
+.table-search{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:0.4rem 0.8rem;color:var(--text);font-size:0.85rem;outline:none;width:200px}
+.table-search:focus{border-color:var(--accent)}
+table{width:100%;border-collapse:collapse;font-size:0.85rem}
+th{padding:0.75rem 1rem;text-align:left;color:var(--muted);font-weight:600;font-size:0.78rem;text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:0.75rem 1rem;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,0.02)}
+.badge{display:inline-block;padding:0.25rem 0.6rem;border-radius:20px;font-size:0.75rem;font-weight:600}
+.badge-active{background:rgba(34,197,94,0.15);color:var(--green)}
+.badge-inactive{background:rgba(239,68,68,0.15);color:var(--red)}
+.badge-pending{background:rgba(245,200,66,0.15);color:var(--yellow)}
+.badge-confirmed{background:rgba(34,197,94,0.15);color:var(--green)}
+.badge-rejected{background:rgba(239,68,68,0.15);color:var(--red)}
+.badge-buy{background:rgba(79,142,247,0.15);color:var(--accent)}
+.badge-sell{background:rgba(123,92,240,0.15);color:var(--accent2)}
+.btn-toggle{padding:0.3rem 0.75rem;border-radius:8px;border:none;font-size:0.75rem;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-activate{background:rgba(34,197,94,0.15);color:var(--green)}
+.btn-activate:hover{background:rgba(34,197,94,0.3)}
+.btn-deactivate{background:rgba(239,68,68,0.15);color:var(--red)}
+.btn-deactivate:hover{background:rgba(239,68,68,0.3)}
+.btn-action{padding:0.3rem 0.6rem;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:0.75rem;cursor:pointer;margin:0 2px;transition:all .2s}
+.btn-action:hover{border-color:var(--accent);color:var(--accent)}
+/* REFERRAL TREE */
+.tree-section{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:2rem}
+.tree-section h3{font-size:1rem;font-weight:700;margin-bottom:1.5rem}
+.commission-info{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:2rem}
+.commission-card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:1rem;text-align:center}
+.commission-card .cc-label{font-size:0.75rem;color:var(--muted);margin-bottom:0.3rem}
+.commission-card .cc-val{font-size:1.4rem;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.tree-nodes{overflow-x:auto}
+.tree-row{display:flex;gap:1rem;margin-bottom:1rem;min-width:600px}
+.tree-row-label{font-size:0.75rem;color:var(--muted);width:80px;flex-shrink:0;display:flex;align-items:center;font-weight:600;text-transform:uppercase}
+.tree-nodes-list{display:flex;flex-wrap:wrap;gap:0.5rem}
+.tree-node{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:0.5rem 0.75rem;font-size:0.8rem}
+.tree-node .tn-name{font-weight:600;color:var(--text)}
+.tree-node .tn-ref{font-size:0.7rem;color:var(--accent);font-family:monospace}
+.tree-node .tn-comm{font-size:0.7rem;color:var(--green)}
+/* KYC */
+.kyc-badge{display:inline-flex;align-items:center;gap:0.3rem;padding:0.2rem 0.6rem;border-radius:20px;font-size:0.73rem;font-weight:700}
+.kyc-not_started{background:rgba(138,151,176,0.15);color:#8A97B0}
+.kyc-pending{background:rgba(245,200,66,0.15);color:#F5C842}
+.kyc-verified{background:rgba(34,197,94,0.15);color:#22C55E}
+.kyc-rejected{background:rgba(239,68,68,0.15);color:#EF4444}
+.kyc-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;align-items:center;justify-content:center;padding:1rem}
+.kyc-modal-overlay.open{display:flex}
+.kyc-modal{background:#0A1628;border:1px solid rgba(255,255,255,0.08);border-radius:20px;max-width:680px;width:100%;max-height:85vh;overflow-y:auto;padding:2rem}
+.kyc-modal h2{font-size:1.1rem;font-weight:800;margin-bottom:1.25rem;display:flex;align-items:center;justify-content:space-between}
+.kyc-modal .close-btn{background:transparent;border:none;color:#8A97B0;font-size:1.3rem;cursor:pointer;padding:0.2rem}
+.kyc-row{display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:0.85rem;gap:1rem}
+.kyc-row:last-child{border-bottom:none}
+.kyc-row span:first-child{color:#8A97B0;flex-shrink:0;min-width:160px}
+.kyc-row span:last-child{font-weight:500;text-align:right;word-break:break-all}
+.kyc-section-title{font-size:0.75rem;color:#4F8EF7;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin:1rem 0 0.3rem}
+.btn-kyc-verify{padding:0.25rem 0.6rem;border-radius:6px;border:none;font-size:0.72rem;font-weight:600;cursor:pointer;margin:0 2px;transition:all .2s}
+.btn-kyc-verify-yes{background:rgba(34,197,94,0.15);color:#22C55E}
+.btn-kyc-verify-yes:hover{background:rgba(34,197,94,0.3)}
+.btn-kyc-verify-no{background:rgba(239,68,68,0.15);color:#EF4444}
+.btn-kyc-verify-no:hover{background:rgba(239,68,68,0.3)}
+/* RESPONSIVE */
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main-content{margin-left:0}
+  .menu-btn{display:flex}
+  th,td{font-size:0.75rem;padding:0.6rem 0.5rem}
+  .table-search{width:150px}
+}
+.menu-btn{display:none;background:transparent;border:none;color:var(--text);font-size:1.3rem;cursor:pointer;padding:0.3rem}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:40}
+.overlay.show{display:block}
+/* scroll */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+</style>
+</head>
+<body class="lang-en">
+
+<!-- ═══════════════════════════ LOGIN ═══════════════════════════ -->
+<div id="loginPage">
+  <div class="login-wrap">
+    <div class="login-card">
+      <div class="logo">Hash Digital</div>
+      <h2><span class="en">Admin Panel</span><span class="es">Panel Administrativo</span></h2>
+      <p><span class="en">Sign in to manage users and transactions</span><span class="es">Inicia sesión para gestionar usuarios y transacciones</span></p>
+      <div class="form-group">
+        <label class="en">Username</label><label class="es">Usuario</label>
+        <input type="text" id="adminUser" placeholder="admin"/>
+      </div>
+      <div class="form-group">
+        <label class="en">Password</label><label class="es">Contraseña</label>
+        <input type="password" id="adminPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doAdminLogin()"/>
+      </div>
+      <button class="btn-full" onclick="doAdminLogin()">
+        <span class="en">Sign In</span><span class="es">Iniciar Sesión</span>
+      </button>
+      <div class="login-err hidden" id="loginErr">
+        <span class="en">Invalid credentials. Try admin / admin123</span>
+        <span class="es">Credenciales inválidas. Prueba admin / admin123</span>
+      </div>
+      <div style="margin-top:1rem;text-align:center">
+        <div class="lang-toggle" style="justify-content:center;gap:0.5rem">
+          <button class="lang-btn active" onclick="setLang('en')">EN</button>
+          <button class="lang-btn" onclick="setLang('es')">ES</button>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:1rem">
+        <a href="index.html" style="color:var(--muted);font-size:0.8rem;text-decoration:none">← <span class="en">Back to site</span><span class="es">Volver al sitio</span></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ ADMIN APP ═══════════════════════════ -->
+<div id="adminApp" class="hidden">
+  <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      Hash Digital<br/>
+      <small>Admin Panel</small>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="active" onclick="showSection('dashboard')"><span class="icon">📊</span><span class="en">Dashboard</span><span class="es">Tablero</span></a>
+      <a onclick="showSection('users')"><span class="icon">👥</span><span class="en">Users</span><span class="es">Usuarios</span></a>
+      <a onclick="showSection('transactions')"><span class="icon">💱</span><span class="en">Transactions</span><span class="es">Transacciones</span></a>
+      <a onclick="showSection('referrals')"><span class="icon">🌐</span><span class="en">Referral Network</span><span class="es">Red de Referidos</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="admin-info">
+        <span class="en">Logged in as</span><span class="es">Sesión como</span>: <strong>admin</strong>
+      </div>
+      <button class="btn-logout" onclick="doLogout()">
+        <span class="en">Sign Out</span><span class="es">Cerrar Sesión</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:1rem">
+        <button class="menu-btn" onclick="openSidebar()">☰</button>
+        <h1 id="sectionTitle" class="en">Dashboard</h1>
+      </div>
+      <div class="lang-toggle">
+        <button class="lang-btn active" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('es')">ES</button>
+      </div>
+    </div>
+
+    <!-- DASHBOARD SECTION -->
+    <div class="section active" id="sec-dashboard">
+      <div class="stats-grid" id="statsGrid"></div>
+      <div class="table-wrap">
+        <div class="table-header">
+          <h3><span class="en">Recent Transactions</span><span class="es">Transacciones Recientes</span></h3>
+        </div>
+        <div style="overflow-x:auto"><table id="dashTxTable"><thead><tr>
+          <th><span class="en">User</span><span class="es">Usuario</span></th>
+          <th><span class="en">Type</span><span class="es">Tipo</span></th>
+          <th>Crypto</th>
+          <th><span class="en">Amount</span><span class="es">Monto</span></th>
+          <th>USD</th>
+          <th><span class="en">Commission</span><span class="es">Comisión</span></th>
+          <th>Status</th>
+          <th><span class="en">Date</span><span class="es">Fecha</span></th>
+        </tr></thead><tbody id="dashTxBody"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- USERS SECTION -->
+    <div class="section" id="sec-users">
+      <div class="table-wrap">
+        <div class="table-header">
+          <h3><span class="en">All Users</span><span class="es">Todos los Usuarios</span></h3>
+          <input type="text" class="table-search" id="userSearch" placeholder="Search..." oninput="renderUsers()"/>
+        </div>
+        <div style="overflow-x:auto"><table><thead><tr>
+          <th><span class="en">Name</span><span class="es">Nombre</span></th>
+          <th>Email</th>
+          <th><span class="en">Ref Code</span><span class="es">Código Ref</span></th>
+          <th><span class="en">Referred By</span><span class="es">Referido Por</span></th>
+          <th>Status</th>
+          <th>KYC</th>
+          <th><span class="en">Joined</span><span class="es">Registro</span></th>
+          <th><span class="en">Action</span><span class="es">Acción</span></th>
+        </tr></thead><tbody id="usersBody"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- TRANSACTIONS SECTION -->
+    <div class="section" id="sec-transactions">
+      <div class="table-wrap">
+        <div class="table-header">
+          <h3><span class="en">All Transactions</span><span class="es">Todas las Transacciones</span></h3>
+          <input type="text" class="table-search" id="txSearch" placeholder="Search..." oninput="renderTransactions()"/>
+        </div>
+        <div style="overflow-x:auto"><table><thead><tr>
+          <th><span class="en">User</span><span class="es">Usuario</span></th>
+          <th><span class="en">Type</span><span class="es">Tipo</span></th>
+          <th>Crypto</th>
+          <th><span class="en">Amount</span><span class="es">Monto</span></th>
+          <th>USD</th>
+          <th><span class="en">Commission</span><span class="es">Comisión</span></th>
+          <th>Status</th>
+          <th><span class="en">Date</span><span class="es">Fecha</span></th>
+          <th><span class="en">Actions</span><span class="es">Acciones</span></th>
+        </tr></thead><tbody id="txBody"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- KYC MODAL -->
+    <div class="kyc-modal-overlay" id="kycModal" onclick="if(event.target===this)closeKycModal()">
+      <div class="kyc-modal">
+        <h2>
+          <span>🪪 KYC Data</span>
+          <button class="close-btn" onclick="closeKycModal()">✕</button>
+        </h2>
+        <div id="kycModalContent"></div>
+      </div>
+    </div>
+
+    <!-- REFERRALS SECTION -->
+    <div class="section" id="sec-referrals">
+      <div class="tree-section">
+        <h3><span class="en">Commission Structure</span><span class="es">Estructura de Comisiones</span></h3>
+        <div class="commission-info">
+          <div class="commission-card">
+            <div class="cc-label"><span class="en">Total Fee</span><span class="es">Comisión Total</span></div>
+            <div class="cc-val">4.00%</div>
+          </div>
+          <div class="commission-card">
+            <div class="cc-label"><span class="en">Company</span><span class="es">Empresa</span></div>
+            <div class="cc-val">3.00%</div>
+          </div>
+          <div class="commission-card">
+            <div class="cc-label">Level 1</div>
+            <div class="cc-val">0.43%</div>
+          </div>
+          <div class="commission-card">
+            <div class="cc-label">Level 2</div>
+            <div class="cc-val">0.285%</div>
+          </div>
+          <div class="commission-card">
+            <div class="cc-label">Level 3</div>
+            <div class="cc-val">0.285%</div>
+          </div>
+        </div>
+      </div>
+      <div class="tree-section" id="referralTreeWrap">
+        <h3><span class="en">Referral Network Tree</span><span class="es">Árbol de Red de Referidos</span></h3>
+        <div id="referralTreeContent"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ─────────────────────────── LANG ───────────────────────────
+function setLang(l){
+  document.body.className=document.body.className.replace(/lang-\w+/,'')+ ' lang-'+l;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.textContent===l.toUpperCase()));
+}
+
+// ─────────────────────────── MOCK DATA ───────────────────────────
+const CRYPTOS=['BTC','ETH','USDT-TRC20','USDT-ERC20','USDT-BEP20','BNB'];
+const PRICES={BTC:65000,ETH:3200,BNB:580,'USDT-TRC20':1,'USDT-ERC20':1,'USDT-BEP20':1};
+const STATUSES=['pending','confirmed','rejected'];
+
+function randId(n=8){const c='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';let s='';for(let i=0;i<n;i++)s+=c[Math.floor(Math.random()*c.length)];return s;}
+function randDate(daysAgo=90){const d=new Date();d.setDate(d.getDate()-Math.floor(Math.random()*daysAgo));return d.toISOString().slice(0,10);}
+
+function initMockData(){
+  if(localStorage.getItem('hd_admin_init')) return;
+
+  const users=[
+    {id:'u1',name:'Carlos Rodríguez',email:'carlos@example.com',refCode:randId(),referredBy:null,status:'active',joined:'2024-01-15'},
+    {id:'u2',name:'María González',email:'maria@example.com',refCode:randId(),referredBy:'u1',status:'active',joined:'2024-02-03'},
+    {id:'u3',name:'José Méndez',email:'jose@example.com',refCode:randId(),referredBy:'u1',status:'active',joined:'2024-02-20'},
+    {id:'u4',name:'Ana Ramírez',email:'ana@example.com',refCode:randId(),referredBy:'u2',status:'active',joined:'2024-03-05'},
+    {id:'u5',name:'Luis Herrera',email:'luis@example.com',refCode:randId(),referredBy:'u2',status:'active',joined:'2024-03-18'},
+    {id:'u6',name:'Sandra Castro',email:'sandra@example.com',refCode:randId(),referredBy:'u3',status:'inactive',joined:'2024-04-01'},
+    {id:'u7',name:'Miguel Torres',email:'miguel@example.com',refCode:randId(),referredBy:'u4',status:'active',joined:'2024-04-22'},
+    {id:'u8',name:'Laura Vega',email:'laura@example.com',refCode:randId(),referredBy:'u4',status:'active',joined:'2024-05-10'},
+    {id:'u9',name:'Roberto Flores',email:'roberto@example.com',refCode:randId(),referredBy:'u5',status:'active',joined:'2024-05-28'},
+    {id:'u10',name:'Patricia Mora',email:'patricia@example.com',refCode:randId(),referredBy:'u3',status:'inactive',joined:'2024-06-14'},
+  ];
+
+  const userMap={};
+  users.forEach(u=>userMap[u.id]=u);
+
+  const cryptoList=['BTC','ETH','USDT-TRC20','USDT-ERC20','BNB'];
+  const txs=[];
+  for(let i=1;i<=20;i++){
+    const u=users[Math.floor(Math.random()*users.length)];
+    const crypto=cryptoList[Math.floor(Math.random()*cryptoList.length)];
+    const price=PRICES[crypto]||1;
+    const usdAmt=Math.round((100+Math.random()*4900)*100)/100;
+    const cryptoAmt=Math.round((usdAmt/price)*100000)/100000;
+    const comm=Math.round(usdAmt*0.04*100)/100;
+    txs.push({
+      id:'tx'+i,
+      userId:u.id,
+      userName:u.name,
+      type:Math.random()>0.5?'buy':'sell',
+      crypto,
+      amount:cryptoAmt,
+      usd:usdAmt,
+      commission:comm,
+      status:STATUSES[Math.floor(Math.random()*STATUSES.length)],
+      date:randDate()
+    });
+  }
+
+  localStorage.setItem('hd_users',JSON.stringify(users));
+  localStorage.setItem('hd_transactions',JSON.stringify(txs));
+  localStorage.setItem('hd_admin_init','1');
+}
+
+function getUsers(){return JSON.parse(localStorage.getItem('hd_users')||'[]');}
+function getTxs(){return JSON.parse(localStorage.getItem('hd_transactions')||'[]');}
+function saveUsers(u){localStorage.setItem('hd_users',JSON.stringify(u));}
+function saveTxs(t){localStorage.setItem('hd_transactions',JSON.stringify(t));}
+
+// ─────────────────────────── AUTH ───────────────────────────
+function doAdminLogin(){
+  const u=document.getElementById('adminUser').value.trim();
+  const p=document.getElementById('adminPass').value;
+  if(u==='admin'&&p==='admin123'){
+    document.getElementById('loginPage').classList.add('hidden');
+    document.getElementById('adminApp').classList.remove('hidden');
+    renderAll();
+  } else {
+    document.getElementById('loginErr').classList.remove('hidden');
+  }
+}
+function doLogout(){
+  document.getElementById('adminApp').classList.add('hidden');
+  document.getElementById('loginPage').classList.remove('hidden');
+  document.getElementById('adminUser').value='';
+  document.getElementById('adminPass').value='';
+}
+
+// ─────────────────────────── NAV ───────────────────────────
+function showSection(s){
+  document.querySelectorAll('.section').forEach(el=>el.classList.remove('active'));
+  document.getElementById('sec-'+s).classList.add('active');
+  document.querySelectorAll('.sidebar-nav a').forEach((a,i)=>{
+    const secs=['dashboard','users','transactions','referrals'];
+    a.classList.toggle('active',secs[i]===s);
+  });
+  const titles={dashboard:['Dashboard','Tablero'],users:['Users','Usuarios'],transactions:['Transactions','Transacciones'],referrals:['Referral Network','Red de Referidos']};
+  const t=titles[s]||[s,s];
+  document.getElementById('sectionTitle').innerHTML=`<span class="en">${t[0]}</span><span class="es">${t[1]}</span>`;
+  if(s==='dashboard') renderDashboard();
+  if(s==='users') renderUsers();
+  if(s==='transactions') renderTransactions();
+  if(s==='referrals') renderReferrals();
+  closeSidebar();
+}
+function openSidebar(){document.getElementById('sidebar').classList.add('open');document.getElementById('overlay').classList.add('show');}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show');}
+
+// ─────────────────────────── RENDER ───────────────────────────
+function renderAll(){renderDashboard();renderUsers();renderTransactions();renderReferrals();}
+
+function renderDashboard(){
+  const users=getUsers();
+  const txs=getTxs();
+  const totalVol=txs.filter(t=>t.status==='confirmed').reduce((a,t)=>a+t.usd,0);
+  const totalComm=txs.filter(t=>t.status==='confirmed').reduce((a,t)=>a+t.commission,0);
+  const pending=txs.filter(t=>t.status==='pending').length;
+
+  document.getElementById('statsGrid').innerHTML=`
+    <div class="stat-card">
+      <div class="s-label"><span class="en">Total Users</span><span class="es">Total Usuarios</span></div>
+      <div class="s-val">${users.length}</div>
+      <div class="s-sub"><span class="en">${users.filter(u=>u.status==='active').length} active</span><span class="es">${users.filter(u=>u.status==='active').length} activos</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="s-label"><span class="en">Total Volume</span><span class="es">Volumen Total</span></div>
+      <div class="s-val">$${totalVol.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
+      <div class="s-sub"><span class="en">Confirmed only</span><span class="es">Solo confirmadas</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="s-label"><span class="en">Total Commissions</span><span class="es">Comisiones Totales</span></div>
+      <div class="s-val">$${totalComm.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
+      <div class="s-sub">4% <span class="en">of volume</span><span class="es">del volumen</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="s-label"><span class="en">Pending Orders</span><span class="es">Órdenes Pendientes</span></div>
+      <div class="s-val">${pending}</div>
+      <div class="s-sub"><span class="en">Awaiting review</span><span class="es">En revisión</span></div>
+    </div>`;
+
+  const recent=txs.slice().sort((a,b)=>b.date.localeCompare(a.date)).slice(0,10);
+  document.getElementById('dashTxBody').innerHTML=recent.map(t=>`
+    <tr>
+      <td>${t.userName}</td>
+      <td><span class="badge badge-${t.type}">${t.type.toUpperCase()}</span></td>
+      <td>${t.crypto}</td>
+      <td>${t.amount}</td>
+      <td>$${t.usd.toFixed(2)}</td>
+      <td>$${t.commission.toFixed(2)}</td>
+      <td><span class="badge badge-${t.status}">${t.status}</span></td>
+      <td>${t.date}</td>
+    </tr>`).join('');
+}
+
+function getKycData(userId){
+  try{return JSON.parse(localStorage.getItem('hd_kyc_'+userId)||'{}');}catch(e){return {};}
+}
+
+function kycStatusBadge(status){
+  const cfg={
+    not_started:{cls:'kyc-not_started',label:'— None'},
+    pending:{cls:'kyc-pending',label:'⏳ Pending'},
+    verified:{cls:'kyc-verified',label:'✅ Verified'},
+    rejected:{cls:'kyc-rejected',label:'❌ Rejected'}
+  };
+  const c=cfg[status||'not_started']||cfg.not_started;
+  return `<span class="kyc-badge ${c.cls}">${c.label}</span>`;
+}
+
+function renderUsers(){
+  const q=(document.getElementById('userSearch')?.value||'').toLowerCase();
+  const users=getUsers().filter(u=>!q||(u.name+u.email+u.refCode).toLowerCase().includes(q));
+  const allUsers=getUsers();
+  document.getElementById('usersBody').innerHTML=users.map(u=>{
+    const ref=allUsers.find(x=>x.id===u.referredBy);
+    const kyc=getKycData(u.id);
+    const kycStatus=kyc._status||'not_started';
+    return `<tr>
+      <td><strong>${u.name}</strong></td>
+      <td>${u.email}</td>
+      <td><code style="color:var(--accent);font-size:0.8rem">${u.refCode}</code></td>
+      <td>${ref?`<span style="color:var(--muted);font-size:0.8rem">${ref.name}</span>`:'<span style="color:var(--muted)">—</span>'}</td>
+      <td><span class="badge badge-${u.status}">${u.status}</span></td>
+      <td>
+        ${kycStatusBadge(kycStatus)}
+        ${kycStatus!=='not_started'?`<button class="btn-kyc-verify-yes" onclick="setKycStatus('${u.id}','verified')" title="Verify">✅</button>
+        <button class="btn-kyc-verify-no" onclick="setKycStatus('${u.id}','rejected')" title="Reject">❌</button>
+        <button class="btn-action" onclick="viewKycData('${u.id}')" title="View KYC">🔍</button>`:''}
+      </td>
+      <td>${u.joined}</td>
+      <td>
+        <button class="btn-toggle ${u.status==='active'?'btn-deactivate':'btn-activate'}" onclick="toggleUser('${u.id}')">
+          <span class="en">${u.status==='active'?'Deactivate':'Activate'}</span>
+          <span class="es">${u.status==='active'?'Desactivar':'Activar'}</span>
+        </button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function setKycStatus(userId, status){
+  const kyc=getKycData(userId);
+  kyc._status=status;
+  kyc._reviewed=new Date().toISOString();
+  localStorage.setItem('hd_kyc_'+userId, JSON.stringify(kyc));
+  renderUsers();
+}
+
+function viewKycData(userId){
+  const users=getUsers();
+  const u=users.find(x=>x.id===userId);
+  const kyc=getKycData(userId);
+  const modal=document.getElementById('kycModal');
+  const content=document.getElementById('kycModalContent');
+  if(!modal||!content) return;
+
+  const label=(key,en,es)=>`<div class="kyc-row"><span>${en} / ${es}</span><span>${kyc[key]||'—'}</span></div>`;
+  const statusCfg={not_started:'— Not Started',pending:'⏳ Pending Review',verified:'✅ Verified',rejected:'❌ Rejected'};
+
+  content.innerHTML=`
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;flex-wrap:wrap">
+      <div>
+        <div style="font-size:1rem;font-weight:700">${u?u.name:'Unknown'}</div>
+        <div style="font-size:0.82rem;color:#8A97B0">${u?u.email:userId}</div>
+      </div>
+      ${kycStatusBadge(kyc._status||'not_started')}
+      ${kyc._submitted?`<span style="font-size:0.75rem;color:#8A97B0">Submitted: ${kyc._submitted.slice(0,10)}</span>`:''}
+    </div>
+    <div style="display:flex;gap:0.5rem;margin-bottom:1.25rem;flex-wrap:wrap">
+      <button class="btn-kyc-verify-yes" onclick="setKycStatus('${userId}','verified');viewKycData('${userId}')">✅ Approve / Aprobar</button>
+      <button class="btn-kyc-verify-no" onclick="setKycStatus('${userId}','rejected');viewKycData('${userId}')">❌ Reject / Rechazar</button>
+      <button class="btn-action" onclick="setKycStatus('${userId}','pending');viewKycData('${userId}')">⏳ Mark Pending</button>
+    </div>
+
+    <div class="kyc-section-title">👤 Personal Information</div>
+    ${label('kyc_fullname','Full Name','Nombre Completo')}
+    ${label('kyc_dob','Date of Birth','Fecha de Nacimiento')}
+    ${label('kyc_nationality','Nationality','Nacionalidad')}
+    ${label('kyc_gender','Gender','Género')}
+    ${label('kyc_pob','Place of Birth','Lugar de Nacimiento')}
+
+    <div class="kyc-section-title">🪪 Identity Document</div>
+    ${label('kyc_doctype','Document Type','Tipo de Documento')}
+    ${label('kyc_docnum','Document Number','Número de Documento')}
+    ${label('kyc_docissue','Country of Issue','País Emisor')}
+    ${label('kyc_docexpiry','Expiry Date','Fecha de Vencimiento')}
+
+    <div class="kyc-section-title">🏠 Address / Dirección</div>
+    ${label('kyc_country','Country','País')}
+    ${label('kyc_state','Province/State','Provincia/Estado')}
+    ${label('kyc_city','City','Ciudad')}
+    ${label('kyc_address','Full Address','Dirección Completa')}
+    ${label('kyc_postal','Postal Code','Código Postal')}
+
+    <div class="kyc-section-title">💰 Financial Information</div>
+    ${label('kyc_occupation','Occupation','Ocupación')}
+    ${label('kyc_funds_source','Source of Funds','Fuente de Fondos')}
+    ${label('kyc_income','Monthly Income','Ingresos Mensuales')}
+    ${label('kyc_volume','Monthly Volume','Volumen Mensual')}
+    ${label('kyc_purpose','Purpose','Propósito')}
+
+    <div class="kyc-section-title">📎 Uploaded Documents</div>
+    <div class="kyc-row"><span>Front of ID</span><span style="color:${kyc._files_front?'#22C55E':'#8A97B0'}">${kyc._files_front?'✅ Uploaded':'— Not uploaded'}</span></div>
+    <div class="kyc-row"><span>Back of ID</span><span style="color:${kyc._files_back?'#22C55E':'#8A97B0'}">${kyc._files_back?'✅ Uploaded':'— Not uploaded'}</span></div>
+    <div class="kyc-row"><span>Selfie</span><span style="color:${kyc._files_selfie?'#22C55E':'#8A97B0'}">${kyc._files_selfie?'✅ Uploaded':'— Not uploaded'}</span></div>
+    <div class="kyc-row"><span>Proof of Address</span><span style="color:${kyc._files_address?'#22C55E':'#8A97B0'}">${kyc._files_address?'✅ Uploaded':'— Not uploaded'}</span></div>
+  `;
+
+  modal.classList.add('open');
+}
+
+function closeKycModal(){
+  document.getElementById('kycModal').classList.remove('open');
+}
+
+function toggleUser(id){
+  const users=getUsers();
+  const u=users.find(x=>x.id===id);
+  if(u) u.status=u.status==='active'?'inactive':'active';
+  saveUsers(users);
+  renderUsers();
+  renderDashboard();
+}
+
+function renderTransactions(){
+  const q=(document.getElementById('txSearch')?.value||'').toLowerCase();
+  const txs=getTxs().filter(t=>!q||(t.userName+t.crypto+t.type+t.status).toLowerCase().includes(q));
+  document.getElementById('txBody').innerHTML=txs.map(t=>`
+    <tr>
+      <td>${t.userName}</td>
+      <td><span class="badge badge-${t.type}">${t.type.toUpperCase()}</span></td>
+      <td>${t.crypto}</td>
+      <td>${t.amount}</td>
+      <td>$${t.usd.toFixed(2)}</td>
+      <td>$${t.commission.toFixed(2)}</td>
+      <td><span class="badge badge-${t.status}" id="stat-${t.id}">${t.status}</span></td>
+      <td>${t.date}</td>
+      <td>
+        <button class="btn-action" onclick="setTxStatus('${t.id}','confirmed')" title="Confirm">✅</button>
+        <button class="btn-action" onclick="setTxStatus('${t.id}','rejected')" title="Reject">❌</button>
+        <button class="btn-action" onclick="setTxStatus('${t.id}','pending')" title="Pending">⏳</button>
+      </td>
+    </tr>`).join('');
+}
+
+function setTxStatus(id,status){
+  const txs=getTxs();
+  const t=txs.find(x=>x.id===id);
+  if(t) t.status=status;
+  saveTxs(txs);
+  renderTransactions();
+  renderDashboard();
+}
+
+function renderReferrals(){
+  const users=getUsers();
+  // Build tree: roots are users with no referredBy
+  const roots=users.filter(u=>!u.referredBy);
+  let html='';
+  roots.forEach(root=>{
+    html+=buildTreeHTML(root,users,0);
+  });
+  document.getElementById('referralTreeContent').innerHTML=html||'<p style="color:var(--muted)">No data</p>';
+}
+
+function buildTreeHTML(user,allUsers,level){
+  const children=allUsers.filter(u=>u.referredBy===user.id);
+  const commRates=[0.43,0.285,0.285];
+  const levelLabel=level===0?'Root':('L'+level);
+  const commText=level>0&&level<=3?` · ${commRates[level-1]}%`:'';
+  const indent=level*1.5;
+  let html=`<div style="margin-left:${indent}rem;margin-bottom:0.5rem;display:flex;align-items:center;gap:0.5rem">
+    ${level>0?'<span style="color:var(--muted);font-size:0.8rem">'+('─'.repeat(level))+'</span>':''}
+    <div class="tree-node">
+      <div class="tn-name">${user.name}</div>
+      <div class="tn-ref">${user.refCode}</div>
+      ${level>0?`<div class="tn-comm">Level ${level}${commText}</div>`:`<div style="font-size:0.7rem;color:var(--muted)">Root</div>`}
+    </div>
+  </div>`;
+  if(level<3){
+    children.forEach(c=>{html+=buildTreeHTML(c,allUsers,level+1);});
+  }
+  return html;
+}
+
+// ─────────────────────────── INIT ───────────────────────────
+initMockData();
+</script>
+</body>
+</html>

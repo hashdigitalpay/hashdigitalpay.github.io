@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 80" width="280" height="80">
+  <!-- Hash symbol # in blue -->
+  <g fill="none" stroke="#1A3A8F" stroke-width="7" stroke-linecap="round">
+    <!-- Horizontal bars of # -->
+    <line x1="16" y1="28" x2="52" y2="28"/>
+    <line x1="12" y1="46" x2="48" y2="46"/>
+    <!-- Vertical bars of # -->
+    <line x1="26" y1="16" x2="20" y2="60"/>
+    <line x1="42" y1="16" x2="36" y2="60"/>
+  </g>
+  <!-- "Hash" text -->
+  <text x="62" y="42" font-family="Arial, sans-serif" font-weight="900" font-size="32" fill="#1A3A8F">Hash</text>
+  <!-- "Digital Payment Solutions" -->
+  <text x="62" y="62" font-family="Arial, sans-serif" font-weight="500" font-size="13" fill="#4F6BA0" letter-spacing="0.5">Digital Payment Solutions</text>
+</svg>

@@ -1,0 +1,2099 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Hash Digital — My Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#050A18;--bg2:#0A1628;--bg3:#0F1F3D;
+  --accent:#4F8EF7;--accent2:#7B5CF0;
+  --text:#E8EDF5;--muted:#8A97B0;
+  --card:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);
+  --grad:linear-gradient(135deg,#4F8EF7,#7B5CF0);
+  --green:#22C55E;--red:#EF4444;--yellow:#F5C842;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.hidden{display:none!important}
+.en,.es{display:none}
+body.lang-en .en{display:revert}
+body.lang-es .es{display:revert}
+
+/* LOGIN */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;
+  background:radial-gradient(circle at 50% 20%,rgba(79,142,247,0.12) 0%,transparent 60%)}
+.login-card{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:2.5rem;width:100%;max-width:420px}
+.login-card .logo{text-align:center;margin-bottom:0.5rem}
+.login-card .logo img{height:60px;width:auto}
+.login-card h2{text-align:center;font-size:1.4rem;font-weight:700;margin:1rem 0 0.4rem}
+.login-card p{text-align:center;color:var(--muted);font-size:0.9rem;margin-bottom:2rem}
+.form-group{margin-bottom:1.2rem}
+.form-group label{display:block;font-size:0.85rem;color:var(--muted);margin-bottom:0.4rem}
+.form-group input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:0.75rem 1rem;color:var(--text);font-size:0.95rem;outline:none;transition:border-color .2s}
+.form-group input:focus{border-color:var(--accent)}
+.btn-full{width:100%;background:var(--grad);color:#fff;border:none;padding:0.85rem;border-radius:50px;font-weight:700;font-size:1rem;cursor:pointer;transition:opacity .2s}
+.btn-full:hover{opacity:0.85}
+.login-err{color:var(--red);font-size:0.85rem;text-align:center;margin-top:0.75rem}
+.login-links{display:flex;justify-content:space-between;margin-top:1.5rem;font-size:0.82rem}
+.login-links a{color:var(--muted);text-decoration:none;transition:color .2s}
+.login-links a:hover{color:var(--accent)}
+
+/* DASH LAYOUT */
+.dash-layout{display:flex;min-height:100vh}
+.sidebar{width:240px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:50;transition:transform .3s}
+.sidebar-logo{padding:1.25rem 1.5rem 1rem;border-bottom:1px solid var(--border)}
+.sidebar-logo .logo-text{font-size:1rem;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sidebar-logo .user-name{font-size:0.8rem;color:var(--muted);margin-top:0.2rem;font-weight:400}
+.sidebar-nav{flex:1;padding:1rem 0}
+.sidebar-nav a{display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1.5rem;color:var(--muted);text-decoration:none;font-size:0.9rem;font-weight:500;transition:all .2s;cursor:pointer;border:none;background:none;width:100%;text-align:left}
+.sidebar-nav a:hover,.sidebar-nav a.active{color:var(--text);background:rgba(79,142,247,0.1);border-right:3px solid var(--accent)}
+.sidebar-nav a .icon{font-size:1.1rem;width:1.5rem;text-align:center}
+.sidebar-footer{padding:1.5rem;border-top:1px solid var(--border)}
+.btn-logout{background:transparent;border:1px solid var(--border);color:var(--muted);padding:0.5rem 1rem;border-radius:8px;font-size:0.85rem;cursor:pointer;width:100%;margin-bottom:0.5rem;transition:all .2s}
+.btn-logout:hover{border-color:var(--red);color:var(--red)}
+.main-content{margin-left:240px;flex:1;padding:2rem;min-height:100vh}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem}
+.topbar h1{font-size:1.4rem;font-weight:800}
+.lang-toggle{display:flex;gap:0.5rem;align-items:center}
+.lang-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:0.3rem 0.7rem;border-radius:20px;font-size:0.8rem;cursor:pointer;transition:all .2s}
+.lang-btn.active,.lang-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* SECTIONS */
+.section{display:none}
+.section.active{display:block}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem}
+.card-title{font-size:1rem;font-weight:700;margin-bottom:1.25rem;display:flex;align-items:center;gap:0.5rem}
+.card-title .ct-icon{font-size:1.2rem}
+
+/* REFERRAL */
+.ref-link-box{display:flex;align-items:center;gap:0.75rem;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:0.75rem 1rem;margin-bottom:1.5rem}
+.ref-link-box code{flex:1;color:var(--accent);font-size:0.85rem;word-break:break-all}
+.btn-copy{background:var(--grad);color:#fff;border:none;padding:0.4rem 0.9rem;border-radius:8px;font-size:0.8rem;cursor:pointer;white-space:nowrap;transition:opacity .2s}
+.btn-copy:hover{opacity:0.8}
+.copy-ok{color:var(--green);font-size:0.8rem;margin-top:0.3rem}
+
+/* TREE */
+.tree-node{display:inline-flex;flex-direction:column;align-items:center}
+.tree-user-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:0.6rem 0.9rem;text-align:center;min-width:110px}
+.tree-user-card .tuc-name{font-size:0.8rem;font-weight:600}
+.tree-user-card .tuc-ref{font-size:0.7rem;color:var(--accent);font-family:monospace}
+.tree-user-card .tuc-comm{font-size:0.7rem;color:var(--green);margin-top:0.2rem}
+.tree-level{display:flex;gap:0.75rem;justify-content:center;margin-top:0.75rem}
+.tree-line{width:1px;height:20px;background:var(--border);margin:0 auto}
+.tree-h-line{height:1px;background:var(--border);flex:1;align-self:center}
+.tree-children{display:flex;gap:1rem;justify-content:center;position:relative;padding-top:1rem}
+.tree-children::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:1px;height:20px;background:var(--border)}
+.level-label{font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem;font-weight:600}
+
+/* COMMISSION STATS */
+.comm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem}
+.comm-card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:1rem;text-align:center}
+.comm-card .cc-label{font-size:0.75rem;color:var(--muted);margin-bottom:0.3rem}
+.comm-card .cc-val{font-size:1.3rem;font-weight:800;color:var(--green)}
+.comm-card .cc-rate{font-size:0.7rem;color:var(--muted);margin-top:0.2rem}
+
+/* WALLETS */
+.wallet-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem}
+.wallet-item{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:1rem}
+.wallet-item label{display:block;font-size:0.8rem;color:var(--muted);margin-bottom:0.4rem}
+.wallet-item .crypto-icon{font-size:1.2rem;margin-right:0.3rem}
+.wallet-input-row{display:flex;gap:0.5rem}
+.wallet-input{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:0.6rem 0.75rem;color:var(--text);font-size:0.82rem;outline:none;font-family:monospace;transition:border-color .2s}
+.wallet-input:focus{border-color:var(--accent)}
+.btn-save{background:var(--grad);color:#fff;border:none;padding:0.55rem 1rem;border-radius:8px;font-size:0.8rem;cursor:pointer;white-space:nowrap;transition:opacity .2s}
+.btn-save:hover{opacity:0.8}
+.wallet-saved{font-size:0.72rem;color:var(--green);margin-top:0.3rem}
+
+/* BUY/SELL STEPS */
+.step-indicator{display:flex;align-items:center;margin-bottom:2rem}
+.step-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:700;border:2px solid var(--border);color:var(--muted);transition:all .3s;flex-shrink:0}
+.step-dot.active{background:var(--grad);border-color:transparent;color:#fff}
+.step-dot.done{background:var(--green);border-color:transparent;color:#fff}
+.step-line{flex:1;height:2px;background:var(--border);transition:background .3s}
+.step-line.done{background:var(--green)}
+.step-content{display:none}
+.step-content.active{display:block}
+
+/* SELECT */
+.select-crypto{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:0.75rem;margin-bottom:1.5rem}
+.crypto-opt{background:var(--bg3);border:2px solid var(--border);border-radius:12px;padding:0.75rem;text-align:center;cursor:pointer;transition:all .2s}
+.crypto-opt:hover,.crypto-opt.selected{border-color:var(--accent);background:rgba(79,142,247,0.1)}
+.crypto-opt .co-icon{font-size:1.4rem;margin-bottom:0.3rem}
+.crypto-opt .co-name{font-size:0.8rem;font-weight:600}
+.crypto-opt .co-price{font-size:0.7rem;color:var(--muted)}
+
+/* AMOUNT INPUT */
+.amount-row{display:flex;gap:1rem;align-items:flex-end;flex-wrap:wrap;margin-bottom:1rem}
+.amount-group{flex:1;min-width:160px}
+.amount-group label{display:block;font-size:0.82rem;color:var(--muted);margin-bottom:0.4rem}
+.amount-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:0.75rem 1rem;color:var(--text);font-size:1rem;font-weight:600;outline:none;transition:border-color .2s}
+.amount-input:focus{border-color:var(--accent)}
+.calc-result{background:rgba(79,142,247,0.08);border:1px solid rgba(79,142,247,0.2);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1.5rem}
+.calc-result .cr-label{font-size:0.8rem;color:var(--muted);margin-bottom:0.3rem}
+.calc-result .cr-val{font-size:1.5rem;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.calc-result .cr-fee{font-size:0.78rem;color:var(--muted);margin-top:0.2rem}
+
+/* PAYMENT */
+.payment-methods{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin-bottom:1.5rem}
+.payment-option{background:var(--bg3);border:2px solid var(--border);border-radius:14px;padding:1.25rem;cursor:pointer;transition:all .2s}
+.payment-option:hover,.payment-option.selected{border-color:var(--accent);background:rgba(79,142,247,0.08)}
+.payment-option h4{font-size:0.95rem;font-weight:700;margin-bottom:0.75rem}
+.payment-option .p-row{display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:0.3rem}
+.payment-option .p-row span:first-child{color:var(--muted)}
+.payment-option .p-row span:last-child{font-weight:500}
+
+/* UPLOAD */
+.upload-area{border:2px dashed var(--border);border-radius:12px;padding:2rem;text-align:center;cursor:pointer;transition:border-color .2s;margin-bottom:1rem}
+.upload-area:hover{border-color:var(--accent)}
+.upload-area input[type=file]{display:none}
+.upload-area .ua-icon{font-size:2rem;margin-bottom:0.5rem}
+.upload-area .ua-text{font-size:0.85rem;color:var(--muted)}
+.upload-area .ua-file{font-size:0.8rem;color:var(--green);margin-top:0.4rem}
+
+/* CONFIRMATION */
+.confirm-card{background:rgba(79,142,247,0.06);border:1px solid rgba(79,142,247,0.2);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem}
+.confirm-row{display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--border);font-size:0.9rem}
+.confirm-row:last-child{border-bottom:none}
+.confirm-row span:first-child{color:var(--muted)}
+.confirm-row span:last-child{font-weight:600}
+.status-badge{display:inline-flex;align-items:center;gap:0.4rem;background:rgba(245,200,66,0.15);border:1px solid rgba(245,200,66,0.3);color:var(--yellow);padding:0.5rem 1rem;border-radius:50px;font-size:0.9rem;font-weight:600;margin:1rem 0}
+
+/* WALLET ADDRESSES */
+.wallet-addr-list .wa-item{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:1rem;margin-bottom:0.75rem}
+.wallet-addr-list .wa-label{font-size:0.78rem;color:var(--muted);margin-bottom:0.3rem}
+.wallet-addr-list .wa-addr{font-size:0.82rem;font-family:monospace;color:var(--text);word-break:break-all}
+.wallet-addr-list .wa-copy{background:transparent;border:1px solid var(--border);color:var(--muted);padding:0.25rem 0.6rem;border-radius:6px;font-size:0.75rem;cursor:pointer;margin-top:0.4rem;transition:all .2s}
+.wallet-addr-list .wa-copy:hover{border-color:var(--accent);color:var(--accent)}
+
+/* TABLE */
+.table-wrap{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.table-header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border)}
+.table-header h3{font-size:1rem;font-weight:700}
+table{width:100%;border-collapse:collapse;font-size:0.85rem}
+th{padding:0.75rem 1rem;text-align:left;color:var(--muted);font-weight:600;font-size:0.78rem;text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:0.75rem 1rem;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,0.02)}
+.badge{display:inline-block;padding:0.25rem 0.6rem;border-radius:20px;font-size:0.75rem;font-weight:600}
+.badge-pending{background:rgba(245,200,66,0.15);color:var(--yellow)}
+.badge-confirmed{background:rgba(34,197,94,0.15);color:var(--green)}
+.badge-rejected{background:rgba(239,68,68,0.15);color:var(--red)}
+.badge-buy{background:rgba(79,142,247,0.15);color:var(--accent)}
+.badge-sell{background:rgba(123,92,240,0.15);color:var(--accent2)}
+
+/* BUTTONS */
+.btn-primary{background:var(--grad);color:#fff;border:none;padding:0.75rem 2rem;border-radius:50px;font-weight:700;font-size:0.95rem;cursor:pointer;transition:opacity .2s;display:inline-flex;align-items:center;gap:0.5rem}
+.btn-primary:hover{opacity:0.85}
+.btn-secondary{background:transparent;color:var(--text);border:1px solid var(--border);padding:0.75rem 1.5rem;border-radius:50px;font-weight:600;font-size:0.9rem;cursor:pointer;transition:border-color .2s;display:inline-flex;align-items:center;gap:0.5rem}
+.btn-secondary:hover{border-color:var(--accent)}
+.btn-row{display:flex;gap:1rem;flex-wrap:wrap;margin-top:1.5rem}
+
+/* MOBILE */
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main-content{margin-left:0}
+  .menu-btn{display:flex}
+  th,td{font-size:0.75rem;padding:0.6rem 0.5rem}
+  .amount-row{flex-direction:column}
+}
+.menu-btn{display:none;background:transparent;border:none;color:var(--text);font-size:1.3rem;cursor:pointer;padding:0.3rem}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:40}
+.overlay.show{display:block}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+/* KYC SECTION */
+.kyc-progress-bar{height:8px;background:var(--bg3);border-radius:4px;overflow:hidden;margin-bottom:0.4rem}
+.kyc-progress-fill{height:100%;background:linear-gradient(90deg,#4F8EF7,#7B5CF0);border-radius:4px;transition:width .4s ease}
+.kyc-badge{display:inline-flex;align-items:center;gap:0.4rem;padding:0.35rem 0.9rem;border-radius:50px;font-size:0.82rem;font-weight:700}
+.kyc-badge-pending{background:rgba(245,200,66,0.15);border:1px solid rgba(245,200,66,0.4);color:#F5C842}
+.kyc-badge-verified{background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.4);color:#22C55E}
+.kyc-badge-rejected{background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);color:#EF4444}
+.kyc-badge-not_started{background:rgba(138,151,176,0.15);border:1px solid rgba(138,151,176,0.3);color:#8A97B0}
+.kyc-part-card{background:var(--card);border:1px solid var(--border);border-radius:16px;margin-bottom:1.5rem;overflow:hidden}
+.kyc-part-header{padding:1rem 1.5rem;background:linear-gradient(135deg,rgba(79,142,247,0.1),rgba(123,92,240,0.1));border-bottom:1px solid var(--border);display:flex;align-items:center;gap:0.75rem}
+.kyc-part-header h3{font-size:0.95rem;font-weight:700}
+.kyc-part-body{padding:1.5rem}
+.kyc-form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem}
+.kyc-field{display:flex;flex-direction:column;gap:0.35rem}
+.kyc-field label{font-size:0.8rem;color:var(--muted);font-weight:500}
+.kyc-field input,.kyc-field select{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:0.65rem 0.9rem;color:var(--text);font-size:0.9rem;outline:none;transition:border-color .2s;width:100%}
+.kyc-field input:focus,.kyc-field select:focus{border-color:var(--accent)}
+.kyc-field select option{background:#0F1F3D}
+.kyc-upload-area{border:2px dashed var(--border);border-radius:12px;padding:1.5rem;text-align:center;cursor:pointer;transition:all .2s;position:relative;min-height:130px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.kyc-upload-area:hover{border-color:var(--accent);background:rgba(79,142,247,0.04)}
+.kyc-upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.kyc-upload-area .ua-icon{font-size:1.8rem;margin-bottom:0.4rem}
+.kyc-upload-area .ua-title{font-size:0.85rem;font-weight:600;margin-bottom:0.2rem}
+.kyc-upload-area .ua-sub{font-size:0.73rem;color:var(--muted)}
+.kyc-upload-preview{max-width:100%;max-height:100px;border-radius:8px;margin-top:0.75rem;display:none;object-fit:cover}
+.kyc-upload-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem}
+.didit-card{background:linear-gradient(135deg,rgba(79,142,247,0.1),rgba(123,92,240,0.12));border:1px solid rgba(79,142,247,0.3);border-radius:20px;padding:2rem;text-align:center;margin-bottom:1.5rem}
+.didit-card h3{font-size:1.1rem;font-weight:800;margin-bottom:0.5rem}
+.didit-card p{color:var(--muted);font-size:0.87rem;margin-bottom:1.5rem;max-width:400px;margin-left:auto;margin-right:auto}
+.btn-didit{background:var(--grad);color:#fff;border:none;padding:0.85rem 2rem;border-radius:50px;font-weight:700;font-size:0.95rem;cursor:pointer;transition:opacity .2s;text-decoration:none;display:inline-block}
+.btn-didit:hover{opacity:0.85}
+.didit-note{font-size:0.75rem;color:var(--muted);margin-top:0.75rem}
+.kyc-action-bar{display:flex;gap:1rem;flex-wrap:wrap;margin-top:0.5rem;margin-bottom:1rem}
+.kyc-success-msg{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);color:#22C55E;padding:1rem 1.25rem;border-radius:12px;font-size:0.9rem;font-weight:600;display:none}
+.kyc-status-mini{display:inline-flex;align-items:center;gap:0.3rem;padding:0.2rem 0.7rem;border-radius:20px;font-size:0.73rem;font-weight:700;margin-left:0.5rem;cursor:pointer;vertical-align:middle}
+
+/* LIVE MARKETS CHARTS */
+.markets-section{margin-bottom:2rem}
+.markets-section .section-heading{font-size:1.2rem;font-weight:800;margin-bottom:1.25rem;display:flex;align-items:center;gap:0.5rem}
+.markets-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.markets-grid .market-card{grid-column:auto}
+@media(max-width:768px){.markets-grid{grid-template-columns:1fr}.markets-grid .market-card{grid-column:1!important}}
+.market-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.25rem;overflow:hidden}
+.market-card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:0.75rem}
+.market-name{font-size:1rem;font-weight:700}
+.market-pair{font-size:0.75rem;color:var(--muted);margin-top:0.1rem}
+.market-price{text-align:right}
+.market-price-val{font-size:1.1rem;font-weight:800;font-variant-numeric:tabular-nums}
+.market-change{font-size:0.8rem;font-weight:600;margin-top:0.15rem}
+.market-change.positive{color:var(--green)}
+.market-change.negative{color:var(--red)}
+.market-chart-wrap{height:180px;margin:0 -0.25rem}
+.market-intervals{display:flex;gap:0.35rem;margin-top:0.75rem;flex-wrap:wrap}
+.interval-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:0.2rem 0.55rem;border-radius:6px;font-size:0.72rem;font-weight:600;cursor:pointer;transition:all .2s}
+.interval-btn:hover,.interval-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(79,142,247,0.1)}
+.market-status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:0.3rem;animation:pulse-dot 2s infinite}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:0.4}}
+</style>
+</head>
+<body class="lang-en">
+
+<!-- ═══════════════════════════ LOGIN ═══════════════════════════ -->
+<div id="loginPage">
+  <div class="login-wrap">
+    <div class="login-card">
+      <div class="logo">
+        <img src="logo_dark.png" alt="Hash Digital" onerror="this.style.display='none'"/>
+      </div>
+      <h2><span class="en">My Dashboard</span><span class="es">Mi Panel</span></h2>
+      <p><span class="en">Sign in to your Hash Digital account</span><span class="es">Inicia sesión en tu cuenta Hash Digital</span></p>
+      <div class="form-group">
+        <label class="en">Email</label><label class="es">Correo</label>
+        <input type="email" id="loginEmail" placeholder="you@example.com"/>
+      </div>
+      <div class="form-group">
+        <label class="en">Password</label><label class="es">Contraseña</label>
+        <input type="password" id="loginPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
+      </div>
+      <button class="btn-full" onclick="doLogin()">
+        <span class="en">Sign In</span><span class="es">Iniciar Sesión</span>
+      </button>
+      <div class="login-err hidden" id="loginErr">
+        <span class="en">Invalid credentials. Demo: carlos@example.com / pass123</span>
+        <span class="es">Credenciales inválidas. Demo: carlos@example.com / pass123</span>
+      </div>
+      <div style="margin-top:1rem;text-align:center">
+        <div class="lang-toggle" style="justify-content:center">
+          <button class="lang-btn active" onclick="setLang('en')">EN</button>
+          <button class="lang-btn" onclick="setLang('es')">ES</button>
+        </div>
+      </div>
+      <div class="login-links">
+        <a href="index.html">← <span class="en">Back to site</span><span class="es">Volver al sitio</span></a>
+        <a href="#" onclick="showDemo()">
+          <span class="en">Demo login</span><span class="es">Acceso demo</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ DASHBOARD APP ═══════════════════════════ -->
+<div id="dashApp" class="hidden">
+  <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-text">Hash Digital</div>
+      <div class="user-name" id="sidebarUserName">User</div>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="active" onclick="showSection('profile')"><span class="icon">👤</span><span class="en">Profile & Referrals</span><span class="es">Perfil y Referidos</span></a>
+      <a onclick="showSection('markets')"><span class="icon">📈</span><span class="en">Live Markets</span><span class="es">Mercados en Vivo</span></a>
+      <a onclick="showSection('wallets')"><span class="icon">💼</span><span class="en">My Wallets</span><span class="es">Mis Wallets</span></a>
+      <a onclick="showSection('buy')"><span class="icon">📥</span><span class="en">Buy Crypto</span><span class="es">Comprar Cripto</span></a>
+      <a onclick="showSection('sell')"><span class="icon">📤</span><span class="en">Sell Crypto</span><span class="es">Vender Cripto</span></a>
+      <a onclick="showSection('history')"><span class="icon">📋</span><span class="en">Transaction History</span><span class="es">Historial</span></a>
+      <a onclick="showSection('kyc')"><span class="icon">🪪</span><span class="en">KYC / Identity</span><span class="es">KYC / Identidad</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn-logout" onclick="doLogout()">
+        <span class="en">Sign Out</span><span class="es">Cerrar Sesión</span>
+      </button>
+      <div style="text-align:center;margin-top:0.5rem">
+        <a href="index.html" style="color:var(--muted);font-size:0.75rem;text-decoration:none">← <span class="en">Back to site</span><span class="es">Volver</span></a>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:1rem">
+        <button class="menu-btn" onclick="openSidebar()">☰</button>
+        <h1 id="secTitle"><span class="en">Profile & Referrals</span><span class="es">Perfil y Referidos</span></h1>
+      </div>
+      <div class="lang-toggle">
+        <button class="lang-btn active" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('es')">ES</button>
+      </div>
+    </div>
+
+    <!-- ── PROFILE ── -->
+    <div class="section active" id="sec-profile">
+      <div class="card">
+        <div class="card-title" style="justify-content:space-between;flex-wrap:wrap;gap:0.5rem">
+          <span><span class="ct-icon">🔗</span><span class="en">Your Referral Link</span><span class="es">Tu Link de Referido</span></span>
+          <span id="profileKycBadge" onclick="showSection('kyc')" title="Click to complete KYC"></span>
+        </div>
+        <div class="ref-link-box">
+          <code id="refLinkDisplay">hashdigitalpayment.com/register?ref=...</code>
+          <button class="btn-copy" onclick="copyRefLink()"><span class="en">Copy</span><span class="es">Copiar</span></button>
+        </div>
+        <div class="copy-ok hidden" id="copyOk">✓ <span class="en">Copied!</span><span class="es">¡Copiado!</span></div>
+        <p style="color:var(--muted);font-size:0.85rem"><span class="en">Share this link to earn referral commissions on your network's trades.</span><span class="es">Comparte este link para ganar comisiones en las operaciones de tu red.</span></p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="ct-icon">🌐</span><span class="en">Your Referral Network</span><span class="es">Tu Red de Referidos</span></div>
+        <div id="myTree"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="ct-icon">💰</span><span class="en">My Commissions</span><span class="es">Mis Comisiones</span></div>
+        <div class="comm-grid" id="myCommGrid"></div>
+      </div>
+    </div>
+
+    <!-- ── WALLETS ── -->
+    <div class="section" id="sec-wallets">
+      <div class="card">
+        <div class="card-title"><span class="ct-icon">💼</span><span class="en">My Receiving Wallets</span><span class="es">Mis Wallets para Recibir</span></div>
+        <p style="color:var(--muted);font-size:0.85rem;margin-bottom:1.5rem">
+          <span class="en">Save your wallet addresses so Hash Digital can send your crypto after purchase.</span>
+          <span class="es">Guarda tus direcciones de wallet para que Hash Digital envíe tu cripto después de la compra.</span>
+        </p>
+        <div class="wallet-grid" id="walletGrid"></div>
+        <div class="btn-row">
+          <button class="btn-primary" onclick="saveAllWallets()">💾 <span class="en">Save All Wallets</span><span class="es">Guardar Todo</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── LIVE MARKETS ── -->
+    <div class="section" id="sec-markets">
+      <div class="markets-section">
+        <div class="section-heading">
+          <span class="market-status-dot"></span>
+          <span class="en">Live Markets</span><span class="es">Mercados en Vivo</span>
+        </div>
+        <div class="markets-grid">
+          <!-- BTC -->
+          <div class="market-card" id="card-BTC">
+            <div class="market-card-header">
+              <div>
+                <div class="market-name">₿ Bitcoin</div>
+                <div class="market-pair">BTC / USDT</div>
+              </div>
+              <div class="market-price">
+                <div class="market-price-val" id="price-BTC">—</div>
+                <div class="market-change" id="change-BTC">—</div>
+              </div>
+            </div>
+            <div class="market-chart-wrap" id="chart-BTC"></div>
+            <div class="market-intervals" id="intervals-BTC"></div>
+          </div>
+          <!-- ETH -->
+          <div class="market-card" id="card-ETH">
+            <div class="market-card-header">
+              <div>
+                <div class="market-name">Ξ Ethereum</div>
+                <div class="market-pair">ETH / USDT</div>
+              </div>
+              <div class="market-price">
+                <div class="market-price-val" id="price-ETH">—</div>
+                <div class="market-change" id="change-ETH">—</div>
+              </div>
+            </div>
+            <div class="market-chart-wrap" id="chart-ETH"></div>
+            <div class="market-intervals" id="intervals-ETH"></div>
+          </div>
+          <!-- BNB -->
+          <div class="market-card" id="card-BNB">
+            <div class="market-card-header">
+              <div>
+                <div class="market-name">◈ BNB</div>
+                <div class="market-pair">BNB / USDT</div>
+              </div>
+              <div class="market-price">
+                <div class="market-price-val" id="price-BNB">—</div>
+                <div class="market-change" id="change-BNB">—</div>
+              </div>
+            </div>
+            <div class="market-chart-wrap" id="chart-BNB"></div>
+            <div class="market-intervals" id="intervals-BNB"></div>
+          </div>
+          <!-- XRP -->
+          <div class="market-card" id="card-XRP">
+            <div class="market-card-header">
+              <div>
+                <div class="market-name">◎ XRP</div>
+                <div class="market-pair">XRP / USDT</div>
+              </div>
+              <div class="market-price">
+                <div class="market-price-val" id="price-XRP">—</div>
+                <div class="market-change" id="change-XRP">—</div>
+              </div>
+            </div>
+            <div class="market-chart-wrap" id="chart-XRP"></div>
+            <div class="market-intervals" id="intervals-XRP"></div>
+          </div>
+          <!-- TRX -->
+          <div class="market-card" id="card-TRX">
+            <div class="market-card-header">
+              <div>
+                <div class="market-name">⚡ TRON</div>
+                <div class="market-pair">TRX / USDT</div>
+              </div>
+              <div class="market-price">
+                <div class="market-price-val" id="price-TRX">—</div>
+                <div class="market-change" id="change-TRX">—</div>
+              </div>
+            </div>
+            <div class="market-chart-wrap" id="chart-TRX"></div>
+            <div class="market-intervals" id="intervals-TRX"></div>
+          </div>
+          <!-- SOL -->
+          <div class="market-card" id="card-SOL">
+            <div class="market-card-header">
+              <div>
+                <div class="market-name">◎ Solana</div>
+                <div class="market-pair">SOL / USDT</div>
+              </div>
+              <div class="market-price">
+                <div class="market-price-val" id="price-SOL">—</div>
+                <div class="market-change" id="change-SOL">—</div>
+              </div>
+            </div>
+            <div class="market-chart-wrap" id="chart-SOL"></div>
+            <div class="market-intervals" id="intervals-SOL"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── BUY ── -->
+    <div class="section" id="sec-buy">
+      <div class="card">
+        <div class="card-title"><span class="ct-icon">📥</span><span class="en">Buy Crypto</span><span class="es">Comprar Cripto</span></div>
+        <div class="step-indicator" id="buySteps">
+          <div class="step-dot active" id="buyDot1">1</div>
+          <div class="step-line" id="buyLine1"></div>
+          <div class="step-dot" id="buyDot2">2</div>
+          <div class="step-line" id="buyLine2"></div>
+          <div class="step-dot" id="buyDot3">3</div>
+        </div>
+
+        <!-- Step 1 -->
+        <div class="step-content active" id="buyStep1">
+          <h3 style="margin-bottom:1rem;font-size:0.95rem"><span class="en">Select Crypto & Amount</span><span class="es">Selecciona Cripto y Monto</span></h3>
+          <div class="select-crypto" id="buyCryptoSelect"></div>
+          <div class="amount-row">
+            <div class="amount-group">
+              <label><span class="en">Amount in USD</span><span class="es">Monto en USD</span></label>
+              <input type="number" class="amount-input" id="buyUsdAmt" placeholder="0.00" oninput="calcBuy('usd')"/>
+            </div>
+            <div style="font-size:0.85rem;color:var(--muted);padding-bottom:0.75rem">
+              <span class="en">or</span><span class="es">o</span>
+            </div>
+            <div class="amount-group">
+              <label id="buyCryptoLabel"><span class="en">Amount in Crypto</span><span class="es">Monto en Cripto</span></label>
+              <input type="number" class="amount-input" id="buyCryptoAmt" placeholder="0.00000" oninput="calcBuy('crypto')"/>
+            </div>
+          </div>
+          <div class="calc-result" id="buyResult" style="display:none">
+            <div class="cr-label"><span class="en">You will receive (after 4% fee)</span><span class="es">Recibirás (después de comisión 4%)</span></div>
+            <div class="cr-val" id="buyReceiveVal">—</div>
+            <div class="cr-fee" id="buyFeeInfo"></div>
+          </div>
+          <div class="btn-row">
+            <button class="btn-primary" onclick="buyStep(2)">
+              <span class="en">Continue</span><span class="es">Continuar</span> →
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step-content" id="buyStep2">
+          <h3 style="margin-bottom:1rem;font-size:0.95rem"><span class="en">Payment Method</span><span class="es">Método de Pago</span></h3>
+          <div class="payment-methods">
+            <div class="payment-option selected" id="payBank" onclick="selectPayMethod('bank')">
+              <h4>🏦 <span class="en">Bank Transfer</span><span class="es">Transferencia Bancaria</span></h4>
+              <div class="p-row"><span><span class="en">Name</span><span class="es">Nombre</span></span><span style="font-size:0.72rem">Hash Digital Payment Solutions SRL</span></div>
+
+              <div style="margin:0.6rem 0 0.3rem">
+                <span style="display:inline-block;padding:4px 10px;border-radius:6px;font-weight:800;font-size:1rem;color:white;margin-bottom:6px;background:#006633">BCR</span>
+                <span style="font-size:0.9rem;font-weight:700;color:#8A97B0;text-transform:uppercase;letter-spacing:0.05em;margin-left:6px">Banco de Costa Rica</span>
+              </div>
+              <div style="border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.6rem 0.8rem;margin-bottom:0.5rem">
+                <div style="font-size:0.9rem;font-weight:700;color:#F5C842;margin-bottom:0.4rem">🇺🇸 USD — Cuenta Corriente</div>
+                <div class="p-row"><span><span class="en">Account</span><span class="es">Cuenta</span></span><span style="font-family:monospace;font-size:1.1rem;font-weight:700">3102888482</span></div>
+                <div class="p-row"><span>IBAN</span><span style="font-size:0.9rem;font-family:monospace">CR41015201001051108581</span></div>
+              </div>
+              <div style="border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.6rem 0.8rem;margin-bottom:0.75rem">
+                <div style="font-size:0.9rem;font-weight:700;color:#4F8EF7;margin-bottom:0.4rem">🇨🇷 CRC — Cuenta Corriente</div>
+                <div class="p-row"><span><span class="en">Account</span><span class="es">Cuenta</span></span><span style="font-family:monospace;font-size:1.1rem;font-weight:700">3102888482</span></div>
+                <div class="p-row"><span>IBAN</span><span style="font-size:0.9rem;font-family:monospace">CR18015201001051108316</span></div>
+              </div>
+
+              <div style="margin:0.6rem 0 0.3rem">
+                <span style="display:inline-block;padding:4px 10px;border-radius:6px;font-weight:800;font-size:1rem;color:white;margin-bottom:6px;background:#003087">LAFISE</span>
+                <span style="font-size:0.9rem;font-weight:700;color:#8A97B0;text-transform:uppercase;letter-spacing:0.05em;margin-left:6px">Costa Rica</span>
+              </div>
+              <div style="border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.6rem 0.8rem;margin-bottom:0.5rem">
+                <div style="font-size:0.9rem;font-weight:700;color:#F5C842;margin-bottom:0.4rem">🇺🇸 USD — Cuenta de Ahorro</div>
+                <div class="p-row"><span><span class="en">Account</span><span class="es">Cuenta</span></span><span style="font-family:monospace;font-size:1.1rem;font-weight:700">781273533</span></div>
+                <div class="p-row"><span>IBAN</span><span style="font-size:0.9rem;font-family:monospace">CR14011400007812735333</span></div>
+              </div>
+              <div style="border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.6rem 0.8rem">
+                <div style="font-size:0.9rem;font-weight:700;color:#4F8EF7;margin-bottom:0.4rem">🇨🇷 CRC — Cuenta de Ahorro</div>
+                <div class="p-row"><span><span class="en">Account</span><span class="es">Cuenta</span></span><span style="font-family:monospace;font-size:1.1rem;font-weight:700">701245365</span></div>
+                <div class="p-row"><span>IBAN</span><span style="font-size:0.9rem;font-family:monospace">CR17011400007012453657</span></div>
+              </div>
+            </div>
+            <div class="payment-option" id="paySinpe" onclick="selectPayMethod('sinpe')">
+              <h4>📱 SINPE Móvil</h4>
+              <div class="p-row"><span><span class="en">Number</span><span class="es">Número</span></span><span>70267481</span></div>
+              <div class="p-row"><span><span class="en">Name</span><span class="es">Nombre</span></span><span>Roger Abarca Rios</span></div>
+            </div>
+          </div>
+          <!-- Crypto delivery info (XRP/TRX specific) -->
+          <div id="buyDeliveryInfo" style="display:none;background:rgba(79,142,247,0.08);border:1px solid rgba(79,142,247,0.25);border-radius:12px;padding:1rem;margin-bottom:1rem;">
+            <div style="font-size:0.85rem;font-weight:700;margin-bottom:0.4rem;color:var(--accent)">📬 <span class="en">Delivery Info</span><span class="es">Info de Entrega</span></div>
+            <div id="buyDeliveryText" style="font-size:0.85rem;color:var(--muted)"></div>
+          </div>
+
+          <label style="display:block;font-size:0.85rem;color:var(--muted);margin-bottom:0.4rem">
+            <span class="en">Transaction Reference Number</span><span class="es">Número de Referencia</span>
+          </label>
+          <input type="text" class="amount-input" id="buyRef" placeholder="REF-001234" style="margin-bottom:1rem"/>
+          <div class="upload-area" onclick="document.getElementById('buyProof').click()">
+            <input type="file" id="buyProof" accept="image/*" onchange="showFileName('buyProof','buyFileName')"/>
+            <div class="ua-icon">📎</div>
+            <div class="ua-text"><span class="en">Upload payment proof (image)</span><span class="es">Subir comprobante de pago (imagen)</span></div>
+            <div class="ua-file hidden" id="buyFileName"></div>
+          </div>
+          <div class="btn-row">
+            <button class="btn-secondary" onclick="buyStep(1)">← <span class="en">Back</span><span class="es">Atrás</span></button>
+            <button class="btn-primary" onclick="buyStep(3)"><span class="en">Submit Order</span><span class="es">Enviar Orden</span> →</button>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step-content" id="buyStep3">
+          <h3 style="margin-bottom:1rem;font-size:0.95rem"><span class="en">Order Confirmation</span><span class="es">Confirmación de Orden</span></h3>
+          <div class="confirm-card" id="buyConfirmCard"></div>
+          <div class="status-badge">⏳ <span class="en">Pending confirmation</span><span class="es">Pendiente de confirmación</span></div>
+          <p style="color:var(--muted);font-size:0.85rem;margin-top:0.5rem">
+            <span class="en">Our team will verify your payment and send your crypto within 24 hours.</span>
+            <span class="es">Nuestro equipo verificará tu pago y enviará tu cripto dentro de 24 horas.</span>
+          </p>
+          <div class="btn-row">
+            <button class="btn-primary" onclick="newBuyOrder()">
+              + <span class="en">New Order</span><span class="es">Nueva Orden</span>
+            </button>
+            <button class="btn-secondary" onclick="showSection('history')">
+              <span class="en">View History</span><span class="es">Ver Historial</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SELL ── -->
+    <div class="section" id="sec-sell">
+      <div class="card">
+        <div class="card-title"><span class="ct-icon">📤</span><span class="en">Sell Crypto</span><span class="es">Vender Cripto</span></div>
+        <div class="step-indicator">
+          <div class="step-dot active" id="sellDot1">1</div>
+          <div class="step-line" id="sellLine1"></div>
+          <div class="step-dot" id="sellDot2">2</div>
+          <div class="step-line" id="sellLine2"></div>
+          <div class="step-dot" id="sellDot3">3</div>
+        </div>
+
+        <!-- Step 1 -->
+        <div class="step-content active" id="sellStep1">
+          <h3 style="margin-bottom:1rem;font-size:0.95rem"><span class="en">Select Crypto & Amount</span><span class="es">Selecciona Cripto y Monto</span></h3>
+          <div class="select-crypto" id="sellCryptoSelect"></div>
+          <div class="amount-row">
+            <div class="amount-group">
+              <label id="sellCryptoLabel"><span class="en">Amount in Crypto</span><span class="es">Monto en Cripto</span></label>
+              <input type="number" class="amount-input" id="sellCryptoAmt" placeholder="0.00000" oninput="calcSell()"/>
+            </div>
+          </div>
+          <div class="calc-result" id="sellResult" style="display:none">
+            <div class="cr-label"><span class="en">You will receive (after 4% fee)</span><span class="es">Recibirás (después de comisión 4%)</span></div>
+            <div class="cr-val" id="sellReceiveVal">—</div>
+            <div class="cr-fee" id="sellFeeInfo"></div>
+          </div>
+          <div class="btn-row">
+            <button class="btn-primary" onclick="sellStep(2)">
+              <span class="en">Continue</span><span class="es">Continuar</span> →
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step-content" id="sellStep2">
+          <h3 style="margin-bottom:1rem;font-size:0.95rem"><span class="en">Send Crypto to Hash Digital</span><span class="es">Envía Cripto a Hash Digital</span></h3>
+          <p style="color:var(--muted);font-size:0.85rem;margin-bottom:1rem">
+            <span class="en">Send the exact amount to the corresponding wallet address below:</span>
+            <span class="es">Envía el monto exacto a la dirección de wallet correspondiente:</span>
+          </p>
+          <div class="wallet-addr-list">
+            <div class="wa-item">
+              <div class="wa-label">₿ BTC</div>
+              <div class="wa-addr">bc1qhashdigital000000000000000example</div>
+              <button class="wa-copy" onclick="copyText('bc1qhashdigital000000000000000example',this)"><span class="en">Copy</span><span class="es">Copiar</span></button>
+            </div>
+            <div class="wa-item">
+              <div class="wa-label">Ξ ETH / USDT (ERC20)</div>
+              <div class="wa-addr">0xHashDigital000000000000000example</div>
+              <button class="wa-copy" onclick="copyText('0xHashDigital000000000000000example',this)"><span class="en">Copy</span><span class="es">Copiar</span></button>
+            </div>
+            <div class="wa-item">
+              <div class="wa-label">🟢 USDT (TRC20) / TRX (TRON)</div>
+              <div class="wa-addr">THashDigital000000000000000example</div>
+              <button class="wa-copy" onclick="copyText('THashDigital000000000000000example',this)"><span class="en">Copy</span><span class="es">Copiar</span></button>
+            </div>
+            <div class="wa-item">
+              <div class="wa-label">🟡 USDT (BEP20) / BNB</div>
+              <div class="wa-addr">0xHashDigitalBSC000000000000example</div>
+              <button class="wa-copy" onclick="copyText('0xHashDigitalBSC000000000000example',this)"><span class="en">Copy</span><span class="es">Copiar</span></button>
+            </div>
+            <div class="wa-item">
+              <div class="wa-label">◎ XRP (Ripple Network)</div>
+              <div class="wa-addr">rHashDigitalXRP000000000000example</div>
+              <div style="font-size:0.78rem;color:var(--yellow);margin-top:0.3rem;">⚠️ <span class="en">Destination Tag: <strong>12345678</strong> — required!</span><span class="es">Destination Tag: <strong>12345678</strong> — ¡obligatorio!</span></div>
+              <button class="wa-copy" onclick="copyText('rHashDigitalXRP000000000000example',this)" style="margin-top:0.4rem"><span class="en">Copy Address</span><span class="es">Copiar Dirección</span></button>
+            </div>
+            <div class="wa-item">
+              <div class="wa-label">◎ SOL (Solana Network)</div>
+              <div class="wa-addr">HashDigitalSOL000000000000000example</div>
+              <button class="wa-copy" onclick="copyText('HashDigitalSOL000000000000000example',this)"><span class="en">Copy</span><span class="es">Copiar</span></button>
+            </div>
+          </div>
+          <div style="margin-top:1.5rem">
+            <label style="display:block;font-size:0.85rem;color:var(--muted);margin-bottom:0.4rem">
+              <span class="en">Transaction Hash / TXID</span><span class="es">Hash de Transacción / TXID</span>
+            </label>
+            <input type="text" class="amount-input" id="sellTxid" placeholder="0x..." style="margin-bottom:1rem;font-family:monospace;font-size:0.82rem"/>
+            <div class="upload-area" onclick="document.getElementById('sellProof').click()">
+              <input type="file" id="sellProof" accept="image/*" onchange="showFileName('sellProof','sellFileName')"/>
+              <div class="ua-icon">📸</div>
+              <div class="ua-text"><span class="en">Upload transaction screenshot</span><span class="es">Subir captura de la transacción</span></div>
+              <div class="ua-file hidden" id="sellFileName"></div>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn-secondary" onclick="sellStep(1)">← <span class="en">Back</span><span class="es">Atrás</span></button>
+            <button class="btn-primary" onclick="sellStep(3)"><span class="en">Submit</span><span class="es">Enviar</span> →</button>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step-content" id="sellStep3">
+          <h3 style="margin-bottom:1rem;font-size:0.95rem"><span class="en">Sell Order Submitted</span><span class="es">Orden de Venta Enviada</span></h3>
+          <div class="confirm-card" id="sellConfirmCard"></div>
+          <div class="status-badge">⏳ <span class="en">Pending — we will verify and transfer to your bank account</span><span class="es">Pendiente — verificaremos y transferiremos a tu cuenta bancaria</span></div>
+          <p style="color:var(--muted);font-size:0.85rem;margin-top:0.5rem">
+            <span class="en">Processing takes 1-24 hours after blockchain confirmation.</span>
+            <span class="es">El procesamiento toma 1-24 horas después de la confirmación en blockchain.</span>
+          </p>
+          <div class="btn-row">
+            <button class="btn-primary" onclick="newSellOrder()">
+              + <span class="en">New Order</span><span class="es">Nueva Orden</span>
+            </button>
+            <button class="btn-secondary" onclick="showSection('history')">
+              <span class="en">View History</span><span class="es">Ver Historial</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── HISTORY ── -->
+    <div class="section" id="sec-history">
+      <div class="table-wrap">
+        <div class="table-header">
+          <h3><span class="en">My Transaction History</span><span class="es">Mi Historial de Transacciones</span></h3>
+        </div>
+        <div style="overflow-x:auto">
+          <table><thead><tr>
+            <th><span class="en">Type</span><span class="es">Tipo</span></th>
+            <th>Crypto</th>
+            <th><span class="en">Amount</span><span class="es">Monto</span></th>
+            <th>USD</th>
+            <th>Status</th>
+            <th><span class="en">Date</span><span class="es">Fecha</span></th>
+          </tr></thead><tbody id="historyBody"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── KYC / IDENTITY ── -->
+    <div class="section" id="sec-kyc">
+
+      <!-- Header Card -->
+      <div class="card" style="margin-bottom:1.5rem">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1rem">
+          <div>
+            <h2 style="font-size:1.15rem;font-weight:800;margin-bottom:0.3rem">
+              <span class="en">Identity Verification</span><span class="es">Verificación de Identidad</span>
+            </h2>
+            <p style="color:var(--muted);font-size:0.85rem"><span class="en">Complete your KYC to unlock all features.</span><span class="es">Completa tu KYC para desbloquear todas las funciones.</span></p>
+          </div>
+          <div id="kycStatusBadge" class="kyc-badge kyc-badge-not_started">⏳ <span class="en">Not Started</span><span class="es">Sin Iniciar</span></div>
+        </div>
+        <div class="kyc-progress-bar">
+          <div class="kyc-progress-fill" id="kycProgressFill" style="width:0%"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:0.78rem;color:var(--muted);margin-top:0.3rem">
+          <span><span class="en">Completion</span><span class="es">Completado</span></span>
+          <span id="kycProgressPct">0%</span>
+        </div>
+      </div>
+
+      <!-- PART 1 — Personal Information -->
+      <div class="kyc-part-card">
+        <div class="kyc-part-header">
+          <span style="font-size:1.3rem">👤</span>
+          <h3><span class="en">Part 1 — Personal Information</span><span class="es">Parte 1 — Información Personal</span></h3>
+        </div>
+        <div class="kyc-part-body">
+          <div class="kyc-form-grid">
+            <div class="kyc-field">
+              <label><span class="en">Full Legal Name</span><span class="es">Nombre Legal Completo</span></label>
+              <input type="text" id="kyc_fullname" placeholder="John Doe / Juan Pérez" onchange="kycAutoSave()" oninput="kycCalcProgress()"/>
+            </div>
+            <div class="kyc-field">
+              <label><span class="en">Date of Birth</span><span class="es">Fecha de Nacimiento</span></label>
+              <input type="date" id="kyc_dob" onchange="kycAutoSave();kycCalcProgress()"/>
+            </div>
+            <div class="kyc-field">
+              <label><span class="en">Nationality</span><span class="es">Nacionalidad</span></label>
+              <select id="kyc_nationality" onchange="kycAutoSave();kycCalcProgress()">
+                <option value=""><span class="en">Select...</span><span class="es">Selecciona...</span></option>
+                <option value="CR">Costa Rica</option>
+                <option value="US">USA</option>
+                <option value="MX">Mexico / México</option>
+                <option value="CO">Colombia</option>
+                <option value="BR">Brazil / Brasil</option>
+                <option value="ES">Spain / España</option>
+                <option value="AR">Argentina</option>
+                <option value="VE">Venezuela</option>
+                <option value="PE">Peru / Perú</option>
+                <option value="EC">Ecuador</option>
+                <option value="GT">Guatemala</option>
+                <option value="HN">Honduras</option>
+                <option value="SV">El Salvador</option>
+                <option value="PA">Panama / Panamá</option>
+                <option value="DO">Dominican Republic / R. Dominicana</option>
+                <option value="OT">Other / Otro</option>
+              </select>
+            </div>
+            <div class="kyc-field">
+              <label><span class="en">Gender</span><span class="es">Género</span></label>
+              <select id="kyc_gender" onchange="kycAutoSave();kycCalcProgress()">
+                <option value=""><span class="en">Select...</span><span class="es">Selecciona...</span></option>
+                <option value="M"><span class="en">Male</span><span class="es">Masculino</span></option>
+                <option value="F"><span class="en">Female</span><span class="es">Femenino</span></option>
+                <option value="N"><span class="en">Prefer not to say</span><span class="es">Prefiero no decir</span></option>
+              </select>
+            </div>
+            <div class="kyc-field" style="grid-column:1/-1">
+              <label><span class="en">Place of Birth</span><span class="es">Lugar de Nacimiento</span></label>
+              <input type="text" id="kyc_pob" placeholder="City, Country" onchange="kycAutoSave()" oninput="kycCalcProgress()"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PART 2 — Identity Document -->
+      <div class="kyc-part-card">
+        <div class="kyc-part-header">
+          <span style="font-size:1.3rem">🪪</span>
+          <h3><span class="en">Part 2 — Identity Document</span><span class="es">Parte 2 — Documento de Identidad</span></h3>
+        </div>
+        <div class="kyc-part-body">
+          <div class="kyc-form-grid">
+            <div class="kyc-field">
+              <label><span class="en">Document Type</span><span class="es">Tipo de Documento</span></label>
+              <select id="kyc_doctype" onchange="kycAutoSave();kycCalcProgress()">
+                <option value=""><span class="en">Select...</span><span class="es">Selecciona...</span></option>
+                <option value="passport"><span class="en">Passport</span><span class="es">Pasaporte</span></option>
+                <option value="national_id"><span class="en">National ID</span><span class="es">Cédula Nacional</span></option>
+                <option value="drivers"><span class="en">Driver's License</span><span class="es">Licencia de Conducir</span></option>
+                <option value="residence"><span class="en">Residence Permit</span><span class="es">Permiso de Residencia</span></option>
+              </select>
+            </div>
+            <div class="kyc-field">
+              <label><span class="en">Document Number</span><span class="es">Número de Documento</span></label>
+              <input type="text" id="kyc_docnum" placeholder="123456789" onchange="kycAutoSave()" oninput="kycCalcProgress()"/>
+            </div>
+            <div class="kyc-field">
+              <label><span class="en">Country of Issue</span><span class="es">País Emisor</span></label>
+              <select id="kyc_docissue" onchange="kycAutoSave();kycCalcProgress()">
+                <option value=""><span class="en">Select...</span><span class="es">Selecciona...</span></option>
+                <option value="CR">Costa Rica</option>
+                <option value="US">USA</option>
+                <option value="MX">Mexico / México</option>
+                <option value="CO">Colombia</option>
+                <option value="BR">Brazil / Brasil</option>
+                <option value="ES">Spain / España</option>
+                <option value="AR">Argentina</option>
+                <option value="VE">Venezuela</option>
+                <option value="PE">Peru / Perú</option>
+                <option value="EC">Ecuador</option>
+                <option value="GT">Guatemala</option>
+                <option value="HN">Honduras</option>
+                <option value="SV">El Salvador</option>
+                <option value="PA">Panama / Panamá</option>
+                <option value="DO">Dominican Republic / R. Dominicana</option>
+                <option value="OT">Other / Otro</option>
+              </select>
+            </div>
+            <div class="kyc-field">
+              <label><span class="en">Expiry Date</span><span class="es">Fecha de Vencimiento</span></label>
+              <input type="date" id="kyc_docexpiry" onchange="kycAutoSave();kycCalcProgress()"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PART 3 — Address -->
+      <div class="kyc-part-card">
+        <div class="kyc-part-header">
+          <span style="font-size:1.3rem">🏠</span>
+          <h3><span class="en">Part 3 — Address</span><span class="es">Parte 3 — Dirección</span></h3>
+        </div>
+        <div class="kyc-part-body">
+          <div class="kyc-form-grid">
+            <div class="kyc-field">
+              <label><span class="en">Country of Residence</span><span class="es">País de Residencia</span></label>
+              <select id="kyc_country" onchange="kycAutoSave();kycCalcProgress()">
+                <option value=""><span class="en">Select...</span><span class="es">Selecciona...</span></option>
+                <option value="CR">Costa Rica</option>
+                <option value="US">USA</option>
+                <option value="MX">Mexico / México</option>
+                <option value="CO">Colombia</option>
+                <option value="BR">Brazil / Brasil</option>
+                <option value="ES">Spain / España</option>
+                <option value="AR">Argentina</option>
+                <option value="VE">Venezuela</option>
+                <option value="PE">Peru / Perú</option>
+                <option value="EC">Ecuador</option>
+                <option value="GT">Guatemala</option>
+                <option value="HN">Honduras</option>
+                <option value="SV">El Salvador</option>
+                <option value="PA">Panama / Panamá</option>
+                <option value="DO">Dominican Republic / R. Dominicana</option>
+                <option value="OT">Other / Otro</option>
+              </select>
+            </div>
+            <div class="kyc-field">
+              <label><span class="en">Province / State</span><span class="es">Provincia o Estado</span></label>
+              <input type="text" id="kyc_state" placeholder="San José / Florida" onchange="kycAutoSave()" oninput="kycCalcProgress()"/>
+            </div>
+            <div class="kyc-field">
+              <label><span class="en">City</span><span class="es">Ciudad</span></label>
+              <input type="text" id="kyc_city" placeholder="San José" onchange="kycAutoSave()" oninput="kycCalcProgress()"/>
+            </div>
+            <div class="kyc-field">
+              <label><span class="en">Postal Code</span><span class="es">Código Postal</span></label>
+              <input type="text" id="kyc_postal" placeholder="10101" onchange="kycAutoSave()" oninput="kycCalcProgress()"/>
+            </div>
+            <div class="kyc-field" style="grid-column:1/-1">
+              <label><span class="en">Full Address</span><span class="es">Dirección Completa</span></label>
+              <input type="text" id="kyc_address" placeholder="Calle / Street 123, ..." onchange="kycAutoSave()" oninput="kycCalcProgress()"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PART 4 — Financial Information -->
+      <div class="kyc-part-card">
+        <div class="kyc-part-header">
+          <span style="font-size:1.3rem">💰</span>
+          <h3><span class="en">Part 4 — Financial Information</span><span class="es">Parte 4 — Información Financiera</span></h3>
+        </div>
+        <div class="kyc-part-body">
+          <div class="kyc-form-grid">
+            <div class="kyc-field">
+              <label><span class="en">Occupation</span><span class="es">Ocupación</span></label>
+              <select id="kyc_occupation" onchange="kycAutoSave();kycCalcProgress()">
+                <option value=""><span class="en">Select...</span><span class="es">Selecciona...</span></option>
+                <option value="employee"><span class="en">Employee</span><span class="es">Empleado</span></option>
+                <option value="self_employed"><span class="en">Self-employed</span><span class="es">Independiente</span></option>
+                <option value="business_owner"><span class="en">Business Owner</span><span class="es">Empresario</span></option>
+                <option value="investor"><span class="en">Investor</span><span class="es">Inversionista</span></option>
+                <option value="student"><span class="en">Student</span><span class="es">Estudiante</span></option>
+                <option value="retired"><span class="en">Retired</span><span class="es">Jubilado</span></option>
+                <option value="other"><span class="en">Other</span><span class="es">Otro</span></option>
+              </select>
+            </div>
+            <div class="kyc-field">
+              <label><span class="en">Source of Funds</span><span class="es">Fuente de Fondos</span></label>
+              <select id="kyc_funds_source" onchange="kycAutoSave();kycCalcProgress()">
+                <option value=""><span class="en">Select...</span><span class="es">Selecciona...</span></option>
+                <option value="salary"><span class="en">Salary</span><span class="es">Salario</span></option>
+                <option value="business"><span class="en">Business Income</span><span class="es">Ingresos Empresariales</span></option>
+                <option value="investments"><span class="en">Investments</span><span class="es">Inversiones</span></option>
+                <option value="savings"><span class="en">Savings</span><span class="es">Ahorros</span></option>
+                <option value="inheritance"><span class="en">Inheritance</span><span class="es">Herencia</span></option>
+                <option value="other"><span class="en">Other</span><span class="es">Otro</span></option>
+              </select>
+            </div>
+            <div class="kyc-field">
+              <label><span class="en">Monthly Income Range</span><span class="es">Rango de Ingresos Mensuales</span></label>
+              <select id="kyc_income" onchange="kycAutoSave();kycCalcProgress()">
+                <option value=""><span class="en">Select...</span><span class="es">Selecciona...</span></option>
+                <option value="u1k"><span class="en">Under $1,000</span><span class="es">Menos de $1,000</span></option>
+                <option value="1k_5k">$1,000 – $5,000</option>
+                <option value="5k_10k">$5,000 – $10,000</option>
+                <option value="10k_50k">$10,000 – $50,000</option>
+                <option value="o50k"><span class="en">Over $50,000</span><span class="es">Más de $50,000</span></option>
+              </select>
+            </div>
+            <div class="kyc-field">
+              <label><span class="en">Expected Monthly Volume</span><span class="es">Volumen Mensual Esperado</span></label>
+              <select id="kyc_volume" onchange="kycAutoSave();kycCalcProgress()">
+                <option value=""><span class="en">Select...</span><span class="es">Selecciona...</span></option>
+                <option value="u1k"><span class="en">Under $1,000</span><span class="es">Menos de $1,000</span></option>
+                <option value="1k_5k">$1,000 – $5,000</option>
+                <option value="5k_10k">$5,000 – $10,000</option>
+                <option value="o10k"><span class="en">Over $10,000</span><span class="es">Más de $10,000</span></option>
+              </select>
+            </div>
+            <div class="kyc-field" style="grid-column:1/-1">
+              <label><span class="en">Purpose of Account</span><span class="es">Propósito de Cuenta</span></label>
+              <select id="kyc_purpose" onchange="kycAutoSave();kycCalcProgress()">
+                <option value=""><span class="en">Select...</span><span class="es">Selecciona...</span></option>
+                <option value="exchange"><span class="en">Crypto Exchange</span><span class="es">Intercambio de Cripto</span></option>
+                <option value="business"><span class="en">Business Payments</span><span class="es">Pagos Empresariales</span></option>
+                <option value="remittances"><span class="en">Remittances</span><span class="es">Remesas</span></option>
+                <option value="investment"><span class="en">Investment</span><span class="es">Inversión</span></option>
+                <option value="personal"><span class="en">Personal Use</span><span class="es">Uso Personal</span></option>
+                <option value="other"><span class="en">Other</span><span class="es">Otro</span></option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PART 5 — Document Upload -->
+      <div class="kyc-part-card">
+        <div class="kyc-part-header">
+          <span style="font-size:1.3rem">📎</span>
+          <h3><span class="en">Part 5 — Document Upload</span><span class="es">Parte 5 — Subir Documentos</span></h3>
+        </div>
+        <div class="kyc-part-body">
+          <div class="kyc-upload-grid">
+            <div class="kyc-upload-area" onclick="document.getElementById('kyc_file_front').click()">
+              <input type="file" id="kyc_file_front" accept="image/*,.pdf" onchange="kycFilePreview('kyc_file_front','kyc_prev_front');kycAutoSave();kycCalcProgress()"/>
+              <div class="ua-icon">🪪</div>
+              <div class="ua-title"><span class="en">Front of ID</span><span class="es">Frente del Documento</span></div>
+              <div class="ua-sub"><span class="en">JPG, PNG or PDF</span><span class="es">JPG, PNG o PDF</span></div>
+              <img id="kyc_prev_front" class="kyc-upload-preview" src="" alt="preview"/>
+            </div>
+            <div class="kyc-upload-area" onclick="document.getElementById('kyc_file_back').click()">
+              <input type="file" id="kyc_file_back" accept="image/*,.pdf" onchange="kycFilePreview('kyc_file_back','kyc_prev_back');kycAutoSave();kycCalcProgress()"/>
+              <div class="ua-icon">🪪</div>
+              <div class="ua-title"><span class="en">Back of ID</span><span class="es">Reverso del Documento</span></div>
+              <div class="ua-sub"><span class="en">JPG, PNG or PDF</span><span class="es">JPG, PNG o PDF</span></div>
+              <img id="kyc_prev_back" class="kyc-upload-preview" src="" alt="preview"/>
+            </div>
+            <div class="kyc-upload-area" onclick="document.getElementById('kyc_file_selfie').click()">
+              <input type="file" id="kyc_file_selfie" accept="image/*" capture="user" onchange="kycFilePreview('kyc_file_selfie','kyc_prev_selfie');kycAutoSave();kycCalcProgress()"/>
+              <div class="ua-icon">🤳</div>
+              <div class="ua-title"><span class="en">Selfie with Document</span><span class="es">Selfie con Documento</span></div>
+              <div class="ua-sub"><span class="en">Take a photo holding your ID</span><span class="es">Foto sosteniedo tu documento</span></div>
+              <img id="kyc_prev_selfie" class="kyc-upload-preview" src="" alt="preview"/>
+            </div>
+            <div class="kyc-upload-area" onclick="document.getElementById('kyc_file_address').click()">
+              <input type="file" id="kyc_file_address" accept="image/*,.pdf" onchange="kycFilePreview('kyc_file_address','kyc_prev_address');kycAutoSave();kycCalcProgress()"/>
+              <div class="ua-icon">📄</div>
+              <div class="ua-title"><span class="en">Proof of Address</span><span class="es">Comprobante de Domicilio</span></div>
+              <div class="ua-sub"><span class="en">Utility bill, bank statement, etc.</span><span class="es">Recibo de servicio, estado de cuenta, etc.</span></div>
+              <img id="kyc_prev_address" class="kyc-upload-preview" src="" alt="preview"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PART 6 — Didit.me Integration -->
+      <div class="didit-card">
+        <div style="font-size:2rem;margin-bottom:0.75rem">🔍</div>
+        <h3><span class="en">Fast Verification with Didit</span><span class="es">Verificación Rápida con Didit</span></h3>
+        <p><span class="en">Complete automatic identity verification in minutes — no paperwork, no waiting.</span><span class="es">Completa la verificación de identidad automática en minutos — sin papeles, sin esperas.</span></p>
+        <a href="https://verify.didit.me/u/NwYTTgPZQk22kR7mvIp2Ow" target="_blank" rel="noopener" class="btn-didit">
+          <span class="en">Start Verification with Didit →</span><span class="es">Iniciar Verificación con Didit →</span>
+        </a>
+        <div class="didit-note">
+          <span class="en">Powered by <strong>Didit.me</strong> — Free identity verification</span>
+          <span class="es">Desarrollado por <strong>Didit.me</strong> — Verificación de identidad gratuita</span>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="kyc-success-msg" id="kycSuccessMsg">
+        ✅ <span class="en">Your KYC has been submitted for review! We will contact you within 24-48 hours.</span>
+        <span class="es">¡Tu KYC fue enviado para revisión! Te contactaremos en 24-48 horas.</span>
+      </div>
+      <div class="kyc-action-bar">
+        <button class="btn-secondary" onclick="kycSaveProgress()">
+          💾 <span class="en">Save Progress</span><span class="es">Guardar Progreso</span>
+        </button>
+        <button class="btn-primary" onclick="kycSubmitForReview()">
+          🚀 <span class="en">Submit for Review</span><span class="es">Enviar para Revisión</span>
+        </button>
+      </div>
+
+    </div>
+    <!-- ── END KYC ── -->
+
+  </main>
+</div>
+
+<script>
+// ─────────────────────────── LANG ───────────────────────────
+function setLang(l){
+  document.body.className=document.body.className.replace(/lang-\w+/,'')+ ' lang-'+l;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.textContent===l.toUpperCase()));
+}
+
+// ─────────────────────────── PRICES ───────────────────────────
+// LOCKED_PRICES will be populated at session start from CryptoCompare 1h-ago API
+window.LOCKED_PRICES = {BTC:84000,ETH:1580,BNB:580,XRP:2.10,TRX:0.24,SOL:140.00,'USDT-TRC20':1,'USDT-ERC20':1,'USDT-BEP20':1,USDT:1};
+const PRICES = window.LOCKED_PRICES; // alias for backward compat
+
+const CRYPTO_LIST=[
+  {id:'BTC',icon:'₿',name:'BTC',price:84000},
+  {id:'ETH',icon:'Ξ',name:'ETH',price:1580},
+  {id:'XRP',icon:'◎',name:'XRP',price:2.10},
+  {id:'TRX',icon:'⚡',name:'TRX',price:0.24},
+  {id:'SOL',icon:'◎',name:'Solana',price:140.00,network:'Solana Network'},
+  {id:'USDT-TRC20',icon:'🟢',name:'USDT TRC20',price:1},
+  {id:'USDT-ERC20',icon:'💠',name:'USDT ERC20',price:1},
+  {id:'USDT-BEP20',icon:'🟡',name:'USDT BEP20',price:1},
+  {id:'BNB',icon:'🔶',name:'BNB',price:580},
+];
+
+// ─────────────────────────── FETCH LOCKED PRICES (1h ago) ───────────────────────────
+async function fetchLockedPrices() {
+  const FALLBACK = {BTC:84000,ETH:1580,BNB:580,XRP:2.10,TRX:0.24,SOL:140.00};
+  const symbols = ['BTC','ETH','BNB','XRP','TRX','SOL'];
+  const results = {};
+  await Promise.all(symbols.map(async sym => {
+    try {
+      const url = `https://min-api.cryptocompare.com/data/v2/histohour?fsym=${sym}&tsym=USD&limit=2`;
+      const r = await fetch(url);
+      const j = await r.json();
+      const data = j && j.Data && j.Data.Data;
+      if (data && data.length >= 2) {
+        // second-to-last item = 1 hour ago
+        results[sym] = data[data.length - 2].close;
+      } else {
+        results[sym] = FALLBACK[sym];
+      }
+    } catch(e) {
+      results[sym] = FALLBACK[sym];
+    }
+  }));
+  // Update LOCKED_PRICES in place
+  Object.assign(window.LOCKED_PRICES, results);
+  // Refresh UI: update crypto cards with new prices
+  updateCryptoListPrices();
+}
+
+function updateCryptoListPrices() {
+  // Update the CRYPTO_LIST prices from LOCKED_PRICES
+  CRYPTO_LIST.forEach(c => {
+    const baseId = c.id.replace(/-.*$/, ''); // BTC, ETH, BNB, XRP, TRX
+    if (window.LOCKED_PRICES[baseId] !== undefined && baseId !== 'USDT') {
+      c.price = window.LOCKED_PRICES[baseId];
+    }
+  });
+  // Rebuild crypto selects with new prices
+  if (document.getElementById('buyCryptoSelect')) buildCryptoSelects();
+}
+
+// ─────────────────────────── STATE ───────────────────────────
+let currentUser=null;
+let buySelectedCrypto='BTC';
+let sellSelectedCrypto='BTC';
+let buyPayMethod='bank';
+
+// ─────────────────────────── MOCK DATA INIT ───────────────────────────
+function initMockData(){
+  if(localStorage.getItem('hd_admin_init')) return;
+  const users=[
+    {id:'u1',name:'Carlos Rodríguez',email:'carlos@example.com',refCode:randId(),referredBy:null,status:'active',joined:'2024-01-15',password:'pass123'},
+    {id:'u2',name:'María González',email:'maria@example.com',refCode:randId(),referredBy:'u1',status:'active',joined:'2024-02-03',password:'pass123'},
+    {id:'u3',name:'José Méndez',email:'jose@example.com',refCode:randId(),referredBy:'u1',status:'active',joined:'2024-02-20',password:'pass123'},
+    {id:'u4',name:'Ana Ramírez',email:'ana@example.com',refCode:randId(),referredBy:'u2',status:'active',joined:'2024-03-05',password:'pass123'},
+    {id:'u5',name:'Luis Herrera',email:'luis@example.com',refCode:randId(),referredBy:'u2',status:'active',joined:'2024-03-18',password:'pass123'},
+    {id:'u6',name:'Sandra Castro',email:'sandra@example.com',refCode:randId(),referredBy:'u3',status:'inactive',joined:'2024-04-01',password:'pass123'},
+    {id:'u7',name:'Miguel Torres',email:'miguel@example.com',refCode:randId(),referredBy:'u4',status:'active',joined:'2024-04-22',password:'pass123'},
+    {id:'u8',name:'Laura Vega',email:'laura@example.com',refCode:randId(),referredBy:'u4',status:'active',joined:'2024-05-10',password:'pass123'},
+    {id:'u9',name:'Roberto Flores',email:'roberto@example.com',refCode:randId(),referredBy:'u5',status:'active',joined:'2024-05-28',password:'pass123'},
+    {id:'u10',name:'Patricia Mora',email:'patricia@example.com',refCode:randId(),referredBy:'u3',status:'inactive',joined:'2024-06-14',password:'pass123'},
+  ];
+  const cryptoList=['BTC','ETH','USDT-TRC20','USDT-ERC20','BNB'];
+  const statuses=['pending','confirmed','rejected'];
+  const txs=[];
+  for(let i=1;i<=20;i++){
+    const u=users[Math.floor(Math.random()*users.length)];
+    const crypto=cryptoList[Math.floor(Math.random()*cryptoList.length)];
+    const price=PRICES[crypto]||1;
+    const usd=Math.round((100+Math.random()*4900)*100)/100;
+    const amt=Math.round((usd/price)*100000)/100000;
+    const d=new Date();d.setDate(d.getDate()-Math.floor(Math.random()*90));
+    txs.push({
+      id:'tx'+i,userId:u.id,userName:u.name,
+      type:Math.random()>0.5?'buy':'sell',
+      crypto,amount:amt,usd,
+      commission:Math.round(usd*0.04*100)/100,
+      status:statuses[Math.floor(Math.random()*statuses.length)],
+      date:d.toISOString().slice(0,10)
+    });
+  }
+  localStorage.setItem('hd_users',JSON.stringify(users));
+  localStorage.setItem('hd_transactions',JSON.stringify(txs));
+  localStorage.setItem('hd_admin_init','1');
+}
+
+function randId(n=8){const c='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';let s='';for(let i=0;i<n;i++)s+=c[Math.floor(Math.random()*c.length)];return s;}
+function getUsers(){return JSON.parse(localStorage.getItem('hd_users')||'[]');}
+function getTxs(){return JSON.parse(localStorage.getItem('hd_transactions')||'[]');}
+function saveTxs(t){localStorage.setItem('hd_transactions',JSON.stringify(t));}
+
+// ─────────────────────────── AUTH ───────────────────────────
+function doLogin(){
+  const email=document.getElementById('loginEmail').value.trim().toLowerCase();
+  const pass=document.getElementById('loginPass').value;
+  const users=getUsers();
+  const u=users.find(x=>x.email.toLowerCase()===email&&x.password===pass);
+  if(u){
+    if(u.status==='inactive'){
+      document.getElementById('loginErr').classList.remove('hidden');
+      document.getElementById('loginErr').innerHTML='<span>Account inactive. Contact support.</span>';
+      return;
+    }
+    currentUser=u;
+    document.getElementById('loginPage').classList.add('hidden');
+    document.getElementById('dashApp').classList.remove('hidden');
+    document.getElementById('sidebarUserName').textContent=u.name;
+    initDash();
+  } else {
+    document.getElementById('loginErr').classList.remove('hidden');
+  }
+}
+function showDemo(){
+  document.getElementById('loginEmail').value='carlos@example.com';
+  document.getElementById('loginPass').value='pass123';
+}
+function doLogout(){
+  currentUser=null;
+  document.getElementById('dashApp').classList.add('hidden');
+  document.getElementById('loginPage').classList.remove('hidden');
+  document.getElementById('loginEmail').value='';
+  document.getElementById('loginPass').value='';
+}
+
+// ─────────────────────────── NAV ───────────────────────────
+const SEC_TITLES={
+  profile:['Profile & Referrals','Perfil y Referidos'],
+  markets:['Live Markets','Mercados en Vivo'],
+  wallets:['My Wallets','Mis Wallets'],
+  buy:['Buy Crypto','Comprar Cripto'],
+  sell:['Sell Crypto','Vender Cripto'],
+  history:['Transaction History','Historial de Transacciones'],
+  kyc:['KYC / Identity','KYC / Identidad']
+};
+function getKycStatus(){
+  const data = JSON.parse(localStorage.getItem('kycData_'+(currentUser?.email||'')) || '{}');
+  return data.kycStatus || 'not_started';
+}
+
+function showSection(s){
+  // Block buy/sell if KYC not verified
+  if((s==='buy'||s==='sell') && getKycStatus()!=='verified'){
+    showKycBlock(s);
+    return;
+  }
+  document.querySelectorAll('.section').forEach(el=>el.classList.remove('active'));
+  document.getElementById('sec-'+s).classList.add('active');
+  document.querySelectorAll('.sidebar-nav a').forEach((a,i)=>{
+    const secs=['profile','markets','wallets','buy','sell','history','kyc'];
+    a.classList.toggle('active',secs[i]===s);
+  });
+  const t=SEC_TITLES[s]||[s,s];
+  document.getElementById('secTitle').innerHTML=`<span class="en">${t[0]}</span><span class="es">${t[1]}</span>`;
+  if(s==='profile') renderProfile();
+  if(s==='wallets') renderWallets();
+  if(s==='history') renderHistory();
+  if(s==='kyc') kycInit();
+  if(s==='markets' && window._initLiveMarkets) window._initLiveMarkets();
+  closeSidebar();
+}
+
+function showKycBlock(section){
+  // Show KYC required overlay in buy/sell section
+  document.querySelectorAll('.section').forEach(el=>el.classList.remove('active'));
+  const secEl = document.getElementById('sec-'+section);
+  secEl.classList.add('active');
+  document.querySelectorAll('.sidebar-nav a').forEach((a,i)=>{
+    const secs=['profile','markets','wallets','buy','sell','history','kyc'];
+    a.classList.toggle('active',secs[i]===section);
+  });
+
+  // Inject KYC block overlay if not already there
+  let block = secEl.querySelector('.kyc-block-overlay');
+  if(!block){
+    block = document.createElement('div');
+    block.className = 'kyc-block-overlay';
+    block.style.cssText = 'position:absolute;inset:0;background:rgba(5,10,24,0.95);backdrop-filter:blur(8px);z-index:10;display:flex;align-items:center;justify-content:center;border-radius:20px;';
+    block.innerHTML = `
+      <div style="text-align:center;padding:3rem 2rem;max-width:420px;">
+        <div style="font-size:4rem;margin-bottom:1rem;">🔒</div>
+        <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:0.75rem;">
+          <span class="en">Identity Verification Required</span>
+          <span class="es">Verificación de Identidad Requerida</span>
+        </h2>
+        <p style="color:#8A97B0;font-size:0.95rem;line-height:1.6;margin-bottom:2rem;">
+          <span class="en">To comply with regulations and protect our users, you must complete and be approved for KYC before trading.</span>
+          <span class="es">Para cumplir con regulaciones y proteger a nuestros usuarios, debes completar y ser aprobado en KYC antes de operar.</span>
+        </p>
+        <div style="display:flex;flex-direction:column;gap:0.75rem;align-items:center;">
+          <button onclick="showSection('kyc')" style="background:linear-gradient(135deg,#4F8EF7,#7B5CF0);color:#fff;border:none;padding:0.9rem 2rem;border-radius:50px;font-weight:700;font-size:1rem;cursor:pointer;width:100%;max-width:280px;">
+            <span class="en">Complete KYC Now →</span>
+            <span class="es">Completar KYC Ahora →</span>
+          </button>
+          <a href="https://verify.didit.me/u/NwYTTgPZQk22kR7mvIp2Ow" target="_blank" style="background:transparent;color:#4F8EF7;border:1px solid #4F8EF7;padding:0.7rem 2rem;border-radius:50px;font-weight:600;font-size:0.9rem;text-decoration:none;width:100%;max-width:280px;text-align:center;box-sizing:border-box;">
+            <span class="en">Verify with Didit.me →</span>
+            <span class="es">Verificar con Didit.me →</span>
+          </a>
+        </div>
+        <p style="color:#8A97B0;font-size:0.78rem;margin-top:1.5rem;">
+          <span class="en">⏱ Verification usually takes 2-5 minutes</span>
+          <span class="es">⏱ La verificación generalmente toma 2-5 minutos</span>
+        </p>
+      </div>`;
+    secEl.style.position = 'relative';
+    secEl.appendChild(block);
+  } else {
+    block.style.display = 'flex';
+  }
+  closeSidebar();
+}
+function openSidebar(){document.getElementById('sidebar').classList.add('open');document.getElementById('overlay').classList.add('show');}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show');}
+
+// ─────────────────────────── INIT ───────────────────────────
+function initDash(){
+  buildCryptoSelects();
+  renderProfile();
+  // Fetch 1h-ago prices right after login
+  fetchLockedPrices();
+}
+
+// ─────────────────────────── PROFILE ───────────────────────────
+function renderProfile(){
+  if(!currentUser) return;
+  const refLink=`hashdigitalpayment.com/register?ref=${currentUser.refCode}`;
+  document.getElementById('refLinkDisplay').textContent=refLink;
+
+  const users=getUsers();
+  const txs=getTxs();
+  renderMyTree(users);
+  renderMyCommissions(users,txs);
+  kycRenderProfileBadge();
+}
+
+function renderMyTree(users){
+  // Find L1 (direct referrals)
+  const l1=users.filter(u=>u.referredBy===currentUser.id);
+  let html='';
+  if(l1.length===0){
+    html='<p style="color:var(--muted);font-size:0.85rem"><span class="en">No referrals yet. Share your link to grow your network!</span><span class="es">Sin referidos aún. ¡Comparte tu link para hacer crecer tu red!</span></p>';
+  } else {
+    html=`<div style="margin-bottom:1rem">
+      <div class="level-label">Level 1 — 0.43%</div>
+      <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1rem">`;
+    l1.forEach(u1=>{
+      const l2=users.filter(u=>u.referredBy===u1.id);
+      html+=`<div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:0.75rem;min-width:130px">
+        <div style="font-size:0.82rem;font-weight:600">${u1.name}</div>
+        <div style="font-size:0.7rem;color:var(--accent);font-family:monospace">${u1.refCode}</div>
+        ${l2.length>0?`<div style="font-size:0.7rem;color:var(--muted);margin-top:0.25rem">${l2.length} L2</div>`:''}
+      </div>`;
+    });
+    html+='</div>';
+
+    const l2all=users.filter(u=>l1.some(l=>l.id===u.referredBy));
+    if(l2all.length>0){
+      html+=`<div class="level-label">Level 2 — 0.285%</div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1rem">`;
+      l2all.forEach(u2=>{
+        const parent=users.find(u=>u.id===u2.referredBy);
+        html+=`<div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:0.75rem;min-width:130px">
+          <div style="font-size:0.82rem;font-weight:600">${u2.name}</div>
+          <div style="font-size:0.7rem;color:var(--accent2);font-family:monospace">${u2.refCode}</div>
+          <div style="font-size:0.7rem;color:var(--muted)">via ${parent?parent.name:''}</div>
+        </div>`;
+      });
+      html+='</div>';
+
+      const l3all=users.filter(u=>l2all.some(l=>l.id===u.referredBy));
+      if(l3all.length>0){
+        html+=`<div class="level-label">Level 3 — 0.285%</div>
+          <div style="display:flex;flex-wrap:wrap;gap:0.5rem">`;
+        l3all.forEach(u3=>{
+          const parent=users.find(u=>u.id===u3.referredBy);
+          html+=`<div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:0.75rem;min-width:130px">
+            <div style="font-size:0.82rem;font-weight:600">${u3.name}</div>
+            <div style="font-size:0.7rem;color:var(--muted);font-family:monospace">${u3.refCode}</div>
+            <div style="font-size:0.7rem;color:var(--muted)">via ${parent?parent.name:''}</div>
+          </div>`;
+        });
+        html+='</div>';
+      }
+    }
+    html+='</div>';
+  }
+  document.getElementById('myTree').innerHTML=html;
+}
+
+function renderMyCommissions(users,txs){
+  const l1=users.filter(u=>u.referredBy===currentUser.id);
+  const l2=users.filter(u=>l1.some(l=>l.id===u.referredBy));
+  const l3=users.filter(u=>l2.some(l=>l.id===u.referredBy));
+
+  const getVol=(ids)=>txs.filter(t=>ids.includes(t.userId)&&t.status==='confirmed').reduce((a,t)=>a+t.usd,0);
+
+  const v1=getVol(l1.map(u=>u.id));
+  const v2=getVol(l2.map(u=>u.id));
+  const v3=getVol(l3.map(u=>u.id));
+  const c1=v1*0.0043;const c2=v2*0.00285;const c3=v3*0.00285;
+
+  document.getElementById('myCommGrid').innerHTML=`
+    <div class="comm-card">
+      <div class="cc-label">Level 1 (${l1.length} <span class="en">users</span><span class="es">usuarios</span>)</div>
+      <div class="cc-val">$${c1.toFixed(2)}</div>
+      <div class="cc-rate">0.43% · Vol $${v1.toFixed(0)}</div>
+    </div>
+    <div class="comm-card">
+      <div class="cc-label">Level 2 (${l2.length} <span class="en">users</span><span class="es">usuarios</span>)</div>
+      <div class="cc-val">$${c2.toFixed(2)}</div>
+      <div class="cc-rate">0.285% · Vol $${v2.toFixed(0)}</div>
+    </div>
+    <div class="comm-card">
+      <div class="cc-label">Level 3 (${l3.length} <span class="en">users</span><span class="es">usuarios</span>)</div>
+      <div class="cc-val">$${c3.toFixed(2)}</div>
+      <div class="cc-rate">0.285% · Vol $${v3.toFixed(0)}</div>
+    </div>
+    <div class="comm-card" style="border-color:rgba(79,142,247,0.3)">
+      <div class="cc-label"><span class="en">Total Earned</span><span class="es">Total Ganado</span></div>
+      <div class="cc-val" style="color:var(--accent)">$${(c1+c2+c3).toFixed(2)}</div>
+      <div class="cc-rate"><span class="en">All levels</span><span class="es">Todos los niveles</span></div>
+    </div>`;
+}
+
+function copyRefLink(){
+  const link=document.getElementById('refLinkDisplay').textContent;
+  navigator.clipboard.writeText(link).catch(()=>{});
+  const ok=document.getElementById('copyOk');
+  ok.classList.remove('hidden');
+  setTimeout(()=>ok.classList.add('hidden'),2000);
+}
+
+// ─────────────────────────── WALLETS ───────────────────────────
+const WALLET_FIELDS=[
+  {id:'w_btc',icon:'₿',label:'BTC'},
+  {id:'w_eth',icon:'Ξ',label:'ETH (ERC20)'},
+  {id:'w_xrp',icon:'◎',label:'XRP',extra:{id:'w_xrp_tag',label:'XRP Destination Tag',placeholder:'Tag (optional)'}},
+  {id:'w_trx',icon:'⚡',label:'TRX (TRON)'},
+  {id:'w_sol',icon:'◎',label:'SOL (Solana)'},
+  {id:'w_usdt_trc20',icon:'🟢',label:'USDT (TRC20)'},
+  {id:'w_usdt_erc20',icon:'💠',label:'USDT (ERC20)'},
+  {id:'w_usdt_bep20',icon:'🟡',label:'USDT (BEP20)'},
+  {id:'w_bnb',icon:'🔶',label:'BNB (BEP20)'},
+];
+
+function renderWallets(){
+  const saved=JSON.parse(localStorage.getItem('hd_wallets_'+currentUser.id)||'{}');
+  document.getElementById('walletGrid').innerHTML=WALLET_FIELDS.map(f=>`
+    <div class="wallet-item">
+      <label><span class="crypto-icon">${f.icon}</span>${f.label}</label>
+      <div class="wallet-input-row">
+        <input type="text" class="wallet-input" id="${f.id}" placeholder="Address..." value="${saved[f.id]||''}" style="font-size:0.95rem"/>
+      </div>
+      ${f.extra?`<div style="margin-top:0.5rem">
+        <label style="font-size:0.75rem;color:var(--muted);">${f.extra.label}</label>
+        <input type="text" class="wallet-input" id="${f.extra.id}" placeholder="${f.extra.placeholder}" value="${saved[f.extra.id]||''}" style="font-size:0.95rem;margin-top:0.3rem"/>
+      </div>`:''}
+    </div>`).join('');
+}
+
+function saveAllWallets(){
+  const data={};
+  WALLET_FIELDS.forEach(f=>{
+    data[f.id]=document.getElementById(f.id).value.trim();
+    if(f.extra){data[f.extra.id]=document.getElementById(f.extra.id).value.trim();}
+  });
+  localStorage.setItem('hd_wallets_'+currentUser.id,JSON.stringify(data));
+  showToast('✅ Wallets saved!');
+}
+
+function showToast(msg){
+  const t=document.createElement('div');
+  t.textContent=msg;
+  t.style.cssText='position:fixed;bottom:2rem;right:2rem;background:var(--bg3);border:1px solid var(--green);color:var(--green);padding:0.75rem 1.25rem;border-radius:10px;font-size:0.9rem;font-weight:600;z-index:999;animation:fadeIn 0.3s';
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),3000);
+}
+
+// ─────────────────────────── BUY/SELL CRYPTO SELECTS ───────────────────────────
+function buildCryptoSelects(){
+  function fmtPrice(c){
+    const baseId=c.id.replace(/-.*$/,'');
+    const p=window.LOCKED_PRICES[baseId]||window.LOCKED_PRICES[c.id]||c.price;
+    if(p>=100) return '$'+p.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+    if(p>=1) return '$'+p.toFixed(4);
+    return '$'+p.toFixed(6);
+  }
+  const buyHtml=CRYPTO_LIST.map(c=>`
+    <div class="crypto-opt ${c.id==='BTC'?'selected':''}" onclick="selectBuyCrypto('${c.id}',this)">
+      <div class="co-icon">${c.icon}</div>
+      <div class="co-name">${c.name}</div>
+      <div class="co-price">${fmtPrice(c)}</div>
+    </div>`).join('');
+  document.getElementById('buyCryptoSelect').innerHTML=buyHtml;
+
+  const sellHtml=CRYPTO_LIST.map(c=>`
+    <div class="crypto-opt ${c.id==='BTC'?'selected':''}" onclick="selectSellCrypto('${c.id}',this)">
+      <div class="co-icon">${c.icon}</div>
+      <div class="co-name">${c.name}</div>
+      <div class="co-price">${fmtPrice(c)}</div>
+    </div>`).join('');
+  document.getElementById('sellCryptoSelect').innerHTML=sellHtml;
+}
+
+function selectBuyCrypto(id,el){
+  buySelectedCrypto=id;
+  document.querySelectorAll('#buyCryptoSelect .crypto-opt').forEach(x=>x.classList.remove('selected'));
+  el.classList.add('selected');
+  calcBuy('usd');
+}
+
+function selectSellCrypto(id,el){
+  sellSelectedCrypto=id;
+  document.querySelectorAll('#sellCryptoSelect .crypto-opt').forEach(x=>x.classList.remove('selected'));
+  el.classList.add('selected');
+  calcSell();
+}
+
+// ─────────────────────────── CALCULATIONS ───────────────────────────
+function calcBuy(source){
+  const baseId=buySelectedCrypto.replace(/-.*$/,'');
+  const price=window.LOCKED_PRICES[baseId]||window.LOCKED_PRICES[buySelectedCrypto]||1;
+  let usd=0,crypto=0;
+  if(source==='usd'){
+    usd=parseFloat(document.getElementById('buyUsdAmt').value)||0;
+    crypto=usd/price;
+    document.getElementById('buyCryptoAmt').value=crypto>0?crypto.toFixed(6):'';
+  } else {
+    crypto=parseFloat(document.getElementById('buyCryptoAmt').value)||0;
+    usd=crypto*price;
+    document.getElementById('buyUsdAmt').value=usd>0?usd.toFixed(2):'';
+  }
+  if(usd>0){
+    const fee=usd*0.04;
+    const receive=(usd-fee)/price;
+    document.getElementById('buyResult').style.display='block';
+    document.getElementById('buyReceiveVal').textContent=`${receive.toFixed(6)} ${buySelectedCrypto}`;
+    const priceStr=price>=100?`$${price.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}`:price>=1?`$${price.toFixed(4)}`:`$${price.toFixed(6)}`;
+    document.getElementById('buyFeeInfo').textContent=`Fee: $${fee.toFixed(2)} (4%) · Rate: ${priceStr}/${baseId} · Price: ${priceStr} USD (1h ref.)`;
+  } else {
+    document.getElementById('buyResult').style.display='none';
+  }
+}
+
+function calcSell(){
+  const baseId=sellSelectedCrypto.replace(/-.*$/,'');
+  const price=window.LOCKED_PRICES[baseId]||window.LOCKED_PRICES[sellSelectedCrypto]||1;
+  const cryptoAmt=parseFloat(document.getElementById('sellCryptoAmt').value)||0;
+  if(cryptoAmt>0){
+    const grossUsd=cryptoAmt*price;
+    const fee=grossUsd*0.04;
+    const netUsd=grossUsd-fee;
+    document.getElementById('sellResult').style.display='block';
+    document.getElementById('sellReceiveVal').textContent=`$${netUsd.toFixed(2)} USD`;
+    const priceStr=price>=100?`$${price.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}`:price>=1?`$${price.toFixed(4)}`:`$${price.toFixed(6)}`;
+    document.getElementById('sellFeeInfo').textContent=`Fee: $${fee.toFixed(2)} (4%) · Rate: ${priceStr}/${baseId} · Precio bloqueado al inicio de sesión (referencia 1h)`;
+  } else {
+    document.getElementById('sellResult').style.display='none';
+  }
+}
+
+// ─────────────────────────── BUY STEPS ───────────────────────────
+function buyStep(n){
+  if(n===2){
+    const usd=parseFloat(document.getElementById('buyUsdAmt').value)||0;
+    if(usd<=0){showToast('⚠️ Please enter an amount');return;}
+    // Show XRP/TRX delivery info
+    const infoBox=document.getElementById('buyDeliveryInfo');
+    const infoText=document.getElementById('buyDeliveryText');
+    const saved=JSON.parse(localStorage.getItem('hd_wallets_'+(currentUser?currentUser.id:''))||'{}');
+    if(buySelectedCrypto==='XRP'){
+      const addr=saved['w_xrp']||'(no XRP wallet saved)';
+      const tag=saved['w_xrp_tag']?` — Tag: <strong>${saved['w_xrp_tag']}</strong>`:'';
+      infoText.innerHTML=`<span class="en">We will send to your XRP wallet (with Destination Tag):<br><code style="color:var(--text)">${addr}</code>${tag}</span><span class="es">Enviaremos a tu wallet XRP (con Destination Tag):<br><code style="color:var(--text)">${addr}</code>${tag}</span>`;
+      infoBox.style.display='block';
+    } else if(buySelectedCrypto==='TRX'){
+      const addr=saved['w_trx']||'(no TRX wallet saved)';
+      infoText.innerHTML=`<span class="en">We will send to your TRX/TRON wallet (TRC20):<br><code style="color:var(--text)">${addr}</code></span><span class="es">Enviaremos a tu wallet TRX/TRON (TRC20):<br><code style="color:var(--text)">${addr}</code></span>`;
+      infoBox.style.display='block';
+    } else {
+      infoBox.style.display='none';
+    }
+  }
+  if(n===3){
+    const ref=document.getElementById('buyRef').value.trim();
+    if(!ref){showToast('⚠️ Please enter a reference number');return;}
+    // Save order
+    const usd=parseFloat(document.getElementById('buyUsdAmt').value)||0;
+    const _buyBaseId=buySelectedCrypto.replace(/-.*$/,'');
+    const price=window.LOCKED_PRICES[_buyBaseId]||window.LOCKED_PRICES[buySelectedCrypto]||1;
+    const receive=(usd-usd*0.04)/price;
+    const txs=getTxs();
+    const d=new Date().toISOString().slice(0,10);
+    txs.push({
+      id:'tx_'+Date.now(),userId:currentUser.id,userName:currentUser.name,
+      type:'buy',crypto:buySelectedCrypto,
+      amount:Math.round(receive*100000)/100000,
+      usd,commission:Math.round(usd*0.04*100)/100,
+      status:'pending',date:d
+    });
+    saveTxs(txs);
+    // Confirm card
+    document.getElementById('buyConfirmCard').innerHTML=`
+      <div class="confirm-row"><span><span class="en">Type</span><span class="es">Tipo</span></span><span>BUY</span></div>
+      <div class="confirm-row"><span>Crypto</span><span>${buySelectedCrypto}</span></div>
+      <div class="confirm-row"><span>USD</span><span>$${usd.toFixed(2)}</span></div>
+      <div class="confirm-row"><span><span class="en">You receive</span><span class="es">Recibirás</span></span><span>${receive.toFixed(6)} ${buySelectedCrypto}</span></div>
+      <div class="confirm-row"><span><span class="en">Fee</span><span class="es">Comisión</span></span><span>$${(usd*0.04).toFixed(2)}</span></div>
+      <div class="confirm-row"><span><span class="en">Payment</span><span class="es">Pago</span></span><span>${buyPayMethod==='bank'?'Bank Transfer / Transferencia':'SINPE Móvil'}</span></div>
+      <div class="confirm-row"><span>Ref</span><span>${ref}</span></div>
+      <div class="confirm-row"><span><span class="en">Date</span><span class="es">Fecha</span></span><span>${d}</span></div>`;
+  }
+  setStep('buy',n);
+}
+
+function setStep(flow,n){
+  [1,2,3].forEach(i=>{
+    document.getElementById(`${flow}Step${i}`).className='step-content'+(i===n?' active':'');
+    document.getElementById(`${flow}Dot${i}`).className='step-dot'+(i<n?' done':i===n?' active':'');
+    if(i<3) document.getElementById(`${flow}Line${i}`).className='step-line'+(i<n?' done':'');
+  });
+}
+
+function newBuyOrder(){
+  document.getElementById('buyUsdAmt').value='';
+  document.getElementById('buyCryptoAmt').value='';
+  document.getElementById('buyResult').style.display='none';
+  document.getElementById('buyRef').value='';
+  setStep('buy',1);
+}
+
+function selectPayMethod(m){
+  buyPayMethod=m;
+  document.getElementById('payBank').classList.toggle('selected',m==='bank');
+  document.getElementById('paySinpe').classList.toggle('selected',m==='sinpe');
+}
+
+// ─────────────────────────── SELL STEPS ───────────────────────────
+function sellStep(n){
+  if(n===2){
+    const amt=parseFloat(document.getElementById('sellCryptoAmt').value)||0;
+    if(amt<=0){showToast('⚠️ Please enter an amount');return;}
+  }
+  if(n===3){
+    const txid=document.getElementById('sellTxid').value.trim();
+    if(!txid){showToast('⚠️ Please enter the transaction hash');return;}
+    const amt=parseFloat(document.getElementById('sellCryptoAmt').value)||0;
+    const _sellBaseId=sellSelectedCrypto.replace(/-.*$/,'');
+    const price=window.LOCKED_PRICES[_sellBaseId]||window.LOCKED_PRICES[sellSelectedCrypto]||1;
+    const gross=amt*price;
+    const net=gross-gross*0.04;
+    const txs=getTxs();
+    const d=new Date().toISOString().slice(0,10);
+    txs.push({
+      id:'tx_'+Date.now(),userId:currentUser.id,userName:currentUser.name,
+      type:'sell',crypto:sellSelectedCrypto,
+      amount:amt,usd:Math.round(gross*100)/100,
+      commission:Math.round(gross*0.04*100)/100,
+      status:'pending',date:d
+    });
+    saveTxs(txs);
+    document.getElementById('sellConfirmCard').innerHTML=`
+      <div class="confirm-row"><span><span class="en">Type</span><span class="es">Tipo</span></span><span>SELL</span></div>
+      <div class="confirm-row"><span>Crypto</span><span>${sellSelectedCrypto}</span></div>
+      <div class="confirm-row"><span><span class="en">Amount sent</span><span class="es">Monto enviado</span></span><span>${amt} ${sellSelectedCrypto}</span></div>
+      <div class="confirm-row"><span><span class="en">You receive</span><span class="es">Recibirás</span></span><span>$${net.toFixed(2)} USD</span></div>
+      <div class="confirm-row"><span><span class="en">Fee</span><span class="es">Comisión</span></span><span>$${(gross*0.04).toFixed(2)}</span></div>
+      <div class="confirm-row"><span>TXID</span><span style="font-size:0.75rem;font-family:monospace;word-break:break-all">${txid}</span></div>
+      <div class="confirm-row"><span><span class="en">Date</span><span class="es">Fecha</span></span><span>${d}</span></div>`;
+  }
+  setStep('sell',n);
+}
+
+function newSellOrder(){
+  document.getElementById('sellCryptoAmt').value='';
+  document.getElementById('sellResult').style.display='none';
+  document.getElementById('sellTxid').value='';
+  setStep('sell',1);
+}
+
+// ─────────────────────────── HISTORY ───────────────────────────
+function renderHistory(){
+  if(!currentUser) return;
+  const txs=getTxs().filter(t=>t.userId===currentUser.id).sort((a,b)=>b.date.localeCompare(a.date));
+  if(txs.length===0){
+    document.getElementById('historyBody').innerHTML=`<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:2rem">
+      <span class="en">No transactions yet</span><span class="es">Sin transacciones aún</span>
+    </td></tr>`;
+    return;
+  }
+  document.getElementById('historyBody').innerHTML=txs.map(t=>`
+    <tr>
+      <td><span class="badge badge-${t.type}">${t.type.toUpperCase()}</span></td>
+      <td>${t.crypto}</td>
+      <td>${t.amount}</td>
+      <td>$${t.usd.toFixed(2)}</td>
+      <td><span class="badge badge-${t.status}">${t.status}</span></td>
+      <td>${t.date}</td>
+    </tr>`).join('');
+}
+
+// ─────────────────────────── UTILS ───────────────────────────
+function showFileName(inputId,labelId){
+  const f=document.getElementById(inputId).files[0];
+  const lbl=document.getElementById(labelId);
+  if(f){lbl.textContent='📎 '+f.name;lbl.classList.remove('hidden');}
+}
+function copyText(text,btn){
+  navigator.clipboard.writeText(text).catch(()=>{});
+  const orig=btn.innerHTML;
+  btn.textContent='✓ Copied!';
+  setTimeout(()=>{btn.innerHTML=orig;},2000);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// KYC / IDENTITY VERIFICATION
+// ═══════════════════════════════════════════════════════════════
+
+const KYC_FIELDS = [
+  'kyc_fullname','kyc_dob','kyc_nationality','kyc_gender','kyc_pob',
+  'kyc_doctype','kyc_docnum','kyc_docissue','kyc_docexpiry',
+  'kyc_country','kyc_state','kyc_city','kyc_address','kyc_postal',
+  'kyc_occupation','kyc_funds_source','kyc_income','kyc_volume','kyc_purpose'
+];
+const KYC_FILES = ['kyc_file_front','kyc_file_back','kyc_file_selfie','kyc_file_address'];
+
+function kycStorageKey(){
+  return 'hd_kyc_'+(currentUser?currentUser.id:'guest');
+}
+
+function kycLoad(){
+  try{ return JSON.parse(localStorage.getItem(kycStorageKey())||'{}'); }
+  catch(e){ return {}; }
+}
+
+function kycInit(){
+  const data = kycLoad();
+  KYC_FIELDS.forEach(id=>{
+    const el=document.getElementById(id);
+    if(el && data[id]!==undefined) el.value=data[id];
+  });
+  kycCalcProgress();
+  kycRenderStatusBadge();
+}
+
+function kycAutoSave(){
+  const data=kycLoad();
+  KYC_FIELDS.forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) data[id]=el.value;
+  });
+  // Track file upload flags (filenames only, not binary data)
+  const fileMap={kyc_file_front:'_files_front',kyc_file_back:'_files_back',kyc_file_selfie:'_files_selfie',kyc_file_address:'_files_address'};
+  Object.entries(fileMap).forEach(([inputId,key])=>{
+    const el=document.getElementById(inputId);
+    if(el && el.files && el.files.length>0) data[key]=el.files[0].name;
+  });
+  localStorage.setItem(kycStorageKey(),JSON.stringify(data));
+  kycRenderProfileBadge();
+}
+
+function kycCalcProgress(){
+  let filled=0;
+  KYC_FIELDS.forEach(id=>{
+    const el=document.getElementById(id);
+    if(el && el.value && el.value.trim()!=='') filled++;
+  });
+  KYC_FILES.forEach(id=>{
+    const el=document.getElementById(id);
+    if(el && el.files && el.files.length>0) filled++;
+  });
+  const total=KYC_FIELDS.length+KYC_FILES.length;
+  const pct=Math.round((filled/total)*100);
+  const fill=document.getElementById('kycProgressFill');
+  const pctEl=document.getElementById('kycProgressPct');
+  if(fill) fill.style.width=pct+'%';
+  if(pctEl) pctEl.textContent=pct+'%';
+  return pct;
+}
+
+function kycGetStatus(){
+  const data=kycLoad();
+  return data._status||'not_started';
+}
+
+function kycRenderStatusBadge(){
+  const status=kycGetStatus();
+  const badge=document.getElementById('kycStatusBadge');
+  if(!badge) return;
+  const labels={
+    not_started:['⏳ Not Started','⏳ Sin Iniciar'],
+    pending:['⏳ Pending Review','⏳ En Revisión'],
+    verified:['✅ Verified','✅ Verificado'],
+    rejected:['❌ Rejected','❌ Rechazado']
+  };
+  const l=labels[status]||labels.not_started;
+  badge.className='kyc-badge kyc-badge-'+status;
+  badge.innerHTML=`<span class="en">${l[0]}</span><span class="es">${l[1]}</span>`;
+}
+
+function kycRenderProfileBadge(){
+  const badge=document.getElementById('profileKycBadge');
+  if(!badge) return;
+  const status=kycGetStatus();
+  const cfg={
+    not_started:{cls:'kyc-badge-not_started',en:'🪪 KYC Not Started',es:'🪪 KYC Sin Iniciar'},
+    pending:{cls:'kyc-badge-pending',en:'⏳ KYC Pending',es:'⏳ KYC Pendiente'},
+    verified:{cls:'kyc-badge-verified',en:'✅ KYC Verified',es:'✅ KYC Verificado'},
+    rejected:{cls:'kyc-badge-rejected',en:'❌ KYC Rejected',es:'❌ KYC Rechazado'}
+  };
+  const c=cfg[status]||cfg.not_started;
+  badge.className='kyc-status-mini '+c.cls;
+  badge.innerHTML=`<span class="en">${c.en}</span><span class="es">${c.es}</span>`;
+}
+
+function kycFilePreview(inputId, previewId){
+  const file=document.getElementById(inputId)?.files[0];
+  const prev=document.getElementById(previewId);
+  if(!prev) return;
+  if(file && file.type.startsWith('image/')){
+    const reader=new FileReader();
+    reader.onload=e=>{prev.src=e.target.result;prev.style.display='block';};
+    reader.readAsDataURL(file);
+  } else if(file){
+    prev.style.display='none';
+    // show file name in parent
+    const area=prev.closest('.kyc-upload-area');
+    if(area){
+      let nameEl=area.querySelector('.ua-filename');
+      if(!nameEl){nameEl=document.createElement('div');nameEl.className='ua-filename';nameEl.style.cssText='font-size:0.75rem;color:var(--green);margin-top:0.4rem;word-break:break-all';area.appendChild(nameEl);}
+      nameEl.textContent='📎 '+file.name;
+    }
+  }
+}
+
+function kycSaveProgress(){
+  kycAutoSave();
+  showToast('💾 KYC progress saved! / ¡Progreso KYC guardado!');
+}
+
+function kycSubmitForReview(){
+  const pct=kycCalcProgress();
+  if(pct<40){
+    showToast('⚠️ Please fill more fields before submitting / Por favor completa más campos');
+    return;
+  }
+  const data=kycLoad();
+  data._status='pending';
+  data._submitted=new Date().toISOString();
+  localStorage.setItem(kycStorageKey(),JSON.stringify(data));
+  kycRenderStatusBadge();
+  kycRenderProfileBadge();
+  const msg=document.getElementById('kycSuccessMsg');
+  if(msg){msg.style.display='block';setTimeout(()=>msg.style.display='none',6000);}
+  showToast('🚀 Submitted for review! / ¡Enviado para revisión!');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// LIVE MARKETS — Lightweight Charts + CryptoCompare REST Polling
+// ═══════════════════════════════════════════════════════════════
+
+(function(){
+  const CHART_SYMBOLS = [
+    { sym: 'BTC', cc: 'BTC', label: 'Bitcoin' },
+    { sym: 'ETH', cc: 'ETH', label: 'Ethereum' },
+    { sym: 'BNB', cc: 'BNB', label: 'BNB' },
+    { sym: 'XRP', cc: 'XRP', label: 'XRP' },
+    { sym: 'TRX', cc: 'TRX', label: 'TRON' },
+    { sym: 'SOL', cc: 'SOL', label: 'Solana' },
+  ];
+
+  const INTERVALS = ['1m','5m','15m','1h','4h','1d'];
+
+  // Map interval → CryptoCompare endpoint params
+  const CC_INTERVAL_MAP = {
+    '1m':  { endpoint: 'histominute', aggregate: 1,  limit: 100 },
+    '5m':  { endpoint: 'histominute', aggregate: 5,  limit: 100 },
+    '15m': { endpoint: 'histominute', aggregate: 15, limit: 100 },
+    '1h':  { endpoint: 'histohour',   aggregate: 1,  limit: 100 },
+    '4h':  { endpoint: 'histohour',   aggregate: 4,  limit: 100 },
+    '1d':  { endpoint: 'histoday',    aggregate: 1,  limit: 100 },
+  };
+
+  const CC_BASE = 'https://min-api.cryptocompare.com/data/v2';
+  const CC_PRICE_URL = 'https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC,ETH,BNB,XRP,TRX,SOL&tsyms=USD';
+
+  const chartInstances = {}; // { sym: { chart, series, currentInterval } }
+  let pricePollingTimer = null;
+
+  // ── Build interval buttons for each card ──
+  CHART_SYMBOLS.forEach(({sym}) => {
+    const container = document.getElementById('intervals-'+sym);
+    if (!container) return;
+    INTERVALS.forEach(iv => {
+      const btn = document.createElement('button');
+      btn.className = 'interval-btn' + (iv === '1m' ? ' active' : '');
+      btn.textContent = iv;
+      btn.onclick = () => switchInterval(sym, iv);
+      container.appendChild(btn);
+    });
+  });
+
+  // ── Chart colours ──
+  const CHART_OPTS = {
+    layout: { background: { color: '#0A1628' }, textColor: '#8A97B0' },
+    grid: { vertLines: { color: 'rgba(138,151,176,0.1)' }, horzLines: { color: 'rgba(138,151,176,0.1)' } },
+    crosshair: { mode: 1 },
+    rightPriceScale: { borderColor: 'rgba(138,151,176,0.2)' },
+    timeScale: { borderColor: 'rgba(138,151,176,0.2)', timeVisible: true, secondsVisible: false },
+    handleScroll: true,
+    handleScale: true,
+  };
+
+  const CANDLE_OPTS = {
+    upColor: '#22C55E',
+    downColor: '#EF4444',
+    borderUpColor: '#22C55E',
+    borderDownColor: '#EF4444',
+    wickUpColor: '#22C55E',
+    wickDownColor: '#EF4444',
+  };
+
+  // ── Init all charts ──
+  function initCharts() {
+    CHART_SYMBOLS.forEach(({sym, cc}) => {
+      const wrap = document.getElementById('chart-'+sym);
+      if (!wrap) return;
+
+      const LW = window.LightweightCharts;
+      const chart = LW.createChart(wrap, {
+        ...CHART_OPTS,
+        width: wrap.clientWidth,
+        height: 180,
+      });
+
+      let series;
+      series = chart.addCandlestickSeries(CANDLE_OPTS);
+
+      chartInstances[sym] = { chart, series, currentInterval: '1m' };
+
+      chart.timeScale().fitContent();
+
+      const ro = new ResizeObserver(() => {
+        chart.applyOptions({ width: wrap.clientWidth });
+      });
+      ro.observe(wrap);
+
+      if (cc) {
+        fetchHistorical(sym, '1m');
+      }
+    });
+
+    // Fetch 24h data for all real symbols at once
+    fetch24hAll();
+
+    // Start price polling every 5 seconds
+    if (pricePollingTimer) clearInterval(pricePollingTimer);
+    pricePollingTimer = setInterval(pollPrices, 5000);
+  }
+
+  // ── Fetch historical candles from CryptoCompare ──
+  function fetchHistorical(sym, interval) {
+    const info = CHART_SYMBOLS.find(s => s.sym === sym);
+    if (!info || !info.cc) return;
+    const cfg = CC_INTERVAL_MAP[interval] || CC_INTERVAL_MAP['1m'];
+    const url = `${CC_BASE}/${cfg.endpoint}?fsym=${info.cc}&tsym=USD&limit=${cfg.limit}&aggregate=${cfg.aggregate}`;
+    fetch(url)
+      .then(r => r.json())
+      .then(data => {
+        if (!data || data.Response === 'Error') return;
+        const raw = (data.Data && data.Data.Data) ? data.Data.Data : [];
+        const candles = raw
+          .filter(k => k.open !== 0 || k.close !== 0) // skip empty bars
+          .map(k => ({
+            time: k.time,
+            open:  k.open,
+            high:  k.high,
+            low:   k.low,
+            close: k.close,
+          }));
+        const inst = chartInstances[sym];
+        if (!inst) return;
+        inst.series.setData(candles);
+        inst.chart.timeScale().fitContent();
+        if (candles.length > 0) {
+          const last = candles[candles.length - 1];
+          updatePrice(sym, last.close, null);
+        }
+      })
+      .catch(() => {});
+  }
+
+  // ── Fetch 24h change for all real symbols ──
+  function fetch24hAll() {
+    fetch(CC_PRICE_URL)
+      .then(r => r.json())
+      .then(data => {
+        if (!data || !data.RAW) return;
+        ['BTC','ETH','BNB','XRP','TRX'].forEach(sym => {
+          const raw = data.RAW[sym] && data.RAW[sym].USD;
+          if (!raw) return;
+          const price = raw.PRICE;
+          const pct   = raw.CHANGEPCT24HOUR;
+          updatePrice(sym, price, pct);
+        });
+      })
+      .catch(() => {});
+  }
+
+  // ── Poll current prices every 5 seconds ──
+  function pollPrices() {
+    fetch(CC_PRICE_URL)
+      .then(r => r.json())
+      .then(data => {
+        if (!data || !data.RAW) return;
+        ['BTC','ETH','BNB','XRP','TRX'].forEach(sym => {
+          const raw = data.RAW[sym] && data.RAW[sym].USD;
+          if (!raw) return;
+          const price = raw.PRICE;
+          const pct   = raw.CHANGEPCT24HOUR;
+          const inst  = chartInstances[sym];
+          if (!inst) return;
+          // Update last candle with new close price
+          const now = Math.floor(Date.now() / 1000);
+          try { inst.series.update({ time: now, open: price, high: price, low: price, close: price }); } catch(e) {}
+          updatePrice(sym, price, pct);
+        });
+      })
+      .catch(() => {});
+  }
+
+  // ── Switch interval ──
+  function switchInterval(sym, interval) {
+    const inst = chartInstances[sym];
+    if (!inst) return;
+    inst.currentInterval = interval;
+
+    const container = document.getElementById('intervals-'+sym);
+    if (container) {
+      container.querySelectorAll('.interval-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.textContent === interval);
+      });
+    }
+
+    const info = CHART_SYMBOLS.find(s => s.sym === sym);
+    if (info && info.cc) {
+      fetchHistorical(sym, interval);
+    }
+  }
+
+  // ── Update price display ──
+  function updatePrice(sym, price, pctChange) {
+    const priceEl = document.getElementById('price-'+sym);
+    const changeEl = document.getElementById('change-'+sym);
+    if (!priceEl || !changeEl) return;
+
+    let priceStr;
+    if (price >= 1000) priceStr = '$' + price.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+    else if (price >= 1) priceStr = '$' + price.toFixed(4);
+    else priceStr = '$' + price.toFixed(6);
+    priceEl.textContent = priceStr;
+
+    if (pctChange !== null && pctChange !== undefined) {
+      const sign = pctChange >= 0 ? '+' : '';
+      changeEl.textContent = sign + pctChange.toFixed(2) + '%';
+      changeEl.className = 'market-change ' + (pctChange >= 0 ? 'positive' : 'negative');
+    }
+  }
+
+  // ── Initialize once LW is ready ──
+  function tryInit() {
+    if (window.LightweightCharts) {
+      initCharts();
+    } else {
+      setTimeout(tryInit, 200);
+    }
+  }
+
+  // Expose init trigger for showSection to call
+  window._initLiveMarkets = function() {
+    if (!_chartsInited) {
+      _chartsInited = true;
+      setTimeout(tryInit, 80);
+    }
+  };
+  let _chartsInited = false;
+})();
+
+// ─────────────────────────── INIT ───────────────────────────
+initMockData();
+// Auto-init charts after DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+  setTimeout(function() {
+    if (window._initLiveMarkets) window._initLiveMarkets();
+  }, 1000);
+});
+</script>
+</body>
+</html>

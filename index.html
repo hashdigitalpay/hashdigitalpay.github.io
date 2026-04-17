@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hash Digital Payments Solutions</title>
+  <meta name="description" content="Your gateway to the digital financial ecosystem. Crypto exchange, US bank accounts, crypto cards, remittances and more." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #050A18;
+      --bg2: #0A1628;
+      --bg3: #0F1F3D;
+      --accent: #4F8EF7;
+      --accent2: #7B5CF0;
+      --gold: #F5C842;
+      --text: #E8EDF5;
+      --muted: #8A97B0;
+      --card: rgba(255,255,255,0.04);
+      --border: rgba(255,255,255,0.08);
+      --grad: linear-gradient(135deg, #4F8EF7, #7B5CF0);
+    }
+
+    /* ── LIGHT MODE ── */
+    body.light {
+      --bg: #F5F7FA;
+      --bg2: #EAECF0;
+      --bg3: #DDE1EA;
+      --text: #0A1628;
+      --muted: #556080;
+      --card: rgba(0,0,0,0.04);
+      --border: rgba(0,0,0,0.08);
+    }
+    body.light nav { background: rgba(245,247,250,0.92); }
+    body.light .hero::before { background: radial-gradient(circle, rgba(79,142,247,0.1) 0%, transparent 70%); }
+    body.light .nav-logo img.dark-logo { display: none; }
+    body.light .nav-logo img.light-logo { display: block; }
+    body:not(.light) .nav-logo img.light-logo { display: none; }
+    body:not(.light) .nav-logo img.dark-logo { display: block; }
+    body.light .footer-logo img.dark-logo { display: none; }
+    body.light .footer-logo img.light-logo { display: block; }
+    body:not(.light) .footer-logo img.light-logo { display: none; }
+    body:not(.light) .footer-logo img.dark-logo { display: block; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2rem;
+      background: rgba(5,10,24,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo img { height: 200px; width: auto; }
+    .nav-links { display: flex; gap: 2rem; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color .2s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta { background: var(--grad); color: #fff; border: none; padding: 0.55rem 1.4rem; border-radius: 50px; font-weight: 600; font-size: 0.9rem; cursor: pointer; text-decoration: none; transition: opacity .2s; }
+    .nav-cta:hover { opacity: 0.85; }
+    .lang-toggle { display: flex; gap: 0.5rem; align-items: center; }
+    .lang-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 0.3rem 0.7rem; border-radius: 20px; font-size: 0.8rem; cursor: pointer; transition: all .2s; }
+    .lang-btn.active, .lang-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .theme-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); width: 2rem; height: 2rem; border-radius: 50%; font-size: 1rem; cursor: pointer; transition: all .2s; display: flex; align-items: center; justify-content: center; }
+    .theme-btn:hover { border-color: var(--accent); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 8rem 2rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+      width: 800px; height: 800px;
+      background: radial-gradient(circle, rgba(79,142,247,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(79,142,247,0.1); border: 1px solid rgba(79,142,247,0.3);
+      color: var(--accent); padding: 0.4rem 1rem; border-radius: 50px;
+      font-size: 0.8rem; font-weight: 600; margin-bottom: 1.5rem;
+      letter-spacing: 0.05em; text-transform: uppercase;
+    }
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-weight: 900;
+      line-height: 1.1;
+      max-width: 900px;
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 span { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero p {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: var(--muted); max-width: 600px;
+      line-height: 1.7; margin-bottom: 2.5rem;
+    }
+    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+    .btn-primary { background: var(--grad); color: #fff; padding: 0.85rem 2rem; border-radius: 50px; font-weight: 700; font-size: 1rem; text-decoration: none; transition: transform .2s, opacity .2s; }
+    .btn-primary:hover { transform: translateY(-2px); opacity: 0.9; }
+    .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); padding: 0.85rem 2rem; border-radius: 50px; font-weight: 600; font-size: 1rem; text-decoration: none; transition: border-color .2s; }
+    .btn-secondary:hover { border-color: var(--accent); }
+
+    /* ── STATS ── */
+    .stats {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem;
+      padding: 4rem 2rem;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg2);
+    }
+    .stat { text-align: center; }
+    .stat-num { font-size: 2.5rem; font-weight: 800; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .stat-label { color: var(--muted); font-size: 0.9rem; margin-top: 0.3rem; }
+
+    /* ── SECTIONS ── */
+    section { padding: 5rem 2rem; max-width: 1200px; margin: 0 auto; }
+    .section-badge { color: var(--accent); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem; }
+    .section-title { font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 800; margin-bottom: 1rem; }
+    .section-sub { color: var(--muted); font-size: 1.05rem; max-width: 600px; line-height: 1.7; margin-bottom: 3rem; }
+
+    /* ── SERVICES GRID ── */
+    .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+    .service-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2rem;
+      transition: border-color .3s, transform .3s;
+    }
+    .service-card:hover { border-color: rgba(79,142,247,0.4); transform: translateY(-4px); }
+    .service-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+    .service-card h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.75rem; }
+    .service-card p { color: var(--muted); font-size: 0.95rem; line-height: 1.6; }
+
+    /* ── HOW IT WORKS ── */
+    .how-bg { background: var(--bg2); }
+    .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2rem; }
+    .step { text-align: center; padding: 1.5rem; }
+    .step-num { width: 3rem; height: 3rem; border-radius: 50%; background: var(--grad); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem; margin: 0 auto 1rem; }
+    .step h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .step p { color: var(--muted); font-size: 0.9rem; line-height: 1.6; }
+
+    /* ── CARDS SECTION ── */
+    .cards-showcase {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .card-product {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 2.5rem 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: transform .3s;
+    }
+    .card-product:hover { transform: translateY(-4px); }
+    .card-product.featured { border-color: rgba(245,200,66,0.4); }
+    .card-product.featured::before {
+      content: 'POPULAR';
+      position: absolute; top: 1rem; right: 1rem;
+      background: var(--gold); color: #000;
+      font-size: 0.7rem; font-weight: 800;
+      padding: 0.25rem 0.6rem; border-radius: 20px;
+      letter-spacing: 0.05em;
+    }
+    .card-product h3 { font-size: 1.4rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .card-price { font-size: 2rem; font-weight: 900; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1.5rem; }
+    .card-features { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+    .card-features li { color: var(--muted); font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem; }
+    .card-features li::before { content: '✓'; color: var(--accent); font-weight: 700; }
+
+    /* ── TESTIMONIALS ── */
+    .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+    .testimonial {
+      background: var(--card); border: 1px solid var(--border); border-radius: 20px;
+      padding: 2rem;
+    }
+    .stars { color: var(--gold); font-size: 1.1rem; margin-bottom: 1rem; }
+    .testimonial p { color: var(--muted); font-size: 0.95rem; line-height: 1.7; margin-bottom: 1.5rem; font-style: italic; }
+    .testimonial-author { font-weight: 600; font-size: 0.9rem; }
+    .testimonial-role { color: var(--muted); font-size: 0.8rem; }
+
+    /* ── CTA BANNER ── */
+    .cta-banner {
+      background: linear-gradient(135deg, var(--bg3), rgba(123,92,240,0.2));
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      padding: 4rem 3rem;
+      text-align: center;
+      margin: 2rem auto;
+      max-width: 1200px;
+    }
+    .cta-banner h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: 1rem; }
+    .cta-banner p { color: var(--muted); font-size: 1.05rem; max-width: 500px; margin: 0 auto 2rem; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      padding: 3rem 2rem 2rem;
+      text-align: center;
+    }
+    .footer-logo img { height: 220px; width: auto; margin-bottom: 1rem; }
+    .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5rem; margin-bottom: 2rem; }
+    .footer-links a { color: var(--muted); text-decoration: none; font-size: 0.9rem; transition: color .2s; }
+    .footer-links a:hover { color: var(--text); }
+    .footer-copy { color: var(--muted); font-size: 0.8rem; }
+
+    /* ── LANG HIDDEN ── */
+    .es { display: none; }
+    body.lang-es .en { display: none; }
+    body.lang-es .es { display: revert; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      nav { padding: 1rem; }
+      #bancusTutorialGrid { grid-template-columns: 1fr !important; }
+    }
+  </style>
+</head>
+<body class="lang-en">
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+  <img src="logo_dark.png" class="dark-logo" alt="Hash Digital Payment Solutions" />
+  <img src="logo_light.png" class="light-logo" alt="Hash Digital Payment Solutions" />
+</div>
+  <div class="nav-links">
+    <a href="#services" class="en">Services</a>
+    <a href="#services" class="es">Servicios</a>
+    <a href="#cards" class="en">Cards</a>
+    <a href="#cards" class="es">Tarjetas</a>
+    <a href="#how" class="en">How it works</a>
+    <a href="#how" class="es">Cómo funciona</a>
+    <a href="#contact" class="en">Contact</a>
+    <a href="#contact" class="es">Contacto</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:1rem;">
+    <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" title="Toggle dark/light mode">🌙</button>
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('es')">ES</button>
+    </div>
+    <a href="dashboard.html" style="color:var(--muted);text-decoration:none;font-size:0.9rem;font-weight:500;padding:0.55rem 1rem;border:1px solid var(--border);border-radius:50px;transition:all .2s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'" class="en">Sign In</a>
+    <a href="dashboard.html" style="color:var(--muted);text-decoration:none;font-size:0.9rem;font-weight:500;padding:0.55rem 1rem;border:1px solid var(--border);border-radius:50px;transition:all .2s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'" class="es">Iniciar Sesión</a>
+    <a href="exchange.html" class="nav-cta en">Get Started</a>
+    <a href="exchange.html" class="nav-cta es">Comenzar</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge en">⚡ Next-Gen Financial Solutions</div>
+  <div class="hero-badge es">⚡ Soluciones Financieras de Nueva Generación</div>
+
+  <h1 class="en">Redefining <span>Digital Payments</span> for Everyone</h1>
+  <h1 class="es">Redefiniendo los <span>Pagos Digitales</span> para Todos</h1>
+
+  <p class="en">Crypto exchange, US bank accounts, crypto cards, digital remittances and more — all in one ecosystem designed for the future of finance.</p>
+  <p class="es">Exchange cripto, cuentas bancarias en EE.UU., tarjetas cripto, remesas digitales y más — todo en un ecosistema diseñado para el futuro de las finanzas.</p>
+
+  <div class="hero-btns">
+    <a href="exchange.html" class="btn-primary en">Open Account →</a>
+    <a href="exchange.html" class="btn-primary es">Abrir Cuenta →</a>
+    <a href="#services" class="btn-secondary en">Learn More</a>
+    <a href="#services" class="btn-secondary es">Saber Más</a>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat"><div class="stat-num">50+</div><div class="stat-label en">Countries Supported</div><div class="stat-label es">Países</div></div>
+  <div class="stat"><div class="stat-num">$500M+</div><div class="stat-label en">Transactions Processed</div><div class="stat-label es">En Transacciones</div></div>
+  <div class="stat"><div class="stat-num">10K+</div><div class="stat-label en">Active Users</div><div class="stat-label es">Usuarios Activos</div></div>
+  <div class="stat"><div class="stat-num">99.9%</div><div class="stat-label en">Uptime</div><div class="stat-label es">Disponibilidad</div></div>
+</div>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="section-badge en">Our Services</div>
+  <div class="section-badge es">Nuestros Servicios</div>
+  <h2 class="section-title en">Everything you need in one place</h2>
+  <h2 class="section-title es">Todo lo que necesitas en un solo lugar</h2>
+  <p class="section-sub en">From crypto exchange to US banking — we bridge the gap between traditional and decentralized finance.</p>
+  <p class="section-sub es">Desde exchange cripto hasta banca en EE.UU. — conectamos las finanzas tradicionales con las descentralizadas.</p>
+
+  <div class="services-grid">
+    <div class="service-card" onclick="window.location.href='exchange.html'" style="cursor:pointer;">
+      <div class="service-icon">💱</div>
+      <h3 class="en">Crypto ↔ Fiat Exchange</h3>
+      <h3 class="es">Exchange Cripto ↔ Fiat</h3>
+      <p class="en">Convert crypto to USD and transfer directly to any US bank account. Fast, secure and competitive rates.</p>
+      <p class="es">Convierte cripto a USD y transfiere directamente a cualquier cuenta bancaria en EE.UU. Rápido, seguro y con tarifas competitivas.</p>
+      <div style="margin-top:1rem;color:#4F8EF7;font-size:0.85rem;font-weight:600;">Open Account →</div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🏦</div>
+      <h3 class="en">US Bank Account Opening</h3>
+      <h3 class="es">Apertura de Cuenta Bancaria en EE.UU.</h3>
+      <p class="en">Open a real US bank account remotely. No need to travel. Access the US financial system from anywhere in the world.</p>
+      <p class="es">Abre una cuenta bancaria real en EE.UU. de forma remota. Sin necesidad de viajar. Accede al sistema financiero estadounidense desde cualquier parte del mundo.</p>
+    </div>
+    <a href="#cards" style="text-decoration:none;color:inherit;display:block;" onclick="event.preventDefault();document.getElementById('cards').scrollIntoView({behavior:'smooth'})">
+    <div class="service-card" style="cursor:pointer;">
+      <div class="service-icon">💳</div>
+      <h3 class="en">Crypto Cards</h3>
+      <h3 class="es">Tarjetas Cripto</h3>
+      <p class="en">Visa and Mastercard crypto cards. Spend your digital assets anywhere in the world, online and in-store.</p>
+      <p class="es">Tarjetas cripto Visa y Mastercard. Usa tus activos digitales en cualquier parte del mundo, en línea y en tiendas físicas.</p>
+      <div style="margin-top:1rem;color:#F5C842;font-size:0.85rem;font-weight:600;"><span class="en">Choose your card →</span><span class="es">Elige tu tarjeta →</span></div>
+    </div>
+    </a>
+    <div class="service-card">
+      <div class="service-icon">🌍</div>
+      <h3 class="en">Digital Remittances</h3>
+      <h3 class="es">Remesas Digitales</h3>
+      <p class="en">Send money across borders instantly and without excessive fees. The future of international transfers.</p>
+      <p class="es">Envía dinero a través de fronteras al instante y sin comisiones excesivas. El futuro de las transferencias internacionales.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">⚡</div>
+      <h3 class="en">Crypto Bill Payments</h3>
+      <h3 class="es">Pago de Servicios en Cripto</h3>
+      <p class="en">Pay utilities, subscriptions and services with your crypto. Seamless integration with everyday life.</p>
+      <p class="es">Paga servicios, suscripciones y facturas con tus criptomonedas. Integración perfecta con la vida cotidiana.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🔐</div>
+      <h3 class="en">Secure & Compliant</h3>
+      <h3 class="es">Seguro y Regulado</h3>
+      <p class="en">Bank-grade security with full KYC/AML compliance. Your assets and identity protected at all times.</p>
+      <p class="es">Seguridad bancaria con cumplimiento total de KYC/AML. Tus activos e identidad protegidos en todo momento.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<div class="how-bg" id="how">
+  <section>
+    <div class="section-badge en">How It Works</div>
+    <div class="section-badge es">Cómo Funciona</div>
+    <h2 class="section-title en">Get started in minutes</h2>
+    <h2 class="section-title es">Empieza en minutos</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3 class="en">Create Account</h3>
+        <h3 class="es">Crea tu Cuenta</h3>
+        <p class="en">Sign up online in less than 5 minutes. No branches, no appointments.</p>
+        <p class="es">Regístrate en línea en menos de 5 minutos. Sin sucursales, sin citas.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3 class="en">Verify Identity</h3>
+        <h3 class="es">Verifica tu Identidad</h3>
+        <p class="en">Complete your KYC verification quickly and securely from your phone.</p>
+        <p class="es">Completa tu verificación KYC de forma rápida y segura desde tu teléfono.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3 class="en">Fund Your Account</h3>
+        <h3 class="es">Fondea tu Cuenta</h3>
+        <p class="en">Deposit crypto or fiat. Multiple funding options available.</p>
+        <p class="es">Deposita cripto o fiat. Múltiples opciones de fondeo disponibles.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <h3 class="en">Start Transacting</h3>
+        <h3 class="es">Comienza a Operar</h3>
+        <p class="en">Exchange, send, pay and manage your finances globally.</p>
+        <p class="es">Cambia, envía, paga y gestiona tus finanzas a nivel global.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- CARDS -->
+<!-- PROMO BANNER -->
+<div style="max-width:1200px;margin:0 auto;padding:0 2rem 2rem;">
+  <div style="background:linear-gradient(135deg,rgba(245,200,66,0.12),rgba(79,142,247,0.12));border:1.5px solid rgba(245,200,66,0.35);border-radius:28px;padding:2rem;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:2rem;flex-wrap:wrap;">
+
+    <!-- Promo image -->
+    <a href="https://go.bancus.io/?ref=4EQXDGSF" target="_blank" style="flex-shrink:0;">
+      <img src="bancus-promo.jpg" alt="Promo Bancus GO Free" style="width:180px;border-radius:16px;display:block;box-shadow:0 8px 32px rgba(0,0,0,0.4);" />
+    </a>
+
+    <!-- Text -->
+    <div>
+      <div style="font-size:0.75rem;font-weight:800;color:#F5C842;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;">🚨 <span class="en">Active Promo — April 2026</span><span class="es">Promo Activa — Abril 2026</span></div>
+      <div style="font-size:1.3rem;font-weight:900;color:#E8EDF5;margin-bottom:0.5rem;line-height:1.2;">
+        <span class="en">Get Bancus ONE or ONE ELITE</span>
+        <span class="es">Adquiere Bancus ONE o ONE ELITE</span>
+      </div>
+      <div style="font-size:1.1rem;font-weight:700;color:#F5C842;margin-bottom:1rem;">
+        <span class="en">→ Receive Bancus GO totally FREE 🎁</span>
+        <span class="es">→ Recibe Bancus GO totalmente GRATIS 🎁</span>
+      </div>
+      <div style="display:flex;gap:1.2rem;flex-wrap:wrap;">
+        <span style="color:#8A97B0;font-size:0.9rem;">✅ <span class="en">More value</span><span class="es">Más valor</span></span>
+        <span style="color:#8A97B0;font-size:0.9rem;">✅ <span class="en">More tools</span><span class="es">Más herramientas</span></span>
+        <span style="color:#8A97B0;font-size:0.9rem;">✅ <span class="en">More benefits</span><span class="es">Más beneficios</span></span>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div style="text-align:center;">
+      <a href="https://go.bancus.io/?ref=4EQXDGSF" target="_blank" style="display:block;background:linear-gradient(135deg,#F5C842,#F97316);color:#000;padding:0.85rem 1.8rem;border-radius:50px;font-weight:900;font-size:1rem;text-decoration:none;white-space:nowrap;box-shadow:0 4px 20px rgba(245,200,66,0.4);">
+        <span class="en">Activate Now →</span><span class="es">Activarme Ahora →</span>
+      </a>
+      <div style="font-size:0.75rem;color:#8A97B0;margin-top:0.6rem;">
+        <span class="en">Limited time offer</span><span class="es">Oferta por tiempo limitado</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<section id="cards">
+  <div class="section-badge en">Our Cards</div>
+  <div class="section-badge es">Nuestras Tarjetas</div>
+  <h2 class="section-title en">Choose your card</h2>
+  <h2 class="section-title es">Elige tu tarjeta</h2>
+  <p class="section-sub en">Pick the card that best fits your lifestyle — or get both! All accepted worldwide with Visa and Mastercard.</p>
+  <p class="section-sub es">Elige la tarjeta que mejor se adapte a ti — ¡o consigue ambas! Aceptadas en todo el mundo con Visa y Mastercard.</p>
+
+  <!-- REDOTPAY BANNER (shown only when RedotPay tab active) -->
+  <div id="redotpay-banner" style="display:none;margin-bottom:2rem;display:none;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;max-width:700px;">
+      <a href="https://url.hk/i/en/8v53f" target="_blank">
+        <img src="redotpay-banner.jpg" alt="RedotPay — The Best Crypto Card" style="width:100%;display:block;border-radius:20px;" />
+      </a>
+      <a href="https://url.hk/i/en/8v53f" target="_blank">
+        <img src="redotpay-promo2.jpg" alt="Lo mejor tarjeta crypto — RedotPay" style="width:100%;display:block;border-radius:20px;" />
+      </a>
+    </div>
+  </div>
+
+  <!-- PROVIDER TABS -->
+  <div style="display:flex;gap:0.75rem;margin-bottom:2rem;flex-wrap:wrap;">
+    <button onclick="showCards('all')" id="tab-all" style="padding:0.5rem 1.2rem;border-radius:50px;border:1.5px solid #4F8EF7;background:linear-gradient(135deg,#4F8EF7,#7B5CF0);color:#fff;font-weight:700;font-size:0.9rem;cursor:pointer;">
+      <span class="en">All Cards</span><span class="es">Todas</span>
+    </button>
+    <button onclick="showCards('bancus')" id="tab-bancus" style="padding:0.5rem 1.2rem;border-radius:50px;border:1.5px solid rgba(255,255,255,0.15);background:transparent;color:#8A97B0;font-weight:600;font-size:0.9rem;cursor:pointer;">
+      💎 Bancus
+    </button>
+    <button onclick="showCards('redotpay')" id="tab-redotpay" style="padding:0.5rem 1.2rem;border-radius:50px;border:1.5px solid rgba(255,255,255,0.15);background:transparent;color:#8A97B0;font-weight:600;font-size:0.9rem;cursor:pointer;">
+      🔴 RedotPay
+    </button>
+  </div>
+
+  <!-- BANCUS COMPARISON IMAGE -->
+  <div class="bancus-card" style="grid-column:1/-1;margin-bottom:1rem;border-radius:20px;overflow:hidden;cursor:pointer;" onclick="window.open('https://go.bancus.io/?ref=4EQXDGSF','_blank')">
+    <img src="bancus-comparison.jpg" alt="Bancus ONE ELITE vs ONE vs GO — Comparativa" style="width:100%;display:block;border-radius:20px;" />
+  </div>
+
+  <div class="cards-showcase" id="bancus-cards-inner">
+
+    <!-- BANCUS GO -->
+    <div class="card-product bancus-card">
+      <div style="display:inline-block;background:linear-gradient(135deg,#4F8EF7,#7B5CF0);color:#fff;padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:700;margin-bottom:0.75rem;letter-spacing:0.04em;">💎 BANCUS</div>
+      <h3>Bancus GO</h3>
+      <div style="font-size:0.8rem;color:#8A97B0;margin-bottom:0.5rem;"><span class="en">Digital Tokenized</span><span class="es">Digital Tokenizada</span></div>
+      <div class="card-price">$25</div>
+      <ul class="card-features">
+        <li><span class="en">Digital tokenized card</span><span class="es">Tarjeta digital tokenizada</span></li>
+        <li><span class="en">Worldwide payments</span><span class="es">Pagos worldwide</span></li>
+        <li><span class="en">Online purchases ✅</span><span class="es">Compras online ✅</span></li>
+        <li><span class="en">In-store payments ✅</span><span class="es">Pagos presenciales ✅</span></li>
+        <li><span class="en">Daily load: $2,500</span><span class="es">Recarga diaria: $2,500</span></li>
+        <li><span class="en">Monthly load: $75,000</span><span class="es">Recarga mensual: $75,000</span></li>
+        <li>Apple Pay ✅ · Google Wallet ✅</li>
+        <li><span class="en">Security level: Very High</span><span class="es">Seguridad: Muy Alta</span></li>
+        <li><span class="en">Available immediately</span><span class="es">Disponibilidad inmediata</span></li>
+        <li style="color:#F5C842"><span class="en">🎁 FREE with ONE or ONE ELITE (April promo)</span><span class="es">🎁 GRATIS con ONE o ONE ELITE (promo abril)</span></li>
+      </ul>
+      <a href="https://go.bancus.io/?ref=4EQXDGSF" target="_blank" style="display:block;margin-top:1.5rem;text-align:center;background:linear-gradient(135deg,#4F8EF7,#7B5CF0);color:#fff;padding:0.7rem;border-radius:50px;font-weight:700;font-size:0.9rem;text-decoration:none;">
+        <span class="en">Get Bancus GO →</span><span class="es">Obtener Bancus GO →</span>
+      </a>
+    </div>
+
+    <!-- BANCUS ONE -->
+    <div class="card-product bancus-card">
+      <div style="display:inline-block;background:linear-gradient(135deg,#4F8EF7,#7B5CF0);color:#fff;padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:700;margin-bottom:0.75rem;letter-spacing:0.04em;">💎 BANCUS</div>
+      <h3>Bancus ONE</h3>
+      <div style="font-size:0.8rem;color:#8A97B0;margin-bottom:0.5rem;"><span class="en">Physical (Plastic)</span><span class="es">Física (Plástica)</span></div>
+      <div class="card-price">$35</div>
+      <ul class="card-features">
+        <li><span class="en">Physical plastic card</span><span class="es">Tarjeta física plástica</span></li>
+        <li><span class="en">Worldwide payments</span><span class="es">Pagos worldwide</span></li>
+        <li><span class="en">Contactless via wallet (NFC) ✅</span><span class="es">Contactless via wallet (NFC) ✅</span></li>
+        <li><span class="en">Contactless with card ✅</span><span class="es">Contactless con tarjeta ✅</span></li>
+        <li><span class="en">ATM withdrawals: $500/day</span><span class="es">Retiro cajeros: $500/día</span></li>
+        <li><span class="en">Daily load: $2,500</span><span class="es">Recarga diaria: $2,500</span></li>
+        <li><span class="en">Monthly load: $75,000</span><span class="es">Recarga mensual: $75,000</span></li>
+        <li><span class="en">Security level: High</span><span class="es">Seguridad: Alta</span></li>
+        <li><span class="en">Ideal: Daily use</span><span class="es">Ideal: Uso diario</span></li>
+        <li style="color:#8A97B0;">🚚 <span class="en">Shipping worldwide: +$15 | 15-30 days</span><span class="es">Envío mundial: +$15 | 15-30 días</span></li>
+      </ul>
+      <a href="https://go.bancus.io/?ref=4EQXDGSF" target="_blank" style="display:block;margin-top:1.5rem;text-align:center;background:linear-gradient(135deg,#4F8EF7,#7B5CF0);color:#fff;padding:0.7rem;border-radius:50px;font-weight:700;font-size:0.9rem;text-decoration:none;">
+        <span class="en">Get Bancus ONE →</span><span class="es">Obtener Bancus ONE →</span>
+      </a>
+    </div>
+
+    <!-- BANCUS ONE ELITE -->
+    <div class="card-product featured bancus-card">
+      <div style="display:inline-block;background:linear-gradient(135deg,#4F8EF7,#7B5CF0);color:#fff;padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:700;margin-bottom:0.75rem;letter-spacing:0.04em;">💎 BANCUS</div>
+      <h3>Bancus ONE ELITE</h3>
+      <div style="font-size:0.8rem;color:#8A97B0;margin-bottom:0.5rem;"><span class="en">Physical (Metal)</span><span class="es">Física (Metal)</span></div>
+      <div class="card-price">$85</div>
+      <ul class="card-features">
+        <li><span class="en">Physical metal card</span><span class="es">Tarjeta física metálica</span></li>
+        <li><span class="en">Worldwide payments</span><span class="es">Pagos worldwide</span></li>
+        <li><span class="en">Contactless via wallet (NFC) ✅</span><span class="es">Contactless via wallet (NFC) ✅</span></li>
+        <li><span class="en">ATM withdrawals: $500/day</span><span class="es">Retiro cajeros: $500/día</span></li>
+        <li><span class="en">Daily load: up to $10,000</span><span class="es">Recarga diaria: hasta $10,000</span></li>
+        <li><span class="en">Monthly load: up to $300,000</span><span class="es">Recarga mensual: hasta $300,000</span></li>
+        <li><span class="en">Security level: High</span><span class="es">Seguridad: Alta</span></li>
+        <li><span class="en">Ideal: High volume / Premium</span><span class="es">Ideal: Alto volumen / Premium</span></li>
+        <li style="color:#F5C842"><span class="en">🎁 Includes Bancus GO FREE (April promo)</span><span class="es">🎁 Incluye Bancus GO GRATIS (promo abril)</span></li>
+        <li style="color:#8A97B0;">🚚 <span class="en">Shipping worldwide: +$15 | 15-30 days</span><span class="es">Envío mundial: +$15 | 15-30 días</span></li>
+      </ul>
+      <a href="https://go.bancus.io/?ref=4EQXDGSF" target="_blank" style="display:block;margin-top:1.5rem;text-align:center;background:linear-gradient(135deg,#4F8EF7,#7B5CF0);color:#fff;padding:0.7rem;border-radius:50px;font-weight:700;font-size:0.9rem;text-decoration:none;">
+        <span class="en">Get Bancus ONE ELITE →</span><span class="es">Obtener ONE ELITE →</span>
+      </a>
+    </div>
+
+    <!-- REDOTPAY DIGITAL -->
+    <div class="card-product redotpay-card" style="border-color:rgba(239,68,68,0.3);">
+      <!-- Official RedotPay image -->
+      <a href="https://url.hk/i/en/8v53f" target="_blank">
+        <img src="redotpay-card.jpg" alt="Tarjeta RedotPay Crypto Visa" style="width:100%;border-radius:12px;display:block;margin-bottom:1rem;" />
+      </a>
+      <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.75rem;">
+        <div style="display:inline-block;background:linear-gradient(135deg,#EF4444,#B91C1C);color:#fff;padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:700;letter-spacing:0.04em;">🔴 REDOTPAY</div>
+        <div style="display:inline-block;background:#22C55E;color:#fff;padding:2px 8px;border-radius:20px;font-size:0.68rem;font-weight:700;">
+          <span class="en">100% Decentralized</span><span class="es">100% Descentralizada</span>
+        </div>
+      </div>
+      <h3 class="en">Digital Card <span style="font-size:0.75rem;color:#8A97B0;font-weight:500;">(NFC)</span></h3>
+      <h3 class="es">Tarjeta Digital <span style="font-size:0.75rem;color:#8A97B0;font-weight:500;">(NFC)</span></h3>
+      <div class="card-price" style="background:linear-gradient(135deg,#EF4444,#F97316);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">$10</div>
+      <ul class="card-features">
+        <li class="en">First 100% decentralized Visa card</li>
+        <li class="es">Primera tarjeta Visa 100% descentralizada</li>
+        <li class="en">ATM withdrawals worldwide 🌍</li>
+        <li class="es">Retiros en cajeros internacionales 🌍</li>
+        <li class="en">In-store & online payments anywhere</li>
+        <li class="es">Pagos en tiendas físicas y online</li>
+        <li class="en">BTC · ETH · USDT · BNB</li>
+        <li class="es">BTC · ETH · USDT · BNB</li>
+        <li class="en">NFC contactless payments</li>
+        <li class="es">Pagos por proximidad NFC</li>
+        <li class="en">No more fees to cash out your crypto</li>
+        <li class="es">No más comisiones para monetizar cripto</li>
+        <li class="en">Deposit directly to your RedotPay wallet</li>
+        <li class="es">Deposita directo a tu cartera RedotPay</li>
+        <li class="en">Google Pay & Apple Pay compatible</li>
+        <li class="es">Compatible con Google Pay y Apple Pay</li>
+        <li class="en">Register now and get $5 USD free!</li>
+        <li class="es">¡Regístrate y recibe $5 USD gratis!</li>
+      </ul>
+      <div style="display:flex;gap:0.5rem;margin-top:1rem;opacity:0.7;">
+        <span style="background:rgba(255,255,255,0.1);padding:3px 8px;border-radius:6px;font-size:0.75rem;">G Pay</span>
+        <span style="background:rgba(255,255,255,0.1);padding:3px 8px;border-radius:6px;font-size:0.75rem;"> Pay</span>
+      </div>
+      <a href="https://url.hk/i/en/8v53f" target="_blank" style="display:block;margin-top:1rem;text-align:center;background:linear-gradient(135deg,#EF4444,#B91C1C);color:#fff;padding:0.7rem;border-radius:50px;font-weight:700;font-size:0.9rem;text-decoration:none;">
+        <span class="en">Register & Get $5 FREE →</span><span class="es">Registrar y obtener $5 GRATIS →</span>
+      </a>
+    </div>
+
+    <!-- REDOTPAY PHYSICAL -->
+    <div class="card-product redotpay-card" style="border-color:rgba(239,68,68,0.3);">
+      <a href="https://url.hk/i/en/8v53f" target="_blank">
+        <img src="redotpay-promo2.jpg" alt="Lo mejor tarjeta crypto" style="width:100%;border-radius:12px;display:block;margin-bottom:1rem;" />
+      </a>
+      <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.75rem;">
+        <div style="display:inline-block;background:linear-gradient(135deg,#EF4444,#B91C1C);color:#fff;padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:700;letter-spacing:0.04em;">🔴 REDOTPAY</div>
+        <div style="display:inline-block;background:#F5C842;color:#000;padding:2px 8px;border-radius:20px;font-size:0.68rem;font-weight:700;">
+          <span class="en">Physical Card</span><span class="es">Tarjeta Física</span>
+        </div>
+      </div>
+      <h3 class="en">Physical Card <span style="font-size:0.75rem;color:#8A97B0;font-weight:500;">(3 years)</span></h3>
+      <h3 class="es">Tarjeta Física <span style="font-size:0.75rem;color:#8A97B0;font-weight:500;">(3 años)</span></h3>
+      <div class="card-price" style="background:linear-gradient(135deg,#EF4444,#F97316);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">$100</div>
+      <ul class="card-features">
+        <li class="en">Everything in Digital +</li>
+        <li class="es">Todo lo de la Digital +</li>
+        <li class="en">Physical Visa card — valid 3 years</li>
+        <li class="es">Tarjeta Visa física — válida 3 años</li>
+        <li class="en">ATM withdrawals worldwide 🌍</li>
+        <li class="es">Retiros en cajeros internacionales 🌍</li>
+        <li class="en">Chip + NFC contactless</li>
+        <li class="es">Chip + NFC sin contacto</li>
+        <li class="en">BTC · ETH · USDT · BNB</li>
+        <li class="es">BTC · ETH · USDT · BNB</li>
+        <li class="en">Use your crypto as everyday cash</li>
+        <li class="es">Usa tus cripto como efectivo diario</li>
+      </ul>
+      <a href="https://url.hk/i/en/8v53f" target="_blank" style="display:block;margin-top:1.5rem;text-align:center;background:linear-gradient(135deg,#EF4444,#B91C1C);color:#fff;padding:0.7rem;border-radius:50px;font-weight:700;font-size:0.9rem;text-decoration:none;">
+        <span class="en">Register & Activate →</span><span class="es">Registrar y Activar →</span>
+      </a>
+    </div>
+
+  </div>
+
+  <!-- TUTORIAL VIDEOS — only shown when Bancus tab is active -->
+  <div class="bancus-card" style="margin-top:2.5rem;">
+    <div style="margin-bottom:1.25rem;">
+      <div class="section-badge en">Tutorial Videos</div>
+      <div class="section-badge es">Videos Tutoriales</div>
+      <h3 style="font-size:1.4rem;font-weight:800;" class="en">📹 Tutorial Videos</h3>
+      <h3 style="font-size:1.4rem;font-weight:800;" class="es">📹 Videos Tutoriales</h3>
+      <p style="color:var(--muted);font-size:0.9rem;margin-top:0.4rem;" class="en">Step-by-step guides to get you started with Bancus</p>
+      <p style="color:var(--muted);font-size:0.9rem;margin-top:0.4rem;" class="es">Guías paso a paso para comenzar con Bancus</p>
+    </div>
+    <div id="bancusTutorialGrid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;max-width:1200px;">
+
+      <!-- VIDEO 1 -->
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.25rem;transition:transform .3s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform=''">
+        <h4 style="font-size:0.95rem;font-weight:700;margin-bottom:0.75rem;">▶️ <span class="en">How to register from your invitation link</span><span class="es">Cómo registrarte desde el enlace de invitación</span></h4>
+        <iframe src="https://www.youtube.com/embed/BZYsrG0s_ho" width="100%" height="220" style="border-radius:12px;border:none;display:block;" allowfullscreen loading="lazy"></iframe>
+      </div>
+
+      <!-- VIDEO 2 -->
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.25rem;transition:transform .3s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform=''">
+        <h4 style="font-size:0.95rem;font-weight:700;margin-bottom:0.75rem;">▶️ <span class="en">How to create your account</span><span class="es">Cómo crear tu cuenta</span></h4>
+        <iframe src="https://www.youtube.com/embed/gqnojnC9O_s" width="100%" height="220" style="border-radius:12px;border:none;display:block;" allowfullscreen loading="lazy"></iframe>
+      </div>
+
+      <!-- VIDEO 3 -->
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.25rem;transition:transform .3s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform=''">
+        <h4 style="font-size:0.95rem;font-weight:700;margin-bottom:0.75rem;">▶️ <span class="en">How to buy your card</span><span class="es">Cómo comprar la tarjeta de tu elección</span></h4>
+        <iframe src="https://www.youtube.com/embed/qSwYUEgoXoM" width="100%" height="220" style="border-radius:12px;border:none;display:block;" allowfullscreen loading="lazy"></iframe>
+      </div>
+
+      <!-- VIDEO 4 -->
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.25rem;transition:transform .3s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform=''">
+        <h4 style="font-size:0.95rem;font-weight:700;margin-bottom:0.75rem;">▶️ <span class="en">Share your link and earn</span><span class="es">Comparte el link y gana</span></h4>
+        <iframe src="https://www.youtube.com/embed/R17nqu6lSdA" width="100%" height="220" style="border-radius:12px;border:none;display:block;" allowfullscreen loading="lazy"></iframe>
+      </div>
+
+      <!-- VIDEO 5 — GO Tokenizada (full width) -->
+      <div style="background:linear-gradient(135deg,rgba(79,142,247,0.1),rgba(123,92,240,0.1));border:1.5px solid rgba(79,142,247,0.3);border-radius:20px;padding:1.25rem;transition:transform .3s;grid-column:1/-1;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform=''">
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;flex-wrap:wrap;">
+          <h4 style="font-size:1rem;font-weight:700;">💳✨ <span class="en">Activate your Bancus GO Tokenized Card</span><span class="es">Activa tu Tarjeta GO Tokenizada</span></h4>
+          <div style="display:flex;gap:0.5rem;">
+            <span style="background:rgba(255,255,255,0.1);padding:3px 8px;border-radius:6px;font-size:0.75rem;">G Pay</span>
+            <span style="background:rgba(255,255,255,0.1);padding:3px 8px;border-radius:6px;font-size:0.75rem;"> Pay</span>
+          </div>
+        </div>
+        <iframe src="https://www.youtube.com/embed/68kK-Uzhcxc" width="100%" height="280" style="border-radius:12px;border:none;display:block;" allowfullscreen loading="lazy"></iframe>
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+<script>
+function showCards(type) {
+  const bancus = document.querySelectorAll('.bancus-card');
+  const redot = document.querySelectorAll('.redotpay-card');
+  const banner = document.getElementById('redotpay-banner');
+  const tabs = ['all','bancus','redotpay'];
+  tabs.forEach(t => {
+    const btn = document.getElementById('tab-'+t);
+    if(btn) { btn.style.background='transparent'; btn.style.color='#8A97B0'; btn.style.borderColor='rgba(255,255,255,0.15)'; }
+  });
+  const active = document.getElementById('tab-'+type);
+  if(active) { active.style.background='linear-gradient(135deg,#4F8EF7,#7B5CF0)'; active.style.color='#fff'; active.style.borderColor='#4F8EF7'; }
+  bancus.forEach(c => c.style.display = (type==='all'||type==='bancus') ? '' : 'none');
+  redot.forEach(c => c.style.display = (type==='all'||type==='redotpay') ? '' : 'none');
+  if(banner) banner.style.display = (type==='redotpay') ? 'block' : 'none';
+}
+</script>
+
+<!-- TESTIMONIALS -->
+<div class="how-bg">
+  <section>
+    <div class="section-badge en">Testimonials</div>
+    <div class="section-badge es">Testimonios</div>
+    <h2 class="section-title en">What our clients say</h2>
+    <h2 class="section-title es">Lo que dicen nuestros clientes</h2>
+    <div class="testimonials-grid">
+      <div class="testimonial">
+        <div class="stars">★★★★★</div>
+        <p class="en">"Finally a platform that lets me move money between crypto and my US bank account without hassle. The process was incredibly simple."</p>
+        <p class="es">"Por fin una plataforma que me permite mover dinero entre cripto y mi cuenta bancaria en EE.UU. sin complicaciones. El proceso fue increíblemente sencillo."</p>
+        <div class="testimonial-author">Carlos M.</div>
+        <div class="testimonial-role en">Entrepreneur, Miami</div>
+        <div class="testimonial-role es">Empresario, Miami</div>
+      </div>
+      <div class="testimonial">
+        <div class="stars">★★★★★</div>
+        <p class="en">"Sending remittances has never been this easy. My family receives the money in minutes at a fraction of traditional fees."</p>
+        <p class="es">"Nunca había sido tan fácil enviar remesas. Mi familia recibe el dinero en minutos y con una fracción de las comisiones tradicionales."</p>
+        <div class="testimonial-author">María R.</div>
+        <div class="testimonial-role en">Professional, New York</div>
+        <div class="testimonial-role es">Profesional, Nueva York</div>
+      </div>
+      <div class="testimonial">
+        <div class="stars">★★★★★</div>
+        <p class="en">"The crypto card works everywhere. I use it for my daily expenses and it converts automatically. No more worrying about exchange rates."</p>
+        <p class="es">"La tarjeta cripto funciona en todos lados. La uso para mis gastos diarios y convierte automáticamente. No más preocupaciones por el tipo de cambio."</p>
+        <div class="testimonial-author">Jorge P.</div>
+        <div class="testimonial-role en">Investor, Los Angeles</div>
+        <div class="testimonial-role es">Inversionista, Los Ángeles</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- CTA -->
+<div class="cta-banner" id="contact">
+  <h2 class="en">Ready to join the <span style="background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">financial future?</span></h2>
+  <h2 class="es">¿Listo para el <span style="background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">futuro financiero?</span></h2>
+  <p class="en">Open your account today and get access to all our services. Join thousands of users already using Hash Digital Payments.</p>
+  <p class="es">Abre tu cuenta hoy y accede a todos nuestros servicios. Únete a miles de usuarios que ya usan Hash Digital Payments.</p>
+  <a href="#services" onclick="event.preventDefault();document.getElementById('services').scrollIntoView({behavior:'smooth'})" class="btn-primary en">Get Started Now →</a>
+  <a href="#services" onclick="event.preventDefault();document.getElementById('services').scrollIntoView({behavior:'smooth'})" class="btn-primary es">Comenzar Ahora →</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">
+    <img src="logo_dark.png" class="dark-logo" alt="Hash Digital Payment Solutions" />
+    <img src="logo_light.png" class="light-logo" alt="Hash Digital Payment Solutions" />
+  </div>
+  <div class="footer-links">
+    <a href="#services" class="en">Services</a>
+    <a href="#services" class="es">Servicios</a>
+    <a href="#cards" class="en">Cards</a>
+    <a href="#cards" class="es">Tarjetas</a>
+    <a href="#how" class="en">How It Works</a>
+    <a href="#how" class="es">Cómo Funciona</a>
+    <a href="https://go.bancus.io/?ref=4EQXDGSF" target="_blank" class="en">Open Account</a>
+    <a href="https://go.bancus.io/?ref=4EQXDGSF" target="_blank" class="es">Abrir Cuenta</a>
+  </div>
+  <div class="footer-copy en">© 2026 Hash Digital Payments Solutions. All rights reserved. | <a href="admin.html" style="color:var(--muted);text-decoration:none;opacity:0.5;">Admin</a></div>
+  <div class="footer-copy es">© 2026 Hash Digital Payments Solutions. Todos los derechos reservados. | <a href="admin.html" style="color:var(--muted);text-decoration:none;opacity:0.5;">Admin</a></div>
+</footer>
+
+<script>
+  function toggleTheme() {
+    const isLight = document.body.classList.toggle('light');
+    document.getElementById('themeBtn').textContent = isLight ? '🌙' : '☀️';
+    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+  }
+
+  // Restore saved theme
+  if (localStorage.getItem('theme') === 'light') {
+    document.body.classList.add('light');
+    document.getElementById('themeBtn').textContent = '☀️';
+  }
+
+  function setLang(lang) {
+    document.body.classList.toggle('lang-es', lang === 'es');
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
+  }
+
+  // Smooth counter animation
+  const counters = document.querySelectorAll('.stat-num');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  });
+  counters.forEach(c => {
+    c.style.opacity = '0';
+    c.style.transform = 'translateY(20px)';
+    c.style.transition = 'opacity 0.6s, transform 0.6s';
+    observer.observe(c);
+  });
+</script>
+<!-- FLOATING CHAT BUTTON -->
+<style>
+  .chat-btn {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.75rem;
+  }
+  .chat-bubble {
+    background: #fff;
+    color: #0A1628;
+    padding: 0.75rem 1.2rem;
+    border-radius: 16px 16px 4px 16px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    max-width: 220px;
+    text-align: right;
+    animation: fadeIn 0.3s ease;
+    display: none;
+    line-height: 1.4;
+  }
+  .chat-bubble.show { display: block; }
+  .chat-main-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #25D366;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(37,211,102,0.5);
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    animation: pulse 2s infinite;
+  }
+  .chat-main-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 28px rgba(37,211,102,0.6);
+  }
+  .chat-main-btn svg { width: 32px; height: 32px; }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 4px 20px rgba(37,211,102,0.5); }
+    50% { box-shadow: 0 4px 32px rgba(37,211,102,0.8); }
+  }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+  .chat-close-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #EF4444;
+    color: #fff;
+    font-size: 0.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-weight: 700;
+  }
+</style>
+
+<div class="chat-btn" id="chatBtn">
+  <div class="chat-bubble" id="chatBubble">
+    <span class="en">👋 Hi! Need help or have questions? Chat with us!</span>
+    <span class="es">👋 ¡Hola! ¿Tienes preguntas? ¡Escríbenos!</span>
+    <div class="chat-close-btn" onclick="document.getElementById('chatBubble').classList.remove('show')">✕</div>
+  </div>
+  <a class="chat-main-btn" href="https://wa.me/50670267481?text=Hola!%20Vi%20la%20p%C3%A1gina%20de%20Hash%20Digital%20Payments%20y%20tengo%20una%20pregunta." target="_blank" title="Chat on WhatsApp">
+    <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+      <path d="M12.001 2C6.477 2 2 6.477 2 12c0 1.9.526 3.674 1.437 5.193L2 22l4.878-1.417A9.956 9.956 0 0012 22c5.523 0 10-4.477 10-10S17.524 2 12.001 2zm0 18.181a8.181 8.181 0 01-4.198-1.155l-.3-.178-3.11.906.87-3.205-.196-.311A8.181 8.181 0 1120.181 12a8.19 8.19 0 01-8.18 8.181z"/>
+    </svg>
+  </a>
+</div>
+
+<script>
+  // Show bubble after 3 seconds
+  setTimeout(function() {
+    const bubble = document.getElementById('chatBubble');
+    if(bubble) bubble.classList.add('show');
+  }, 3000);
+</script>
+
+</body>
+</html>
