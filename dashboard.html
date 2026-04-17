@@ -1150,6 +1150,7 @@ let buyPayMethod='bank';
 function initMockData(){
   if(localStorage.getItem('hd_admin_init')) return;
   const users=[
+    {id:'u0',name:'Demo User',email:'demo@hashdigital.com',refCode:'DEMO0000',referredBy:null,status:'active',joined:'2024-01-01',password:'demo1234'},
     {id:'u1',name:'Carlos Rodríguez',email:'carlos@example.com',refCode:randId(),referredBy:null,status:'active',joined:'2024-01-15',password:'pass123'},
     {id:'u2',name:'María González',email:'maria@example.com',refCode:randId(),referredBy:'u1',status:'active',joined:'2024-02-03',password:'pass123'},
     {id:'u3',name:'José Méndez',email:'jose@example.com',refCode:randId(),referredBy:'u1',status:'active',joined:'2024-02-20',password:'pass123'},
@@ -1182,6 +1183,8 @@ function initMockData(){
   }
   localStorage.setItem('hd_users',JSON.stringify(users));
   localStorage.setItem('hd_transactions',JSON.stringify(txs));
+  // Pre-approve KYC for demo user
+  localStorage.setItem('kycData_demo@hashdigital.com', JSON.stringify({kycStatus:'verified',fullName:'Demo User',completionPct:100}));
   localStorage.setItem('hd_admin_init','1');
 }
 
