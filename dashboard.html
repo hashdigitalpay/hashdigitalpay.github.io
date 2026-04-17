@@ -1192,8 +1192,12 @@ function initMockData(){
   }
   localStorage.setItem('hd_users',JSON.stringify(users));
   localStorage.setItem('hd_transactions',JSON.stringify(txs));
-  // Pre-approve KYC for demo user
-  localStorage.setItem('kycData_demo@hashdigital.com', JSON.stringify({kycStatus:'verified',fullName:'Demo User',completionPct:100}));
+  // Pre-approve KYC for all demo users
+  const kycApproved = {kycStatus:'verified',completionPct:100};
+  localStorage.setItem('kycData_demo@hashdigital.com', JSON.stringify({...kycApproved,fullName:'Demo User'}));
+  localStorage.setItem('kycData_carlos@example.com', JSON.stringify({...kycApproved,fullName:'Carlos Rodríguez'}));
+  localStorage.setItem('kycData_maria@example.com', JSON.stringify({...kycApproved,fullName:'María González'}));
+  localStorage.setItem('kycData_jose@example.com', JSON.stringify({...kycApproved,fullName:'José Méndez'}));
   localStorage.setItem('hd_admin_init','1');
 }
 
