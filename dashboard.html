@@ -776,121 +776,26 @@ tr:hover td{background:rgba(255,255,255,0.02)}
         </div>
       </div>
 
-      <!-- PART 1 — Personal Information -->
+      <!-- PART 1 — Basic Contact Info -->
       <div class="kyc-part-card">
         <div class="kyc-part-header">
           <span style="font-size:1.3rem">👤</span>
-          <h3><span class="en">Part 1 — Personal Information</span><span class="es">Parte 1 — Información Personal</span></h3>
+          <h3><span class="en">Part 1 — Basic Contact Info</span><span class="es">Parte 1 — Información de Contacto</span></h3>
         </div>
         <div class="kyc-part-body">
           <div class="kyc-form-grid">
-            <div class="kyc-field">
-              <label><span class="en">Full Legal Name</span><span class="es">Nombre Legal Completo</span></label>
+            <div class="kyc-field" style="grid-column:1/-1">
+              <label><span class="en">Full Name</span><span class="es">Nombre Completo</span></label>
               <input type="text" id="kyc_fullname" placeholder="John Doe / Juan Pérez" onchange="kycAutoSave()" oninput="kycCalcProgress()"/>
             </div>
             <div class="kyc-field">
-              <label><span class="en">Date of Birth</span><span class="es">Fecha de Nacimiento</span></label>
-              <input type="date" id="kyc_dob" onchange="kycAutoSave();kycCalcProgress()"/>
+              <label><span class="en">Email Address</span><span class="es">Correo Electrónico</span></label>
+              <input type="email" id="kyc_email" placeholder="you@example.com" readonly style="opacity:0.7;cursor:not-allowed;" onchange="kycAutoSave()"/>
             </div>
             <div class="kyc-field">
-              <label><span class="en">Nationality</span><span class="es">Nacionalidad</span></label>
-              <select id="kyc_nationality" onchange="kycAutoSave();kycCalcProgress()">
-                <option value=""><span class="en">Select...</span><span class="es">Selecciona...</span></option>
-                <option value="CR">Costa Rica</option>
-                <option value="US">USA</option>
-                <option value="MX">Mexico / México</option>
-                <option value="CO">Colombia</option>
-                <option value="BR">Brazil / Brasil</option>
-                <option value="ES">Spain / España</option>
-                <option value="AR">Argentina</option>
-                <option value="VE">Venezuela</option>
-                <option value="PE">Peru / Perú</option>
-                <option value="EC">Ecuador</option>
-                <option value="GT">Guatemala</option>
-                <option value="HN">Honduras</option>
-                <option value="SV">El Salvador</option>
-                <option value="PA">Panama / Panamá</option>
-                <option value="DO">Dominican Republic / R. Dominicana</option>
-                <option value="OT">Other / Otro</option>
-              </select>
+              <label><span class="en">Phone Number</span><span class="es">Número de Teléfono</span></label>
+              <input type="tel" id="kyc_phone" placeholder="+1 555 123 4567" onchange="kycAutoSave()" oninput="kycCalcProgress()"/>
             </div>
-            <div class="kyc-field">
-              <label><span class="en">Gender</span><span class="es">Género</span></label>
-              <select id="kyc_gender" onchange="kycAutoSave();kycCalcProgress()">
-                <option value=""><span class="en">Select...</span><span class="es">Selecciona...</span></option>
-                <option value="M"><span class="en">Male</span><span class="es">Masculino</span></option>
-                <option value="F"><span class="en">Female</span><span class="es">Femenino</span></option>
-                <option value="N"><span class="en">Prefer not to say</span><span class="es">Prefiero no decir</span></option>
-              </select>
-            </div>
-            <div class="kyc-field" style="grid-column:1/-1">
-              <label><span class="en">Place of Birth</span><span class="es">Lugar de Nacimiento</span></label>
-              <input type="text" id="kyc_pob" placeholder="City, Country" onchange="kycAutoSave()" oninput="kycCalcProgress()"/>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- PART 2 — Identity Document -->
-      <div class="kyc-part-card">
-        <div class="kyc-part-header">
-          <span style="font-size:1.3rem">🪪</span>
-          <h3><span class="en">Part 2 — Identity Document</span><span class="es">Parte 2 — Documento de Identidad</span></h3>
-        </div>
-        <div class="kyc-part-body">
-          <div class="kyc-form-grid">
-            <div class="kyc-field">
-              <label><span class="en">Document Type</span><span class="es">Tipo de Documento</span></label>
-              <select id="kyc_doctype" onchange="kycAutoSave();kycCalcProgress()">
-                <option value=""><span class="en">Select...</span><span class="es">Selecciona...</span></option>
-                <option value="passport"><span class="en">Passport</span><span class="es">Pasaporte</span></option>
-                <option value="national_id"><span class="en">National ID</span><span class="es">Cédula Nacional</span></option>
-                <option value="drivers"><span class="en">Driver's License</span><span class="es">Licencia de Conducir</span></option>
-                <option value="residence"><span class="en">Residence Permit</span><span class="es">Permiso de Residencia</span></option>
-              </select>
-            </div>
-            <div class="kyc-field">
-              <label><span class="en">Document Number</span><span class="es">Número de Documento</span></label>
-              <input type="text" id="kyc_docnum" placeholder="123456789" onchange="kycAutoSave()" oninput="kycCalcProgress()"/>
-            </div>
-            <div class="kyc-field">
-              <label><span class="en">Country of Issue</span><span class="es">País Emisor</span></label>
-              <select id="kyc_docissue" onchange="kycAutoSave();kycCalcProgress()">
-                <option value=""><span class="en">Select...</span><span class="es">Selecciona...</span></option>
-                <option value="CR">Costa Rica</option>
-                <option value="US">USA</option>
-                <option value="MX">Mexico / México</option>
-                <option value="CO">Colombia</option>
-                <option value="BR">Brazil / Brasil</option>
-                <option value="ES">Spain / España</option>
-                <option value="AR">Argentina</option>
-                <option value="VE">Venezuela</option>
-                <option value="PE">Peru / Perú</option>
-                <option value="EC">Ecuador</option>
-                <option value="GT">Guatemala</option>
-                <option value="HN">Honduras</option>
-                <option value="SV">El Salvador</option>
-                <option value="PA">Panama / Panamá</option>
-                <option value="DO">Dominican Republic / R. Dominicana</option>
-                <option value="OT">Other / Otro</option>
-              </select>
-            </div>
-            <div class="kyc-field">
-              <label><span class="en">Expiry Date</span><span class="es">Fecha de Vencimiento</span></label>
-              <input type="date" id="kyc_docexpiry" onchange="kycAutoSave();kycCalcProgress()"/>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- PART 3 — Address -->
-      <div class="kyc-part-card">
-        <div class="kyc-part-header">
-          <span style="font-size:1.3rem">🏠</span>
-          <h3><span class="en">Part 3 — Address</span><span class="es">Parte 3 — Dirección</span></h3>
-        </div>
-        <div class="kyc-part-body">
-          <div class="kyc-form-grid">
             <div class="kyc-field">
               <label><span class="en">Country of Residence</span><span class="es">País de Residencia</span></label>
               <select id="kyc_country" onchange="kycAutoSave();kycCalcProgress()">
@@ -914,44 +819,40 @@ tr:hover td{background:rgba(255,255,255,0.02)}
               </select>
             </div>
             <div class="kyc-field">
-              <label><span class="en">Province / State</span><span class="es">Provincia o Estado</span></label>
-              <input type="text" id="kyc_state" placeholder="San José / Florida" onchange="kycAutoSave()" oninput="kycCalcProgress()"/>
-            </div>
-            <div class="kyc-field">
-              <label><span class="en">City</span><span class="es">Ciudad</span></label>
-              <input type="text" id="kyc_city" placeholder="San José" onchange="kycAutoSave()" oninput="kycCalcProgress()"/>
-            </div>
-            <div class="kyc-field">
-              <label><span class="en">Postal Code</span><span class="es">Código Postal</span></label>
-              <input type="text" id="kyc_postal" placeholder="10101" onchange="kycAutoSave()" oninput="kycCalcProgress()"/>
-            </div>
-            <div class="kyc-field" style="grid-column:1/-1">
-              <label><span class="en">Full Address</span><span class="es">Dirección Completa</span></label>
-              <input type="text" id="kyc_address" placeholder="Calle / Street 123, ..." onchange="kycAutoSave()" oninput="kycCalcProgress()"/>
+              <label><span class="en">Date of Birth</span><span class="es">Fecha de Nacimiento</span></label>
+              <input type="date" id="kyc_dob" onchange="kycAutoSave();kycCalcProgress()"/>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- PART 4 — Financial Information -->
+      <!-- PART 2 — Financial Purpose -->
       <div class="kyc-part-card">
         <div class="kyc-part-header">
           <span style="font-size:1.3rem">💰</span>
-          <h3><span class="en">Part 4 — Financial Information</span><span class="es">Parte 4 — Información Financiera</span></h3>
+          <h3><span class="en">Part 2 — Financial Purpose</span><span class="es">Parte 2 — Propósito Financiero</span></h3>
         </div>
         <div class="kyc-part-body">
           <div class="kyc-form-grid">
-            <div class="kyc-field">
-              <label><span class="en">Occupation</span><span class="es">Ocupación</span></label>
-              <select id="kyc_occupation" onchange="kycAutoSave();kycCalcProgress()">
+            <div class="kyc-field" style="grid-column:1/-1">
+              <label><span class="en">Purpose of Account</span><span class="es">Propósito de Cuenta</span></label>
+              <select id="kyc_purpose" onchange="kycAutoSave();kycCalcProgress()">
                 <option value=""><span class="en">Select...</span><span class="es">Selecciona...</span></option>
-                <option value="employee"><span class="en">Employee</span><span class="es">Empleado</span></option>
-                <option value="self_employed"><span class="en">Self-employed</span><span class="es">Independiente</span></option>
-                <option value="business_owner"><span class="en">Business Owner</span><span class="es">Empresario</span></option>
-                <option value="investor"><span class="en">Investor</span><span class="es">Inversionista</span></option>
-                <option value="student"><span class="en">Student</span><span class="es">Estudiante</span></option>
-                <option value="retired"><span class="en">Retired</span><span class="es">Jubilado</span></option>
-                <option value="other"><span class="en">Other</span><span class="es">Otro</span></option>
+                <option value="exchange"><span class="en">Crypto Exchange</span><span class="es">Intercambio de Cripto</span></option>
+                <option value="remittances"><span class="en">Remittances</span><span class="es">Remesas</span></option>
+                <option value="investment"><span class="en">Investment</span><span class="es">Inversión</span></option>
+                <option value="business"><span class="en">Business</span><span class="es">Negocios</span></option>
+                <option value="personal"><span class="en">Personal Use</span><span class="es">Uso Personal</span></option>
+              </select>
+            </div>
+            <div class="kyc-field">
+              <label><span class="en">Expected Monthly Volume</span><span class="es">Volumen Mensual Esperado</span></label>
+              <select id="kyc_volume" onchange="kycAutoSave();kycCalcProgress()">
+                <option value=""><span class="en">Select...</span><span class="es">Selecciona...</span></option>
+                <option value="u1k">$0 – $1,000</option>
+                <option value="1k_5k">$1,000 – $5,000</option>
+                <option value="5k_10k">$5,000 – $10,000</option>
+                <option value="o10k">$10,000+</option>
               </select>
             </div>
             <div class="kyc-field">
@@ -959,43 +860,9 @@ tr:hover td{background:rgba(255,255,255,0.02)}
               <select id="kyc_funds_source" onchange="kycAutoSave();kycCalcProgress()">
                 <option value=""><span class="en">Select...</span><span class="es">Selecciona...</span></option>
                 <option value="salary"><span class="en">Salary</span><span class="es">Salario</span></option>
-                <option value="business"><span class="en">Business Income</span><span class="es">Ingresos Empresariales</span></option>
+                <option value="business"><span class="en">Business</span><span class="es">Negocio</span></option>
                 <option value="investments"><span class="en">Investments</span><span class="es">Inversiones</span></option>
                 <option value="savings"><span class="en">Savings</span><span class="es">Ahorros</span></option>
-                <option value="inheritance"><span class="en">Inheritance</span><span class="es">Herencia</span></option>
-                <option value="other"><span class="en">Other</span><span class="es">Otro</span></option>
-              </select>
-            </div>
-            <div class="kyc-field">
-              <label><span class="en">Monthly Income Range</span><span class="es">Rango de Ingresos Mensuales</span></label>
-              <select id="kyc_income" onchange="kycAutoSave();kycCalcProgress()">
-                <option value=""><span class="en">Select...</span><span class="es">Selecciona...</span></option>
-                <option value="u1k"><span class="en">Under $1,000</span><span class="es">Menos de $1,000</span></option>
-                <option value="1k_5k">$1,000 – $5,000</option>
-                <option value="5k_10k">$5,000 – $10,000</option>
-                <option value="10k_50k">$10,000 – $50,000</option>
-                <option value="o50k"><span class="en">Over $50,000</span><span class="es">Más de $50,000</span></option>
-              </select>
-            </div>
-            <div class="kyc-field">
-              <label><span class="en">Expected Monthly Volume</span><span class="es">Volumen Mensual Esperado</span></label>
-              <select id="kyc_volume" onchange="kycAutoSave();kycCalcProgress()">
-                <option value=""><span class="en">Select...</span><span class="es">Selecciona...</span></option>
-                <option value="u1k"><span class="en">Under $1,000</span><span class="es">Menos de $1,000</span></option>
-                <option value="1k_5k">$1,000 – $5,000</option>
-                <option value="5k_10k">$5,000 – $10,000</option>
-                <option value="o10k"><span class="en">Over $10,000</span><span class="es">Más de $10,000</span></option>
-              </select>
-            </div>
-            <div class="kyc-field" style="grid-column:1/-1">
-              <label><span class="en">Purpose of Account</span><span class="es">Propósito de Cuenta</span></label>
-              <select id="kyc_purpose" onchange="kycAutoSave();kycCalcProgress()">
-                <option value=""><span class="en">Select...</span><span class="es">Selecciona...</span></option>
-                <option value="exchange"><span class="en">Crypto Exchange</span><span class="es">Intercambio de Cripto</span></option>
-                <option value="business"><span class="en">Business Payments</span><span class="es">Pagos Empresariales</span></option>
-                <option value="remittances"><span class="en">Remittances</span><span class="es">Remesas</span></option>
-                <option value="investment"><span class="en">Investment</span><span class="es">Inversión</span></option>
-                <option value="personal"><span class="en">Personal Use</span><span class="es">Uso Personal</span></option>
                 <option value="other"><span class="en">Other</span><span class="es">Otro</span></option>
               </select>
             </div>
@@ -1003,57 +870,32 @@ tr:hover td{background:rgba(255,255,255,0.02)}
         </div>
       </div>
 
-      <!-- PART 5 — Document Upload -->
-      <div class="kyc-part-card">
+      <!-- PART 3 — Didit Verification -->
+      <div class="kyc-part-card" style="border-color:rgba(79,142,247,0.4);background:linear-gradient(135deg,rgba(79,142,247,0.07),rgba(123,92,240,0.09));">
         <div class="kyc-part-header">
-          <span style="font-size:1.3rem">📎</span>
-          <h3><span class="en">Part 5 — Document Upload</span><span class="es">Parte 5 — Subir Documentos</span></h3>
+          <span style="font-size:1.3rem">🔍</span>
+          <h3><span class="en">Part 3 — Identity Verification via Didit</span><span class="es">Parte 3 — Verificación de Identidad con Didit</span></h3>
         </div>
         <div class="kyc-part-body">
-          <div class="kyc-upload-grid">
-            <div class="kyc-upload-area" onclick="document.getElementById('kyc_file_front').click()">
-              <input type="file" id="kyc_file_front" accept="image/*,.pdf" onchange="kycFilePreview('kyc_file_front','kyc_prev_front');kycAutoSave();kycCalcProgress()"/>
-              <div class="ua-icon">🪪</div>
-              <div class="ua-title"><span class="en">Front of ID</span><span class="es">Frente del Documento</span></div>
-              <div class="ua-sub"><span class="en">JPG, PNG or PDF</span><span class="es">JPG, PNG o PDF</span></div>
-              <img id="kyc_prev_front" class="kyc-upload-preview" src="" alt="preview"/>
+          <div class="didit-card" style="margin-bottom:0;">
+            <div style="font-size:2.5rem;margin-bottom:0.75rem">🔍</div>
+            <h3><span class="en">🔍 Verify with Didit.me</span><span class="es">🔍 Verificar con Didit.me</span></h3>
+            <p><span class="en">Complete your identity verification automatically in minutes. Powered by Didit.me.</span><span class="es">Completa tu verificación de identidad automáticamente en minutos. Impulsado por Didit.me.</span></p>
+            <a href="https://verify.didit.me/u/NwYTTgPZQk22kR7mvIp2Ow" target="_blank" class="btn-didit" style="margin-bottom:0.75rem;display:inline-block;">
+              <span class="en">Complete Identity Verification with Didit →</span><span class="es">Completar Verificación de Identidad con Didit →</span>
+            </a>
+            <div class="didit-note" style="margin-bottom:1.5rem">
+              <span class="en">Powered by Didit.me • Secure &amp; Fast</span>
+              <span class="es">Impulsado por Didit.me • Seguro y Rápido</span>
             </div>
-            <div class="kyc-upload-area" onclick="document.getElementById('kyc_file_back').click()">
-              <input type="file" id="kyc_file_back" accept="image/*,.pdf" onchange="kycFilePreview('kyc_file_back','kyc_prev_back');kycAutoSave();kycCalcProgress()"/>
-              <div class="ua-icon">🪪</div>
-              <div class="ua-title"><span class="en">Back of ID</span><span class="es">Reverso del Documento</span></div>
-              <div class="ua-sub"><span class="en">JPG, PNG or PDF</span><span class="es">JPG, PNG o PDF</span></div>
-              <img id="kyc_prev_back" class="kyc-upload-preview" src="" alt="preview"/>
-            </div>
-            <div class="kyc-upload-area" onclick="document.getElementById('kyc_file_selfie').click()">
-              <input type="file" id="kyc_file_selfie" accept="image/*" capture="user" onchange="kycFilePreview('kyc_file_selfie','kyc_prev_selfie');kycAutoSave();kycCalcProgress()"/>
-              <div class="ua-icon">🤳</div>
-              <div class="ua-title"><span class="en">Selfie with Document</span><span class="es">Selfie con Documento</span></div>
-              <div class="ua-sub"><span class="en">Take a photo holding your ID</span><span class="es">Foto sosteniedo tu documento</span></div>
-              <img id="kyc_prev_selfie" class="kyc-upload-preview" src="" alt="preview"/>
-            </div>
-            <div class="kyc-upload-area" onclick="document.getElementById('kyc_file_address').click()">
-              <input type="file" id="kyc_file_address" accept="image/*,.pdf" onchange="kycFilePreview('kyc_file_address','kyc_prev_address');kycAutoSave();kycCalcProgress()"/>
-              <div class="ua-icon">📄</div>
-              <div class="ua-title"><span class="en">Proof of Address</span><span class="es">Comprobante de Domicilio</span></div>
-              <div class="ua-sub"><span class="en">Utility bill, bank statement, etc.</span><span class="es">Recibo de servicio, estado de cuenta, etc.</span></div>
-              <img id="kyc_prev_address" class="kyc-upload-preview" src="" alt="preview"/>
-            </div>
+            <p style="color:var(--muted);font-size:0.82rem;margin-bottom:1rem">
+              <span class="en">After completing the Didit verification, return here and click the button below.</span>
+              <span class="es">Después de completar la verificación en Didit, regresa aquí y haz clic en el botón de abajo.</span>
+            </p>
+            <button class="btn-secondary" onclick="kycMarkDiditDone()" style="padding:0.7rem 1.5rem;border-radius:50px;font-size:0.9rem;">
+              ✅ <span class="en">I've completed Didit verification</span><span class="es">Completé la verificación en Didit</span>
+            </button>
           </div>
-        </div>
-      </div>
-
-      <!-- PART 6 — Didit.me Integration -->
-      <div class="didit-card">
-        <div style="font-size:2rem;margin-bottom:0.75rem">📋</div>
-        <h3><span class="en">Submit Your KYC for Review</span><span class="es">Enviar KYC para Revisión</span></h3>
-        <p><span class="en">Fill out the form above completely and submit it for manual review by our team. We will verify your identity within 24-48 hours.</span><span class="es">Completa el formulario arriba y envíalo para revisión manual por nuestro equipo. Verificaremos tu identidad en 24-48 horas.</span></p>
-        <a href="#" onclick="event.preventDefault();document.getElementById('kycSubmitBtn').click()" class="btn-didit">
-          <span class="en">Submit for Review →</span><span class="es">Enviar para Revisión →</span>
-        </a>
-        <div class="didit-note">
-          <span class="en">📧 Our team will contact you at your registered email once verified.</span>
-          <span class="es">📧 Nuestro equipo te contactará al correo registrado una vez verificado.</span>
         </div>
       </div>
 
@@ -1156,7 +998,14 @@ function initMockData(){
     existingUsers.unshift(demoUser);
     localStorage.setItem('hd_users', JSON.stringify(existingUsers));
   }
-  localStorage.setItem('kycData_demo@hashdigital.com', JSON.stringify({kycStatus:'verified',fullName:'Demo User',completionPct:100}));
+  // Always re-apply KYC for demo accounts regardless of init flag
+  const kycApprovedBase = {kycStatus:'verified',completionPct:100,_status:'verified'};
+  localStorage.setItem('kycData_demo@hashdigital.com', JSON.stringify({...kycApprovedBase,fullName:'Demo User'}));
+  localStorage.setItem('kycData_carlos@example.com', JSON.stringify({...kycApprovedBase,fullName:'Carlos Rodríguez'}));
+  localStorage.setItem('kycData_maria@example.com', JSON.stringify({...kycApprovedBase,fullName:'María González'}));
+  localStorage.setItem('kycData_jose@example.com', JSON.stringify({...kycApprovedBase,fullName:'José Méndez'}));
+  localStorage.setItem('kycData_ana@example.com', JSON.stringify({...kycApprovedBase,fullName:'Ana Ramírez'}));
+  localStorage.setItem('kycData_luis@example.com', JSON.stringify({...kycApprovedBase,fullName:'Luis Herrera'}));
   if(localStorage.getItem('hd_admin_init')) return;
   const users=[
     {id:'u0',name:'Demo User',email:'demo@hashdigital.com',refCode:'DEMO0000',referredBy:null,status:'active',joined:'2024-01-01',password:'demo1234'},
@@ -1193,11 +1042,13 @@ function initMockData(){
   localStorage.setItem('hd_users',JSON.stringify(users));
   localStorage.setItem('hd_transactions',JSON.stringify(txs));
   // Pre-approve KYC for all demo users
-  const kycApproved = {kycStatus:'verified',completionPct:100};
+  const kycApproved = {kycStatus:'verified',completionPct:100,_status:'verified'};
   localStorage.setItem('kycData_demo@hashdigital.com', JSON.stringify({...kycApproved,fullName:'Demo User'}));
   localStorage.setItem('kycData_carlos@example.com', JSON.stringify({...kycApproved,fullName:'Carlos Rodríguez'}));
   localStorage.setItem('kycData_maria@example.com', JSON.stringify({...kycApproved,fullName:'María González'}));
   localStorage.setItem('kycData_jose@example.com', JSON.stringify({...kycApproved,fullName:'José Méndez'}));
+  localStorage.setItem('kycData_ana@example.com', JSON.stringify({...kycApproved,fullName:'Ana Ramírez'}));
+  localStorage.setItem('kycData_luis@example.com', JSON.stringify({...kycApproved,fullName:'Luis Herrera'}));
   localStorage.setItem('hd_admin_init','1');
 }
 
@@ -1308,7 +1159,7 @@ function showKycBlock(section){
             <span class="en">Complete KYC Now →</span>
             <span class="es">Completar KYC Ahora →</span>
           </button>
-          <a href="#" onclick="event.preventDefault();showSection('kyc')" target="_blank" style="background:transparent;color:#4F8EF7;border:1px solid #4F8EF7;padding:0.7rem 2rem;border-radius:50px;font-weight:600;font-size:0.9rem;text-decoration:none;width:100%;max-width:280px;text-align:center;box-sizing:border-box;">
+          <a href="https://verify.didit.me/u/NwYTTgPZQk22kR7mvIp2Ow" target="_blank" style="background:transparent;color:#4F8EF7;border:1px solid #4F8EF7;padding:0.7rem 2rem;border-radius:50px;font-weight:600;font-size:0.9rem;text-decoration:none;width:100%;max-width:280px;text-align:center;box-sizing:border-box;">
             <span class="en">Verify with Didit.me →</span>
             <span class="es">Verificar con Didit.me →</span>
           </a>
@@ -1733,12 +1584,10 @@ function copyText(text,btn){
 // ═══════════════════════════════════════════════════════════════
 
 const KYC_FIELDS = [
-  'kyc_fullname','kyc_dob','kyc_nationality','kyc_gender','kyc_pob',
-  'kyc_doctype','kyc_docnum','kyc_docissue','kyc_docexpiry',
-  'kyc_country','kyc_state','kyc_city','kyc_address','kyc_postal',
-  'kyc_occupation','kyc_funds_source','kyc_income','kyc_volume','kyc_purpose'
+  'kyc_fullname','kyc_phone','kyc_country','kyc_dob',
+  'kyc_purpose','kyc_volume','kyc_funds_source'
 ];
-const KYC_FILES = ['kyc_file_front','kyc_file_back','kyc_file_selfie','kyc_file_address'];
+const KYC_FILES = [];
 
 function kycStorageKey(){
   return 'hd_kyc_'+(currentUser?currentUser.id:'guest');
@@ -1755,6 +1604,9 @@ function kycInit(){
     const el=document.getElementById(id);
     if(el && data[id]!==undefined) el.value=data[id];
   });
+  // Pre-fill email from current user (read-only)
+  const emailEl=document.getElementById('kyc_email');
+  if(emailEl && currentUser) emailEl.value=currentUser.email;
   kycCalcProgress();
   kycRenderStatusBadge();
 }
@@ -1764,12 +1616,6 @@ function kycAutoSave(){
   KYC_FIELDS.forEach(id=>{
     const el=document.getElementById(id);
     if(el) data[id]=el.value;
-  });
-  // Track file upload flags (filenames only, not binary data)
-  const fileMap={kyc_file_front:'_files_front',kyc_file_back:'_files_back',kyc_file_selfie:'_files_selfie',kyc_file_address:'_files_address'};
-  Object.entries(fileMap).forEach(([inputId,key])=>{
-    const el=document.getElementById(inputId);
-    if(el && el.files && el.files.length>0) data[key]=el.files[0].name;
   });
   localStorage.setItem(kycStorageKey(),JSON.stringify(data));
   kycRenderProfileBadge();
@@ -1806,6 +1652,7 @@ function kycRenderStatusBadge(){
   const labels={
     not_started:['⏳ Not Started','⏳ Sin Iniciar'],
     pending:['⏳ Pending Review','⏳ En Revisión'],
+    pending_review:['⏳ Pending Review','⏳ En Revisión'],
     verified:['✅ Verified','✅ Verificado'],
     rejected:['❌ Rejected','❌ Rechazado']
   };
@@ -1854,9 +1701,31 @@ function kycSaveProgress(){
   showToast('💾 KYC progress saved! / ¡Progreso KYC guardado!');
 }
 
+function kycMarkDiditDone(){
+  kycAutoSave();
+  const data=kycLoad();
+  data._didit_done=true;
+  data._status='pending_review';
+  data._submitted=new Date().toISOString();
+  localStorage.setItem(kycStorageKey(),JSON.stringify(data));
+  // Also update kycData_ (used by buy/sell gate) so user is in pending state
+  if(currentUser){
+    const emailKey='kycData_'+currentUser.email;
+    const existing=JSON.parse(localStorage.getItem(emailKey)||'{}');
+    existing.kycStatus='pending_review';
+    existing._status='pending_review';
+    localStorage.setItem(emailKey,JSON.stringify(existing));
+  }
+  kycRenderStatusBadge();
+  kycRenderProfileBadge();
+  const msg=document.getElementById('kycSuccessMsg');
+  if(msg){msg.style.display='block';setTimeout(()=>msg.style.display='none',8000);}
+  showToast('✅ Didit verification recorded! Under review. / ¡Verificación Didit registrada! En revisión.');
+}
+
 function kycSubmitForReview(){
   const pct=kycCalcProgress();
-  if(pct<40){
+  if(pct<30){
     showToast('⚠️ Please fill more fields before submitting / Por favor completa más campos');
     return;
   }
