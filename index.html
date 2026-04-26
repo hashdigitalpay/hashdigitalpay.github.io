@@ -12,16 +12,20 @@
 
     :root {
       --bg: #050A18;
-      --bg2: #0A1628;
+      --bg2: #07142b;
       --bg3: #0F1F3D;
-      --accent: #4F8EF7;
-      --accent2: #7B5CF0;
+      --primary: #00d4d4;
+      --secondary: #4F8EF7;
+      --accent: #7B5CF0;
       --gold: #F5C842;
       --text: #E8EDF5;
       --muted: #8A97B0;
-      --card: rgba(255,255,255,0.04);
-      --border: rgba(255,255,255,0.08);
+      --card: rgba(255,255,255,0.03);
+      --border: rgba(0,212,212,0.15);
+      --border-subtle: rgba(255,255,255,0.08);
       --grad: linear-gradient(135deg, #4F8EF7, #7B5CF0);
+      --grad-teal: linear-gradient(135deg, #00d4d4, #4F8EF7);
+      --grad-full: linear-gradient(135deg, #4F8EF7, #7B5CF0, #00d4d4);
     }
 
     /* ── LIGHT MODE ── */
@@ -32,10 +36,12 @@
       --text: #0A1628;
       --muted: #556080;
       --card: rgba(0,0,0,0.04);
-      --border: rgba(0,0,0,0.08);
+      --border: rgba(0,212,212,0.25);
+      --border-subtle: rgba(0,0,0,0.08);
     }
     body.light nav { background: rgba(245,247,250,0.92); }
-    body.light .hero::before { background: radial-gradient(circle, rgba(79,142,247,0.1) 0%, transparent 70%); }
+    body.light .hero { background: linear-gradient(180deg, #f0f4ff 0%, #e8f0fe 100%); }
+    body.light .hero-canvas { opacity: 0.3; }
     body.light .nav-logo img.dark-logo { display: none; }
     body.light .nav-logo img.light-logo { display: block; }
     body:not(.light) .nav-logo img.light-logo { display: none; }
@@ -58,22 +64,44 @@
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 1rem 2rem;
-      background: rgba(5,10,24,0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
+      padding: 0.75rem 2rem;
+      background: rgba(5,10,24,0.75);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border-bottom: 1px solid rgba(0,212,212,0.18);
+      transition: background 0.3s;
     }
-    .nav-logo img { height: 200px; width: auto; }
-    .nav-links { display: flex; gap: 2rem; }
-    .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color .2s; }
+    .nav-logo img { height: 50px; width: auto; }
+    .nav-links { display: flex; gap: 1.75rem; }
+    .nav-links a {
+      color: var(--muted); text-decoration: none; font-size: 0.88rem; font-weight: 500;
+      transition: color .2s; position: relative; padding-bottom: 2px;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 2px;
+      background: var(--primary); border-radius: 2px;
+      transform: scaleX(0); transition: transform 0.2s;
+    }
     .nav-links a:hover { color: var(--text); }
-    .nav-cta { background: var(--grad); color: #fff; border: none; padding: 0.55rem 1.4rem; border-radius: 50px; font-weight: 600; font-size: 0.9rem; cursor: pointer; text-decoration: none; transition: opacity .2s; }
-    .nav-cta:hover { opacity: 0.85; }
+    .nav-links a:hover::after { transform: scaleX(1); }
+    .nav-cta {
+      background: var(--grad-teal); color: #000; border: none;
+      padding: 0.55rem 1.4rem; border-radius: 50px; font-weight: 700; font-size: 0.88rem;
+      cursor: pointer; text-decoration: none; transition: opacity .2s, box-shadow .2s;
+    }
+    .nav-cta:hover { opacity: 0.9; box-shadow: 0 0 20px rgba(0,212,212,0.4); }
     .lang-toggle { display: flex; gap: 0.5rem; align-items: center; }
-    .lang-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 0.3rem 0.7rem; border-radius: 20px; font-size: 0.8rem; cursor: pointer; transition: all .2s; }
-    .lang-btn.active, .lang-btn:hover { border-color: var(--accent); color: var(--accent); }
-    .theme-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); width: 2rem; height: 2rem; border-radius: 50%; font-size: 1rem; cursor: pointer; transition: all .2s; display: flex; align-items: center; justify-content: center; }
-    .theme-btn:hover { border-color: var(--accent); }
+    .lang-btn {
+      background: transparent; border: 1px solid var(--border-subtle); color: var(--muted);
+      padding: 0.28rem 0.65rem; border-radius: 20px; font-size: 0.78rem; cursor: pointer; transition: all .2s;
+    }
+    .lang-btn.active, .lang-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .theme-btn {
+      background: transparent; border: 1px solid var(--border-subtle); color: var(--muted);
+      width: 2rem; height: 2rem; border-radius: 50%; font-size: 1rem; cursor: pointer;
+      transition: all .2s; display: flex; align-items: center; justify-content: center;
+    }
+    .theme-btn:hover { border-color: var(--primary); }
 
     /* ── HERO ── */
     .hero {
@@ -83,57 +111,159 @@
       padding: 8rem 2rem 4rem;
       position: relative;
       overflow: hidden;
+      background: #050A18;
     }
-    .hero::before {
-      content: '';
-      position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
-      width: 800px; height: 800px;
-      background: radial-gradient(circle, rgba(79,142,247,0.15) 0%, transparent 70%);
+    .hero-canvas {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none; opacity: 0.6;
+    }
+    .hero-glow {
+      position: absolute; top: 20%; left: 50%; transform: translateX(-50%);
+      width: 700px; height: 500px;
+      background: radial-gradient(ellipse, rgba(79,142,247,0.12) 0%, rgba(123,92,240,0.08) 40%, transparent 70%);
       pointer-events: none;
     }
+    .hero-glow2 {
+      position: absolute; top: 60%; left: 20%;
+      width: 400px; height: 300px;
+      background: radial-gradient(ellipse, rgba(0,212,212,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-content { position: relative; z-index: 2; }
     .hero-badge {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      background: rgba(79,142,247,0.1); border: 1px solid rgba(79,142,247,0.3);
-      color: var(--accent); padding: 0.4rem 1rem; border-radius: 50px;
-      font-size: 0.8rem; font-weight: 600; margin-bottom: 1.5rem;
-      letter-spacing: 0.05em; text-transform: uppercase;
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      background: rgba(0,212,212,0.08); border: 1px solid rgba(0,212,212,0.3);
+      color: var(--primary); padding: 0.45rem 1.1rem; border-radius: 50px;
+      font-size: 0.78rem; font-weight: 700; margin-bottom: 2rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .badge-dot {
+      width: 8px; height: 8px; border-radius: 50%; background: var(--primary);
+      animation: badge-pulse 1.5s ease-in-out infinite;
+      box-shadow: 0 0 6px var(--primary);
+    }
+    @keyframes badge-pulse {
+      0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 6px var(--primary); }
+      50% { opacity: 0.6; transform: scale(0.8); box-shadow: 0 0 12px var(--primary); }
     }
     .hero h1 {
-      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-size: clamp(2.8rem, 6.5vw, 5.5rem);
       font-weight: 900;
-      line-height: 1.1;
-      max-width: 900px;
-      margin-bottom: 1.5rem;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      max-width: 960px;
+      margin: 0 auto 1.5rem;
     }
-    .hero h1 span { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .hero p {
+    .hero h1 .gradient-text {
+      background: linear-gradient(135deg, #4F8EF7 0%, #7B5CF0 45%, #00d4d4 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-subtitle {
       font-size: clamp(1rem, 2vw, 1.2rem);
-      color: var(--muted); max-width: 600px;
+      color: var(--muted); max-width: 620px; margin: 0 auto;
       line-height: 1.7; margin-bottom: 2.5rem;
+      min-height: 3.5rem;
     }
-    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
-    .btn-primary { background: var(--grad); color: #fff; padding: 0.85rem 2rem; border-radius: 50px; font-weight: 700; font-size: 1rem; text-decoration: none; transition: transform .2s, opacity .2s; }
-    .btn-primary:hover { transform: translateY(-2px); opacity: 0.9; }
-    .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); padding: 0.85rem 2rem; border-radius: 50px; font-weight: 600; font-size: 1rem; text-decoration: none; transition: border-color .2s; }
-    .btn-secondary:hover { border-color: var(--accent); }
+    .typing-cursor {
+      display: inline-block; width: 2px; height: 1.1em;
+      background: var(--primary); animation: blink 0.9s infinite; vertical-align: text-bottom;
+      margin-left: 2px;
+    }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-bottom: 3.5rem; }
+    .btn-primary {
+      background: linear-gradient(135deg, #4F8EF7, #7B5CF0);
+      color: #fff; padding: 0.9rem 2.2rem; border-radius: 50px; font-weight: 700; font-size: 1rem;
+      text-decoration: none; transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 0 20px rgba(79,142,247,0.3);
+      animation: glow-pulse 2.5s ease-in-out infinite;
+    }
+    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 0 40px rgba(79,142,247,0.6); animation: none; }
+    @keyframes glow-pulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(79,142,247,0.3); }
+      50% { box-shadow: 0 0 35px rgba(123,92,240,0.5); }
+    }
+    .btn-secondary {
+      background: transparent; color: var(--text); border: 1px solid rgba(0,212,212,0.3);
+      padding: 0.9rem 2.2rem; border-radius: 50px; font-weight: 600; font-size: 1rem;
+      text-decoration: none; transition: border-color .2s, box-shadow .2s, background .2s;
+    }
+    .btn-secondary:hover { border-color: var(--primary); box-shadow: 0 0 20px rgba(0,212,212,0.15); background: rgba(0,212,212,0.05); }
+
+    /* HERO METRICS */
+    .hero-metrics {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 2.5rem;
+      position: relative; z-index: 2;
+    }
+    .hero-metric { text-align: center; }
+    .hero-metric-num {
+      font-size: 1.8rem; font-weight: 900;
+      background: linear-gradient(135deg, #4F8EF7, #00d4d4);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero-metric-label { color: var(--muted); font-size: 0.82rem; margin-top: 0.2rem; font-weight: 500; }
+
+    /* ── LIVE TICKER BAR ── */
+    .ticker-bar {
+      background: rgba(7,20,43,0.98);
+      border-top: 1px solid rgba(0,212,212,0.2);
+      border-bottom: 1px solid rgba(0,212,212,0.2);
+      padding: 0.85rem 0;
+      overflow: hidden;
+      position: relative;
+    }
+    .ticker-bar::before, .ticker-bar::after {
+      content: ''; position: absolute; top: 0; bottom: 0; width: 80px; z-index: 2;
+    }
+    .ticker-bar::before { left: 0; background: linear-gradient(to right, rgba(7,20,43,0.98), transparent); }
+    .ticker-bar::after { right: 0; background: linear-gradient(to left, rgba(7,20,43,0.98), transparent); }
+    .ticker-track {
+      display: flex; gap: 0; white-space: nowrap;
+      animation: ticker-scroll 40s linear infinite;
+    }
+    .ticker-track:hover { animation-play-state: paused; }
+    .ticker-item {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      color: var(--muted); font-size: 0.85rem; font-weight: 500;
+      padding: 0 3rem;
+    }
+    .ticker-item .ticker-label { color: var(--primary); font-weight: 700; }
+    .ticker-item .ticker-dot { color: rgba(0,212,212,0.3); }
+    @keyframes ticker-scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
 
     /* ── STATS ── */
     .stats {
-      display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem;
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 3rem;
       padding: 4rem 2rem;
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
       background: var(--bg2);
+      border-bottom: 1px solid var(--border);
     }
     .stat { text-align: center; }
-    .stat-num { font-size: 2.5rem; font-weight: 800; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .stat-label { color: var(--muted); font-size: 0.9rem; margin-top: 0.3rem; }
+    .stat-num {
+      font-size: 2.8rem; font-weight: 900;
+      background: linear-gradient(135deg, #4F8EF7, #00d4d4);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .stat-label { color: var(--muted); font-size: 0.88rem; margin-top: 0.4rem; font-weight: 500; }
 
-    /* ── SECTIONS ── */
+    /* ── SECTION UTILITY ── */
     section { padding: 5rem 2rem; max-width: 1200px; margin: 0 auto; }
-    .section-badge { color: var(--accent); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem; }
-    .section-title { font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 800; margin-bottom: 1rem; }
-    .section-sub { color: var(--muted); font-size: 1.05rem; max-width: 600px; line-height: 1.7; margin-bottom: 3rem; }
+    .section-header { margin-bottom: 3rem; }
+    .section-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      color: var(--primary); font-size: 0.82rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 1rem;
+    }
+    .section-badge::before {
+      content: ''; display: inline-block; width: 24px; height: 2px;
+      background: var(--primary); border-radius: 2px;
+    }
+    .section-title { font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 900; margin-bottom: 1rem; letter-spacing: -0.02em; }
+    .section-sub { color: var(--muted); font-size: 1.05rem; max-width: 600px; line-height: 1.7; }
 
     /* ── SERVICES GRID ── */
     .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
@@ -142,20 +272,51 @@
       border: 1px solid var(--border);
       border-radius: 20px;
       padding: 2rem;
-      transition: border-color .3s, transform .3s;
+      position: relative;
+      transition: border-color .3s, transform .3s, box-shadow .3s;
+      overflow: hidden;
+      border-left: 3px solid transparent;
+      border-image: linear-gradient(180deg, #4F8EF7, #00d4d4) 1;
+      border-image-slice: 1;
     }
-    .service-card:hover { border-color: rgba(79,142,247,0.4); transform: translateY(-4px); }
-    .service-icon { font-size: 2.5rem; margin-bottom: 1rem; }
-    .service-card h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.75rem; }
-    .service-card p { color: var(--muted); font-size: 0.95rem; line-height: 1.6; }
+    .service-card::before {
+      content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 3px;
+      background: linear-gradient(180deg, #4F8EF7, #00d4d4); border-radius: 3px 0 0 3px;
+    }
+    .service-card:hover {
+      border-color: rgba(0,212,212,0.4);
+      transform: translateY(-5px);
+      box-shadow: 0 0 30px rgba(79,142,247,0.2), 0 0 60px rgba(0,212,212,0.05);
+    }
+    .service-order {
+      position: absolute; top: 1.25rem; right: 1.25rem;
+      font-size: 1.6rem; font-weight: 900; color: rgba(255,255,255,0.05);
+      font-variant-numeric: tabular-nums; line-height: 1;
+    }
+    .service-icon {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: rgba(79,142,247,0.12);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem; margin-bottom: 1.25rem;
+      box-shadow: 0 0 20px rgba(79,142,247,0.15);
+    }
+    .service-card h3 { font-size: 1.15rem; font-weight: 800; margin-bottom: 0.75rem; }
+    .service-card p { color: var(--muted); font-size: 0.93rem; line-height: 1.65; }
+    .service-link { margin-top: 1rem; color: var(--primary); font-size: 0.85rem; font-weight: 700; }
 
     /* ── HOW IT WORKS ── */
     .how-bg { background: var(--bg2); }
     .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2rem; }
     .step { text-align: center; padding: 1.5rem; }
-    .step-num { width: 3rem; height: 3rem; border-radius: 50%; background: var(--grad); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem; margin: 0 auto 1rem; }
-    .step h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .step p { color: var(--muted); font-size: 0.9rem; line-height: 1.6; }
+    .step-num {
+      width: 3rem; height: 3rem; border-radius: 50%;
+      background: linear-gradient(135deg, #4F8EF7, #00d4d4);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 1.1rem; color: #000; margin: 0 auto 1rem;
+      box-shadow: 0 0 20px rgba(0,212,212,0.3);
+    }
+    .step h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .step p { color: var(--muted); font-size: 0.9rem; line-height: 1.65; }
 
     /* ── CARDS SECTION ── */
     .cards-showcase {
@@ -169,59 +330,97 @@
       padding: 2.5rem 2rem;
       position: relative;
       overflow: hidden;
-      transition: transform .3s;
+      transition: transform .3s, box-shadow .3s;
     }
-    .card-product:hover { transform: translateY(-4px); }
+    .card-product::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(0,212,212,0.04) 0%, transparent 60%);
+      opacity: 0; transition: opacity 0.3s; pointer-events: none;
+    }
+    .card-product:hover::after { opacity: 1; }
+    .card-product:hover { transform: translateY(-5px); box-shadow: 0 8px 40px rgba(0,212,212,0.1); }
     .card-product.featured { border-color: rgba(245,200,66,0.4); }
     .card-product.featured::before {
       content: 'POPULAR';
-      position: absolute; top: 1rem; right: 1rem;
-      background: var(--gold); color: #000;
-      font-size: 0.7rem; font-weight: 800;
-      padding: 0.25rem 0.6rem; border-radius: 20px;
-      letter-spacing: 0.05em;
+      position: absolute; top: 1.2rem; right: 1.2rem;
+      background: linear-gradient(135deg, #F5C842, #F97316); color: #000;
+      font-size: 0.68rem; font-weight: 900;
+      padding: 0.3rem 0.75rem; border-radius: 20px;
+      letter-spacing: 0.08em;
+      box-shadow: 0 0 16px rgba(245,200,66,0.5), 0 0 32px rgba(245,200,66,0.2);
     }
-    .card-product h3 { font-size: 1.4rem; font-weight: 800; margin-bottom: 0.5rem; }
-    .card-price { font-size: 2rem; font-weight: 900; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1.5rem; }
+    .card-product h3 { font-size: 1.4rem; font-weight: 900; margin-bottom: 0.5rem; }
+    .card-price {
+      font-size: 2.2rem; font-weight: 900;
+      background: linear-gradient(135deg, #4F8EF7, #00d4d4);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 1.5rem;
+    }
     .card-features { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
-    .card-features li { color: var(--muted); font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem; }
-    .card-features li::before { content: '✓'; color: var(--accent); font-weight: 700; }
+    .card-features li { color: var(--muted); font-size: 0.9rem; display: flex; align-items: flex-start; gap: 0.5rem; line-height: 1.4; }
+    .card-features li::before { content: '✓'; color: var(--primary); font-weight: 900; flex-shrink: 0; margin-top: 0.05em; }
 
     /* ── TESTIMONIALS ── */
     .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
     .testimonial {
       background: var(--card); border: 1px solid var(--border); border-radius: 20px;
-      padding: 2rem;
+      padding: 2rem; transition: transform .3s;
     }
-    .stars { color: var(--gold); font-size: 1.1rem; margin-bottom: 1rem; }
+    .testimonial:hover { transform: translateY(-4px); }
+    .stars { color: var(--gold); font-size: 1rem; margin-bottom: 1rem; letter-spacing: 2px; }
     .testimonial p { color: var(--muted); font-size: 0.95rem; line-height: 1.7; margin-bottom: 1.5rem; font-style: italic; }
-    .testimonial-author { font-weight: 600; font-size: 0.9rem; }
+    .testimonial-author { font-weight: 700; font-size: 0.9rem; }
     .testimonial-role { color: var(--muted); font-size: 0.8rem; }
 
     /* ── CTA BANNER ── */
     .cta-banner {
-      background: linear-gradient(135deg, var(--bg3), rgba(123,92,240,0.2));
-      border: 1px solid var(--border);
+      background: linear-gradient(135deg, rgba(15,31,61,0.9), rgba(123,92,240,0.15));
+      border: 1px solid rgba(0,212,212,0.2);
       border-radius: 30px;
       padding: 4rem 3rem;
       text-align: center;
       margin: 2rem auto;
       max-width: 1200px;
+      position: relative; overflow: hidden;
     }
-    .cta-banner h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: 1rem; }
+    .cta-banner::before {
+      content: ''; position: absolute; top: -100px; right: -100px;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(0,212,212,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cta-banner h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 900; margin-bottom: 1rem; letter-spacing: -0.02em; }
     .cta-banner p { color: var(--muted); font-size: 1.05rem; max-width: 500px; margin: 0 auto 2rem; }
 
     /* ── FOOTER ── */
     footer {
       background: var(--bg2);
-      border-top: 1px solid var(--border);
-      padding: 3rem 2rem 2rem;
-      text-align: center;
+      border-top: 3px solid transparent;
+      border-image: linear-gradient(90deg, transparent, var(--primary), transparent) 1;
+      padding: 3.5rem 2rem 2rem;
     }
-    .footer-logo img { height: 280px; width: auto; margin-bottom: 1rem; }
-    .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5rem; margin-bottom: 2rem; }
-    .footer-links a { color: var(--muted); text-decoration: none; font-size: 0.9rem; transition: color .2s; }
-    .footer-links a:hover { color: var(--text); }
+    .footer-inner { max-width: 1200px; margin: 0 auto; }
+    .footer-top { display: flex; flex-wrap: wrap; gap: 2rem; justify-content: space-between; align-items: flex-start; margin-bottom: 2.5rem; }
+    .footer-brand { flex: 0 0 auto; }
+    .footer-logo img { height: 60px; width: auto; margin-bottom: 0.75rem; display: block; }
+    .footer-tagline { color: var(--muted); font-size: 0.85rem; max-width: 220px; line-height: 1.5; }
+    .footer-links-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem 2rem;
+    }
+    .footer-links-grid a { color: var(--muted); text-decoration: none; font-size: 0.88rem; transition: color .2s; }
+    .footer-links-grid a:hover { color: var(--primary); }
+    .footer-socials { display: flex; gap: 0.75rem; margin-top: 1.5rem; }
+    .social-link {
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 1px solid var(--border); color: var(--muted);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem; text-decoration: none; transition: all .2s;
+    }
+    .social-link:hover { border-color: var(--primary); color: var(--primary); box-shadow: 0 0 12px rgba(0,212,212,0.2); }
+    .footer-bottom {
+      border-top: 1px solid var(--border-subtle); padding-top: 1.5rem;
+      display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem;
+    }
     .footer-copy { color: var(--muted); font-size: 0.8rem; }
 
     /* ── LANG HIDDEN ── */
@@ -229,22 +428,39 @@
     body.lang-es .en { display: none; }
     body.lang-es .es { display: revert; }
 
+    /* ── SCROLL FADE ANIMATION ── */
+    .fade-up {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+    .fade-up-delay-1 { transition-delay: 0.1s; }
+    .fade-up-delay-2 { transition-delay: 0.2s; }
+    .fade-up-delay-3 { transition-delay: 0.3s; }
+    .fade-up-delay-4 { transition-delay: 0.4s; }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
       .nav-links { display: none; }
-      nav { padding: 1rem; }
+      nav { padding: 0.75rem 1rem; }
       #bancusTutorialGrid { grid-template-columns: 1fr !important; }
+      .footer-top { flex-direction: column; }
+      .hero-metrics { gap: 1.5rem; }
+      .hero-metric-num { font-size: 1.4rem; }
     }
   </style>
 </head>
 <body class="lang-en">
 
+<!-- CANVAS DOT GRID -->
+<canvas class="hero-canvas" id="heroCanvas" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;"></canvas>
+
 <!-- NAV -->
 <nav>
   <div class="nav-logo">
-  <img src="logo_dark.png" class="dark-logo" alt="Hash Digital Payment Solutions" />
-  <img src="logo_light.png" class="light-logo" alt="Hash Digital Payment Solutions" />
-</div>
+    <img src="logo_dark.png" class="dark-logo" alt="Hash Digital Payment Solutions" />
+    <img src="logo_light.png" class="light-logo" alt="Hash Digital Payment Solutions" />
+  </div>
   <div class="nav-links">
     <a href="#services" class="en">Services</a>
     <a href="#services" class="es">Servicios</a>
@@ -255,14 +471,14 @@
     <a href="#contact" class="en">Contact</a>
     <a href="#contact" class="es">Contacto</a>
   </div>
-  <div style="display:flex;align-items:center;gap:1rem;">
+  <div style="display:flex;align-items:center;gap:0.75rem;">
     <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" title="Toggle dark/light mode">🌙</button>
     <div class="lang-toggle">
       <button class="lang-btn active" onclick="setLang('en')">EN</button>
       <button class="lang-btn" onclick="setLang('es')">ES</button>
     </div>
-    <a href="dashboard.html" style="color:var(--muted);text-decoration:none;font-size:0.9rem;font-weight:500;padding:0.55rem 1rem;border:1px solid var(--border);border-radius:50px;transition:all .2s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'" class="en">Sign In</a>
-    <a href="dashboard.html" style="color:var(--muted);text-decoration:none;font-size:0.9rem;font-weight:500;padding:0.55rem 1rem;border:1px solid var(--border);border-radius:50px;transition:all .2s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'" class="es">Iniciar Sesión</a>
+    <a href="dashboard.html" style="color:var(--muted);text-decoration:none;font-size:0.85rem;font-weight:500;padding:0.5rem 1rem;border:1px solid var(--border-subtle);border-radius:50px;transition:all .2s" onmouseover="this.style.borderColor='var(--primary)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--border-subtle)';this.style.color='var(--muted)'" class="en">Sign In</a>
+    <a href="dashboard.html" style="color:var(--muted);text-decoration:none;font-size:0.85rem;font-weight:500;padding:0.5rem 1rem;border:1px solid var(--border-subtle);border-radius:50px;transition:all .2s" onmouseover="this.style.borderColor='var(--primary)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--border-subtle)';this.style.color='var(--muted)'" class="es">Iniciar Sesión</a>
     <a href="exchange.html" class="nav-cta en">Get Started</a>
     <a href="exchange.html" class="nav-cta es">Comenzar</a>
   </div>
@@ -270,50 +486,125 @@
 
 <!-- HERO -->
 <div class="hero">
-  <div class="hero-badge en">⚡ Next-Gen Financial Solutions</div>
-  <div class="hero-badge es">⚡ Soluciones Financieras de Nueva Generación</div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
 
-  <h1 class="en">Redefining <span>Digital Payments</span> for Everyone</h1>
-  <h1 class="es">Redefiniendo los <span>Pagos Digitales</span> para Todos</h1>
+  <div class="hero-content">
+    <div class="hero-badge en"><span class="badge-dot"></span> LIVE · Next-Gen Financial Solutions</div>
+    <div class="hero-badge es"><span class="badge-dot"></span> EN VIVO · Soluciones Financieras de Nueva Generación</div>
 
-  <p class="en">Crypto exchange, US bank accounts, crypto cards, digital remittances and more — all in one ecosystem designed for the future of finance.</p>
-  <p class="es">Exchange cripto, cuentas bancarias en EE.UU., tarjetas cripto, remesas digitales y más — todo en un ecosistema diseñado para el futuro de las finanzas.</p>
+    <h1 class="en">Redefining <span class="gradient-text">Digital Payments</span><br>for Everyone</h1>
+    <h1 class="es">Redefiniendo los <span class="gradient-text">Pagos Digitales</span><br>para Todos</h1>
 
-  <div class="hero-btns">
-    <a href="exchange.html" class="btn-primary en">Open Account →</a>
-    <a href="exchange.html" class="btn-primary es">Abrir Cuenta →</a>
-    <a href="#services" class="btn-secondary en">Learn More</a>
-    <a href="#services" class="btn-secondary es">Saber Más</a>
+    <p class="hero-subtitle en" id="typingSubEN"></p>
+    <p class="hero-subtitle es" id="typingSubES" style="display:none;"></p>
+
+    <div class="hero-btns">
+      <a href="exchange.html" class="btn-primary en">Open Account →</a>
+      <a href="exchange.html" class="btn-primary es">Abrir Cuenta →</a>
+      <a href="#services" class="btn-secondary en">Learn More</a>
+      <a href="#services" class="btn-secondary es">Saber Más</a>
+    </div>
+
+    <div class="hero-metrics">
+      <div class="hero-metric">
+        <div class="hero-metric-num" data-target="500" data-prefix="$" data-suffix="M+">$500M+</div>
+        <div class="hero-metric-label en">Processed</div>
+        <div class="hero-metric-label es">Procesados</div>
+      </div>
+      <div class="hero-metric">
+        <div class="hero-metric-num" data-target="50" data-suffix="+">50+</div>
+        <div class="hero-metric-label en">Countries</div>
+        <div class="hero-metric-label es">Países</div>
+      </div>
+      <div class="hero-metric">
+        <div class="hero-metric-num" data-target="99.9" data-suffix="%" data-decimal="1">99.9%</div>
+        <div class="hero-metric-label">Uptime</div>
+      </div>
+      <div class="hero-metric">
+        <div class="hero-metric-num" data-target="10" data-suffix="K+">10K+</div>
+        <div class="hero-metric-label en">Users</div>
+        <div class="hero-metric-label es">Usuarios</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LIVE TICKER BAR -->
+<div class="ticker-bar">
+  <div class="ticker-track" id="tickerTrack">
+    <span class="ticker-item"><span class="ticker-label en">TX Today:</span><span class="ticker-label es">TX Hoy:</span> 12,844</span>
+    <span class="ticker-item ticker-dot">·</span>
+    <span class="ticker-item"><span class="ticker-label en">Active Users:</span><span class="ticker-label es">Usuarios Activos:</span> 10,293</span>
+    <span class="ticker-item ticker-dot">·</span>
+    <span class="ticker-item"><span class="ticker-label en">Countries:</span><span class="ticker-label es">Países:</span> 52</span>
+    <span class="ticker-item ticker-dot">·</span>
+    <span class="ticker-item"><span class="ticker-label">Uptime:</span> 99.9%</span>
+    <span class="ticker-item ticker-dot">·</span>
+    <span class="ticker-item"><span class="ticker-label en">Avg TX Speed:</span><span class="ticker-label es">Vel. TX Promedio:</span> 2.4s</span>
+    <span class="ticker-item ticker-dot">·</span>
+    <span class="ticker-item"><span class="ticker-label en">Currencies:</span><span class="ticker-label es">Monedas:</span> 40+</span>
+    <span class="ticker-item ticker-dot">·</span>
+    <!-- duplicate for seamless loop -->
+    <span class="ticker-item"><span class="ticker-label en">TX Today:</span><span class="ticker-label es">TX Hoy:</span> 12,844</span>
+    <span class="ticker-item ticker-dot">·</span>
+    <span class="ticker-item"><span class="ticker-label en">Active Users:</span><span class="ticker-label es">Usuarios Activos:</span> 10,293</span>
+    <span class="ticker-item ticker-dot">·</span>
+    <span class="ticker-item"><span class="ticker-label en">Countries:</span><span class="ticker-label es">Países:</span> 52</span>
+    <span class="ticker-item ticker-dot">·</span>
+    <span class="ticker-item"><span class="ticker-label">Uptime:</span> 99.9%</span>
+    <span class="ticker-item ticker-dot">·</span>
+    <span class="ticker-item"><span class="ticker-label en">Avg TX Speed:</span><span class="ticker-label es">Vel. TX Promedio:</span> 2.4s</span>
+    <span class="ticker-item ticker-dot">·</span>
+    <span class="ticker-item"><span class="ticker-label en">Currencies:</span><span class="ticker-label es">Monedas:</span> 40+</span>
+    <span class="ticker-item ticker-dot">·</span>
   </div>
 </div>
 
 <!-- STATS -->
 <div class="stats">
-  <div class="stat"><div class="stat-num">50+</div><div class="stat-label en">Countries Supported</div><div class="stat-label es">Países</div></div>
-  <div class="stat"><div class="stat-num">$500M+</div><div class="stat-label en">Transactions Processed</div><div class="stat-label es">En Transacciones</div></div>
-  <div class="stat"><div class="stat-num">10K+</div><div class="stat-label en">Active Users</div><div class="stat-label es">Usuarios Activos</div></div>
-  <div class="stat"><div class="stat-num">99.9%</div><div class="stat-label en">Uptime</div><div class="stat-label es">Disponibilidad</div></div>
+  <div class="stat fade-up">
+    <div class="stat-num counter" data-target="50" data-suffix="+">50+</div>
+    <div class="stat-label en">Countries Supported</div><div class="stat-label es">Países</div>
+  </div>
+  <div class="stat fade-up fade-up-delay-1">
+    <div class="stat-num">$500M+</div>
+    <div class="stat-label en">Transactions Processed</div><div class="stat-label es">En Transacciones</div>
+  </div>
+  <div class="stat fade-up fade-up-delay-2">
+    <div class="stat-num counter" data-target="10" data-suffix="K+">10K+</div>
+    <div class="stat-label en">Active Users</div><div class="stat-label es">Usuarios Activos</div>
+  </div>
+  <div class="stat fade-up fade-up-delay-3">
+    <div class="stat-num">99.9%</div>
+    <div class="stat-label en">Uptime</div><div class="stat-label es">Disponibilidad</div>
+  </div>
 </div>
 
 <!-- SERVICES -->
 <section id="services">
-  <div class="section-badge en">Our Services</div>
-  <div class="section-badge es">Nuestros Servicios</div>
-  <h2 class="section-title en">Everything you need in one place</h2>
-  <h2 class="section-title es">Todo lo que necesitas en un solo lugar</h2>
-  <p class="section-sub en">From crypto exchange to US banking — we bridge the gap between traditional and decentralized finance.</p>
-  <p class="section-sub es">Desde exchange cripto hasta banca en EE.UU. — conectamos las finanzas tradicionales con las descentralizadas.</p>
+  <div class="section-header fade-up">
+    <div class="section-badge en">Our Services</div>
+    <div class="section-badge es">Nuestros Servicios</div>
+    <h2 class="section-title en">Everything you need in one place</h2>
+    <h2 class="section-title es">Todo lo que necesitas en un solo lugar</h2>
+    <p class="section-sub en">From crypto exchange to US banking — we bridge the gap between traditional and decentralized finance.</p>
+    <p class="section-sub es">Desde exchange cripto hasta banca en EE.UU. — conectamos las finanzas tradicionales con las descentralizadas.</p>
+  </div>
 
   <div class="services-grid">
-    <div class="service-card" onclick="window.location.href='exchange.html'" style="cursor:pointer;">
+    <div class="service-card fade-up" onclick="window.location.href='exchange.html'" style="cursor:pointer;">
+      <div class="service-order">01</div>
       <div class="service-icon">💱</div>
       <h3 class="en">Crypto ↔ Fiat Exchange</h3>
       <h3 class="es">Exchange Cripto ↔ Fiat</h3>
       <p class="en">Convert crypto to USD and transfer directly to any US bank account. Fast, secure and competitive rates.</p>
       <p class="es">Convierte cripto a USD y transfiere directamente a cualquier cuenta bancaria en EE.UU. Rápido, seguro y con tarifas competitivas.</p>
-      <div style="margin-top:1rem;color:#4F8EF7;font-size:0.85rem;font-weight:600;">Open Account →</div>
+      <div class="service-link en">Open Account →</div>
+      <div class="service-link es">Abrir Cuenta →</div>
     </div>
-    <div class="service-card">
+    <div class="service-card fade-up fade-up-delay-1">
+      <div class="service-order">02</div>
       <div class="service-icon">🏦</div>
       <h3 class="en">US Bank Account Opening</h3>
       <h3 class="es">Apertura de Cuenta Bancaria en EE.UU.</h3>
@@ -321,30 +612,34 @@
       <p class="es">Abre una cuenta bancaria real en EE.UU. de forma remota. Sin necesidad de viajar. Accede al sistema financiero estadounidense desde cualquier parte del mundo.</p>
     </div>
     <a href="#cards" style="text-decoration:none;color:inherit;display:block;" onclick="event.preventDefault();document.getElementById('cards').scrollIntoView({behavior:'smooth'})">
-    <div class="service-card" style="cursor:pointer;">
+    <div class="service-card fade-up fade-up-delay-2" style="cursor:pointer;">
+      <div class="service-order">03</div>
       <div class="service-icon">💳</div>
       <h3 class="en">Crypto Cards</h3>
       <h3 class="es">Tarjetas Cripto</h3>
       <p class="en">Visa and Mastercard crypto cards. Spend your digital assets anywhere in the world, online and in-store.</p>
       <p class="es">Tarjetas cripto Visa y Mastercard. Usa tus activos digitales en cualquier parte del mundo, en línea y en tiendas físicas.</p>
-      <div style="margin-top:1rem;color:#F5C842;font-size:0.85rem;font-weight:600;"><span class="en">Choose your card →</span><span class="es">Elige tu tarjeta →</span></div>
+      <div class="service-link"><span class="en">Choose your card →</span><span class="es">Elige tu tarjeta →</span></div>
     </div>
     </a>
-    <div class="service-card">
+    <div class="service-card fade-up fade-up-delay-3">
+      <div class="service-order">04</div>
       <div class="service-icon">🌍</div>
       <h3 class="en">Digital Remittances</h3>
       <h3 class="es">Remesas Digitales</h3>
       <p class="en">Send money across borders instantly and without excessive fees. The future of international transfers.</p>
       <p class="es">Envía dinero a través de fronteras al instante y sin comisiones excesivas. El futuro de las transferencias internacionales.</p>
     </div>
-    <div class="service-card">
+    <div class="service-card fade-up fade-up-delay-1">
+      <div class="service-order">05</div>
       <div class="service-icon">⚡</div>
       <h3 class="en">Crypto Bill Payments</h3>
       <h3 class="es">Pago de Servicios en Cripto</h3>
       <p class="en">Pay utilities, subscriptions and services with your crypto. Seamless integration with everyday life.</p>
       <p class="es">Paga servicios, suscripciones y facturas con tus criptomonedas. Integración perfecta con la vida cotidiana.</p>
     </div>
-    <div class="service-card">
+    <div class="service-card fade-up fade-up-delay-2">
+      <div class="service-order">06</div>
       <div class="service-icon">🔐</div>
       <h3 class="en">Secure & Compliant</h3>
       <h3 class="es">Seguro y Regulado</h3>
@@ -357,33 +652,35 @@
 <!-- HOW IT WORKS -->
 <div class="how-bg" id="how">
   <section>
-    <div class="section-badge en">How It Works</div>
-    <div class="section-badge es">Cómo Funciona</div>
-    <h2 class="section-title en">Get started in minutes</h2>
-    <h2 class="section-title es">Empieza en minutos</h2>
+    <div class="section-header fade-up">
+      <div class="section-badge en">How It Works</div>
+      <div class="section-badge es">Cómo Funciona</div>
+      <h2 class="section-title en">Get started in minutes</h2>
+      <h2 class="section-title es">Empieza en minutos</h2>
+    </div>
     <div class="steps">
-      <div class="step">
+      <div class="step fade-up">
         <div class="step-num">1</div>
         <h3 class="en">Create Account</h3>
         <h3 class="es">Crea tu Cuenta</h3>
         <p class="en">Sign up online in less than 5 minutes. No branches, no appointments.</p>
         <p class="es">Regístrate en línea en menos de 5 minutos. Sin sucursales, sin citas.</p>
       </div>
-      <div class="step">
+      <div class="step fade-up fade-up-delay-1">
         <div class="step-num">2</div>
         <h3 class="en">Verify Identity</h3>
         <h3 class="es">Verifica tu Identidad</h3>
         <p class="en">Complete your KYC verification quickly and securely from your phone.</p>
         <p class="es">Completa tu verificación KYC de forma rápida y segura desde tu teléfono.</p>
       </div>
-      <div class="step">
+      <div class="step fade-up fade-up-delay-2">
         <div class="step-num">3</div>
         <h3 class="en">Fund Your Account</h3>
         <h3 class="es">Fondea tu Cuenta</h3>
         <p class="en">Deposit crypto or fiat. Multiple funding options available.</p>
         <p class="es">Deposita cripto o fiat. Múltiples opciones de fondeo disponibles.</p>
       </div>
-      <div class="step">
+      <div class="step fade-up fade-up-delay-3">
         <div class="step-num">4</div>
         <h3 class="en">Start Transacting</h3>
         <h3 class="es">Comienza a Operar</h3>
@@ -394,17 +691,12 @@
   </section>
 </div>
 
-<!-- CARDS -->
 <!-- PROMO BANNER -->
-<div style="max-width:1200px;margin:0 auto;padding:0 2rem 2rem;">
-  <div style="background:linear-gradient(135deg,rgba(245,200,66,0.12),rgba(79,142,247,0.12));border:1.5px solid rgba(245,200,66,0.35);border-radius:28px;padding:2rem;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:2rem;flex-wrap:wrap;">
-
-    <!-- Promo image -->
+<div style="max-width:1200px;margin:0 auto;padding:0 2rem 2rem;" class="fade-up">
+  <div style="background:linear-gradient(135deg,rgba(245,200,66,0.10),rgba(79,142,247,0.10));border:1.5px solid rgba(245,200,66,0.3);border-radius:28px;padding:2rem;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:2rem;flex-wrap:wrap;">
     <a href="https://go.bancus.io/?ref=4EQXDGSF" target="_blank" style="flex-shrink:0;">
       <img src="bancus-promo.jpg" alt="Promo Bancus GO Free" style="width:180px;border-radius:16px;display:block;box-shadow:0 8px 32px rgba(0,0,0,0.4);" />
     </a>
-
-    <!-- Text -->
     <div>
       <div style="font-size:0.75rem;font-weight:800;color:#F5C842;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;">🚨 <span class="en">Active Promo — April 2026</span><span class="es">Promo Activa — Abril 2026</span></div>
       <div style="font-size:1.3rem;font-weight:900;color:#E8EDF5;margin-bottom:0.5rem;line-height:1.2;">
@@ -421,8 +713,6 @@
         <span style="color:#8A97B0;font-size:0.9rem;">✅ <span class="en">More benefits</span><span class="es">Más beneficios</span></span>
       </div>
     </div>
-
-    <!-- CTA -->
     <div style="text-align:center;">
       <a href="https://go.bancus.io/?ref=4EQXDGSF" target="_blank" style="display:block;background:linear-gradient(135deg,#F5C842,#F97316);color:#000;padding:0.85rem 1.8rem;border-radius:50px;font-weight:900;font-size:1rem;text-decoration:none;white-space:nowrap;box-shadow:0 4px 20px rgba(245,200,66,0.4);">
         <span class="en">Activate Now →</span><span class="es">Activarme Ahora →</span>
@@ -431,20 +721,22 @@
         <span class="en">Limited time offer</span><span class="es">Oferta por tiempo limitado</span>
       </div>
     </div>
-
   </div>
 </div>
 
+<!-- CARDS SECTION -->
 <section id="cards">
-  <div class="section-badge en">Our Cards</div>
-  <div class="section-badge es">Nuestras Tarjetas</div>
-  <h2 class="section-title en">Choose your card</h2>
-  <h2 class="section-title es">Elige tu tarjeta</h2>
-  <p class="section-sub en">Pick the card that best fits your lifestyle — or get both! All accepted worldwide with Visa and Mastercard.</p>
-  <p class="section-sub es">Elige la tarjeta que mejor se adapte a ti — ¡o consigue ambas! Aceptadas en todo el mundo con Visa y Mastercard.</p>
+  <div class="section-header fade-up">
+    <div class="section-badge en">Our Cards</div>
+    <div class="section-badge es">Nuestras Tarjetas</div>
+    <h2 class="section-title en">Choose your card</h2>
+    <h2 class="section-title es">Elige tu tarjeta</h2>
+    <p class="section-sub en">Pick the card that best fits your lifestyle — or get both! All accepted worldwide with Visa and Mastercard.</p>
+    <p class="section-sub es">Elige la tarjeta que mejor se adapte a ti — ¡o consigue ambas! Aceptadas en todo el mundo con Visa y Mastercard.</p>
+  </div>
 
-  <!-- REDOTPAY BANNER (shown only when RedotPay tab active) -->
-  <div id="redotpay-banner" style="display:none;margin-bottom:2rem;display:none;">
+  <!-- REDOTPAY BANNER -->
+  <div id="redotpay-banner" style="display:none;margin-bottom:2rem;">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;max-width:700px;">
       <a href="https://url.hk/i/en/8v53f" target="_blank">
         <img src="redotpay-banner.jpg" alt="RedotPay — The Best Crypto Card" style="width:100%;display:block;border-radius:20px;" />
@@ -476,7 +768,7 @@
   <div class="cards-showcase" id="bancus-cards-inner">
 
     <!-- BANCUS GO -->
-    <div class="card-product bancus-card">
+    <div class="card-product bancus-card fade-up">
       <div style="display:inline-block;background:linear-gradient(135deg,#4F8EF7,#7B5CF0);color:#fff;padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:700;margin-bottom:0.75rem;letter-spacing:0.04em;">💎 BANCUS</div>
       <h3>Bancus GO</h3>
       <div style="font-size:0.8rem;color:#8A97B0;margin-bottom:0.5rem;"><span class="en">Digital Tokenized</span><span class="es">Digital Tokenizada</span></div>
@@ -493,13 +785,13 @@
         <li><span class="en">Available immediately</span><span class="es">Disponibilidad inmediata</span></li>
         <li style="color:#F5C842"><span class="en">🎁 FREE with ONE or ONE ELITE (April promo)</span><span class="es">🎁 GRATIS con ONE o ONE ELITE (promo abril)</span></li>
       </ul>
-      <a href="https://go.bancus.io/?ref=4EQXDGSF" target="_blank" style="display:block;margin-top:1.5rem;text-align:center;background:linear-gradient(135deg,#4F8EF7,#7B5CF0);color:#fff;padding:0.7rem;border-radius:50px;font-weight:700;font-size:0.9rem;text-decoration:none;">
+      <a href="https://go.bancus.io/?ref=4EQXDGSF" target="_blank" style="display:block;margin-top:1.5rem;text-align:center;background:linear-gradient(135deg,#4F8EF7,#7B5CF0);color:#fff;padding:0.7rem;border-radius:50px;font-weight:700;font-size:0.9rem;text-decoration:none;transition:box-shadow .2s;" onmouseover="this.style.boxShadow='0 0 24px rgba(79,142,247,0.5)'" onmouseout="this.style.boxShadow=''">
         <span class="en">Get Bancus GO →</span><span class="es">Obtener Bancus GO →</span>
       </a>
     </div>
 
     <!-- BANCUS ONE -->
-    <div class="card-product bancus-card">
+    <div class="card-product bancus-card fade-up fade-up-delay-1">
       <div style="display:inline-block;background:linear-gradient(135deg,#4F8EF7,#7B5CF0);color:#fff;padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:700;margin-bottom:0.75rem;letter-spacing:0.04em;">💎 BANCUS</div>
       <h3>Bancus ONE</h3>
       <div style="font-size:0.8rem;color:#8A97B0;margin-bottom:0.5rem;"><span class="en">Physical (Plastic)</span><span class="es">Física (Plástica)</span></div>
@@ -516,13 +808,13 @@
         <li><span class="en">Ideal: Daily use</span><span class="es">Ideal: Uso diario</span></li>
         <li style="color:#8A97B0;">🚚 <span class="en">Shipping worldwide: +$15 | 15-30 days</span><span class="es">Envío mundial: +$15 | 15-30 días</span></li>
       </ul>
-      <a href="https://go.bancus.io/?ref=4EQXDGSF" target="_blank" style="display:block;margin-top:1.5rem;text-align:center;background:linear-gradient(135deg,#4F8EF7,#7B5CF0);color:#fff;padding:0.7rem;border-radius:50px;font-weight:700;font-size:0.9rem;text-decoration:none;">
+      <a href="https://go.bancus.io/?ref=4EQXDGSF" target="_blank" style="display:block;margin-top:1.5rem;text-align:center;background:linear-gradient(135deg,#4F8EF7,#7B5CF0);color:#fff;padding:0.7rem;border-radius:50px;font-weight:700;font-size:0.9rem;text-decoration:none;transition:box-shadow .2s;" onmouseover="this.style.boxShadow='0 0 24px rgba(79,142,247,0.5)'" onmouseout="this.style.boxShadow=''">
         <span class="en">Get Bancus ONE →</span><span class="es">Obtener Bancus ONE →</span>
       </a>
     </div>
 
     <!-- BANCUS ONE ELITE -->
-    <div class="card-product featured bancus-card">
+    <div class="card-product featured bancus-card fade-up fade-up-delay-2">
       <div style="display:inline-block;background:linear-gradient(135deg,#4F8EF7,#7B5CF0);color:#fff;padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:700;margin-bottom:0.75rem;letter-spacing:0.04em;">💎 BANCUS</div>
       <h3>Bancus ONE ELITE</h3>
       <div style="font-size:0.8rem;color:#8A97B0;margin-bottom:0.5rem;"><span class="en">Physical (Metal)</span><span class="es">Física (Metal)</span></div>
@@ -539,14 +831,13 @@
         <li style="color:#F5C842"><span class="en">🎁 Includes Bancus GO FREE (April promo)</span><span class="es">🎁 Incluye Bancus GO GRATIS (promo abril)</span></li>
         <li style="color:#8A97B0;">🚚 <span class="en">Shipping worldwide: +$15 | 15-30 days</span><span class="es">Envío mundial: +$15 | 15-30 días</span></li>
       </ul>
-      <a href="https://go.bancus.io/?ref=4EQXDGSF" target="_blank" style="display:block;margin-top:1.5rem;text-align:center;background:linear-gradient(135deg,#4F8EF7,#7B5CF0);color:#fff;padding:0.7rem;border-radius:50px;font-weight:700;font-size:0.9rem;text-decoration:none;">
+      <a href="https://go.bancus.io/?ref=4EQXDGSF" target="_blank" style="display:block;margin-top:1.5rem;text-align:center;background:linear-gradient(135deg,#4F8EF7,#7B5CF0);color:#fff;padding:0.7rem;border-radius:50px;font-weight:700;font-size:0.9rem;text-decoration:none;transition:box-shadow .2s;" onmouseover="this.style.boxShadow='0 0 24px rgba(79,142,247,0.5)'" onmouseout="this.style.boxShadow=''">
         <span class="en">Get Bancus ONE ELITE →</span><span class="es">Obtener ONE ELITE →</span>
       </a>
     </div>
 
     <!-- REDOTPAY DIGITAL -->
-    <div class="card-product redotpay-card" style="border-color:rgba(239,68,68,0.3);">
-      <!-- Official RedotPay image -->
+    <div class="card-product redotpay-card fade-up" style="border-color:rgba(239,68,68,0.3);">
       <a href="https://url.hk/i/en/8v53f" target="_blank">
         <img src="redotpay-card.jpg" alt="Tarjeta RedotPay Crypto Visa" style="width:100%;border-radius:12px;display:block;margin-bottom:1rem;" />
       </a>
@@ -589,7 +880,7 @@
     </div>
 
     <!-- REDOTPAY PHYSICAL -->
-    <div class="card-product redotpay-card" style="border-color:rgba(239,68,68,0.3);">
+    <div class="card-product redotpay-card fade-up fade-up-delay-1" style="border-color:rgba(239,68,68,0.3);">
       <a href="https://url.hk/i/en/8v53f" target="_blank">
         <img src="redotpay-promo2.jpg" alt="Lo mejor tarjeta crypto" style="width:100%;border-radius:12px;display:block;margin-bottom:1rem;" />
       </a>
@@ -623,46 +914,36 @@
 
   </div>
 
-  <!-- TUTORIAL VIDEOS — only shown when Bancus tab is active -->
+  <!-- TUTORIAL VIDEOS -->
   <div class="bancus-card" style="margin-top:2.5rem;">
     <div style="margin-bottom:1.25rem;">
       <div class="section-badge en">Tutorial Videos</div>
       <div class="section-badge es">Videos Tutoriales</div>
-      <h3 style="font-size:1.4rem;font-weight:800;" class="en">📹 Tutorial Videos</h3>
-      <h3 style="font-size:1.4rem;font-weight:800;" class="es">📹 Videos Tutoriales</h3>
+      <h3 style="font-size:1.4rem;font-weight:900;" class="en">📹 Tutorial Videos</h3>
+      <h3 style="font-size:1.4rem;font-weight:900;" class="es">📹 Videos Tutoriales</h3>
       <p style="color:var(--muted);font-size:0.9rem;margin-top:0.4rem;" class="en">Step-by-step guides to get you started with Bancus</p>
       <p style="color:var(--muted);font-size:0.9rem;margin-top:0.4rem;" class="es">Guías paso a paso para comenzar con Bancus</p>
     </div>
     <div id="bancusTutorialGrid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;max-width:1200px;">
-
-      <!-- VIDEO 1 -->
-      <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.25rem;transition:transform .3s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform=''">
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.25rem;transition:transform .3s,box-shadow .3s;" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 0 20px rgba(0,212,212,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
         <h4 style="font-size:0.95rem;font-weight:700;margin-bottom:0.75rem;">▶️ <span class="en">How to register from your invitation link</span><span class="es">Cómo registrarte desde el enlace de invitación</span></h4>
         <iframe src="https://www.youtube.com/embed/BZYsrG0s_ho" width="100%" height="220" style="border-radius:12px;border:none;display:block;" allowfullscreen loading="lazy"></iframe>
       </div>
-
-      <!-- VIDEO 2 -->
-      <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.25rem;transition:transform .3s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform=''">
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.25rem;transition:transform .3s,box-shadow .3s;" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 0 20px rgba(0,212,212,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
         <h4 style="font-size:0.95rem;font-weight:700;margin-bottom:0.75rem;">▶️ <span class="en">How to create your account</span><span class="es">Cómo crear tu cuenta</span></h4>
         <iframe src="https://www.youtube.com/embed/gqnojnC9O_s" width="100%" height="220" style="border-radius:12px;border:none;display:block;" allowfullscreen loading="lazy"></iframe>
       </div>
-
-      <!-- VIDEO 3 -->
-      <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.25rem;transition:transform .3s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform=''">
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.25rem;transition:transform .3s,box-shadow .3s;" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 0 20px rgba(0,212,212,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
         <h4 style="font-size:0.95rem;font-weight:700;margin-bottom:0.75rem;">▶️ <span class="en">How to buy your card</span><span class="es">Cómo comprar la tarjeta de tu elección</span></h4>
         <iframe src="https://www.youtube.com/embed/qSwYUEgoXoM" width="100%" height="220" style="border-radius:12px;border:none;display:block;" allowfullscreen loading="lazy"></iframe>
       </div>
-
-      <!-- VIDEO 4 -->
-      <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.25rem;transition:transform .3s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform=''">
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.25rem;transition:transform .3s,box-shadow .3s;" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 0 20px rgba(0,212,212,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
         <h4 style="font-size:0.95rem;font-weight:700;margin-bottom:0.75rem;">▶️ <span class="en">Share your link and earn</span><span class="es">Comparte el link y gana</span></h4>
         <iframe src="https://www.youtube.com/embed/R17nqu6lSdA" width="100%" height="220" style="border-radius:12px;border:none;display:block;" allowfullscreen loading="lazy"></iframe>
       </div>
-
-      <!-- VIDEO 5 — GO Tokenizada (full width) -->
-      <div style="background:linear-gradient(135deg,rgba(79,142,247,0.1),rgba(123,92,240,0.1));border:1.5px solid rgba(79,142,247,0.3);border-radius:20px;padding:1.25rem;transition:transform .3s;grid-column:1/-1;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform=''">
+      <div style="background:linear-gradient(135deg,rgba(79,142,247,0.08),rgba(0,212,212,0.08));border:1.5px solid rgba(0,212,212,0.25);border-radius:20px;padding:1.25rem;transition:transform .3s,box-shadow .3s;grid-column:1/-1;" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 0 24px rgba(0,212,212,0.12)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
         <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;flex-wrap:wrap;">
-          <h4 style="font-size:1rem;font-weight:700;">💳✨ <span class="en">Activate your Bancus GO Tokenized Card</span><span class="es">Activa tu Tarjeta GO Tokenizada</span></h4>
+          <h4 style="font-size:1rem;font-weight:800;">💳✨ <span class="en">Activate your Bancus GO Tokenized Card</span><span class="es">Activa tu Tarjeta GO Tokenizada</span></h4>
           <div style="display:flex;gap:0.5rem;">
             <span style="background:rgba(255,255,255,0.1);padding:3px 8px;border-radius:6px;font-size:0.75rem;">G Pay</span>
             <span style="background:rgba(255,255,255,0.1);padding:3px 8px;border-radius:6px;font-size:0.75rem;"> Pay</span>
@@ -670,10 +951,8 @@
         </div>
         <iframe src="https://www.youtube.com/embed/68kK-Uzhcxc" width="100%" height="280" style="border-radius:12px;border:none;display:block;" allowfullscreen loading="lazy"></iframe>
       </div>
-
     </div>
   </div>
-
 </section>
 
 <script>
@@ -697,12 +976,14 @@ function showCards(type) {
 <!-- TESTIMONIALS -->
 <div class="how-bg">
   <section>
-    <div class="section-badge en">Testimonials</div>
-    <div class="section-badge es">Testimonios</div>
-    <h2 class="section-title en">What our clients say</h2>
-    <h2 class="section-title es">Lo que dicen nuestros clientes</h2>
+    <div class="section-header fade-up">
+      <div class="section-badge en">Testimonials</div>
+      <div class="section-badge es">Testimonios</div>
+      <h2 class="section-title en">What our clients say</h2>
+      <h2 class="section-title es">Lo que dicen nuestros clientes</h2>
+    </div>
     <div class="testimonials-grid">
-      <div class="testimonial">
+      <div class="testimonial fade-up">
         <div class="stars">★★★★★</div>
         <p class="en">"Finally a platform that lets me move money between crypto and my US bank account without hassle. The process was incredibly simple."</p>
         <p class="es">"Por fin una plataforma que me permite mover dinero entre cripto y mi cuenta bancaria en EE.UU. sin complicaciones. El proceso fue increíblemente sencillo."</p>
@@ -710,7 +991,7 @@ function showCards(type) {
         <div class="testimonial-role en">Entrepreneur, Miami</div>
         <div class="testimonial-role es">Empresario, Miami</div>
       </div>
-      <div class="testimonial">
+      <div class="testimonial fade-up fade-up-delay-1">
         <div class="stars">★★★★★</div>
         <p class="en">"Sending remittances has never been this easy. My family receives the money in minutes at a fraction of traditional fees."</p>
         <p class="es">"Nunca había sido tan fácil enviar remesas. Mi familia recibe el dinero en minutos y con una fracción de las comisiones tradicionales."</p>
@@ -718,7 +999,7 @@ function showCards(type) {
         <div class="testimonial-role en">Professional, New York</div>
         <div class="testimonial-role es">Profesional, Nueva York</div>
       </div>
-      <div class="testimonial">
+      <div class="testimonial fade-up fade-up-delay-2">
         <div class="stars">★★★★★</div>
         <p class="en">"The crypto card works everywhere. I use it for my daily expenses and it converts automatically. No more worrying about exchange rates."</p>
         <p class="es">"La tarjeta cripto funciona en todos lados. La uso para mis gastos diarios y convierte automáticamente. No más preocupaciones por el tipo de cambio."</p>
@@ -731,137 +1012,88 @@ function showCards(type) {
 </div>
 
 <!-- CTA -->
-<div class="cta-banner" id="contact">
-  <h2 class="en">Ready to join the <span style="background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">financial future?</span></h2>
-  <h2 class="es">¿Listo para el <span style="background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">futuro financiero?</span></h2>
+<div class="cta-banner fade-up" id="contact">
+  <h2 class="en">Ready to join the <span style="background:linear-gradient(135deg,#4F8EF7,#7B5CF0,#00d4d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">financial future?</span></h2>
+  <h2 class="es">¿Listo para el <span style="background:linear-gradient(135deg,#4F8EF7,#7B5CF0,#00d4d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">futuro financiero?</span></h2>
   <p class="en">Open your account today and get access to all our services. Join thousands of users already using Hash Digital Payments.</p>
   <p class="es">Abre tu cuenta hoy y accede a todos nuestros servicios. Únete a miles de usuarios que ya usan Hash Digital Payments.</p>
-  <a href="#services" onclick="event.preventDefault();document.getElementById('services').scrollIntoView({behavior:'smooth'})" class="btn-primary en">Get Started Now →</a>
-  <a href="#services" onclick="event.preventDefault();document.getElementById('services').scrollIntoView({behavior:'smooth'})" class="btn-primary es">Comenzar Ahora →</a>
+  <a href="#services" onclick="event.preventDefault();document.getElementById('services').scrollIntoView({behavior:'smooth'})" class="btn-primary en" style="display:inline-block;">Get Started Now →</a>
+  <a href="#services" onclick="event.preventDefault();document.getElementById('services').scrollIntoView({behavior:'smooth'})" class="btn-primary es" style="display:inline-block;">Comenzar Ahora →</a>
 </div>
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-logo">
-    <img src="logo_dark.png" class="dark-logo" alt="Hash Digital Payment Solutions" />
-    <img src="logo_light.png" class="light-logo" alt="Hash Digital Payment Solutions" />
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <img src="logo_dark.png" class="dark-logo" alt="Hash Digital Payment Solutions" />
+          <img src="logo_light.png" class="light-logo" alt="Hash Digital Payment Solutions" />
+        </div>
+        <p class="footer-tagline en">Your gateway to the digital financial ecosystem.</p>
+        <p class="footer-tagline es">Tu puerta de entrada al ecosistema financiero digital.</p>
+        <div class="footer-socials">
+          <a href="https://wa.me/50670267481" target="_blank" class="social-link" title="WhatsApp">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.9.526 3.674 1.437 5.193L2 22l4.878-1.417A9.956 9.956 0 0012 22c5.523 0 10-4.477 10-10S17.524 2 12 2zm0 18.181a8.181 8.181 0 01-4.198-1.155l-.3-.178-3.11.906.87-3.205-.196-.311A8.181 8.181 0 1120.181 12a8.19 8.19 0 01-8.181 8.181z"/></svg>
+          </a>
+          <a href="https://go.bancus.io/?ref=4EQXDGSF" target="_blank" class="social-link" title="Bancus">💎</a>
+          <a href="https://url.hk/i/en/8v53f" target="_blank" class="social-link" title="RedotPay">🔴</a>
+        </div>
+      </div>
+      <div>
+        <p style="color:var(--primary);font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.75rem;" class="en">Quick Links</p>
+        <p style="color:var(--primary);font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.75rem;" class="es">Enlaces</p>
+        <div class="footer-links-grid">
+          <a href="#services" class="en">Services</a>
+          <a href="#cards" class="en">Cards</a>
+          <a href="#services" class="es">Servicios</a>
+          <a href="#cards" class="es">Tarjetas</a>
+          <a href="#how" class="en">How It Works</a>
+          <a href="https://go.bancus.io/?ref=4EQXDGSF" target="_blank" class="en">Open Account</a>
+          <a href="#how" class="es">Cómo Funciona</a>
+          <a href="https://go.bancus.io/?ref=4EQXDGSF" target="_blank" class="es">Abrir Cuenta</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy en">© 2026 Hash Digital Payments Solutions. All rights reserved. | <a href="admin.html" style="color:var(--muted);text-decoration:none;opacity:0.5;">Admin</a></div>
+      <div class="footer-copy es">© 2026 Hash Digital Payments Solutions. Todos los derechos reservados. | <a href="admin.html" style="color:var(--muted);text-decoration:none;opacity:0.5;">Admin</a></div>
+      <div style="font-size:0.78rem;color:var(--muted);opacity:0.6;">Made with ⚡ for the future of finance</div>
+    </div>
   </div>
-  <div class="footer-links">
-    <a href="#services" class="en">Services</a>
-    <a href="#services" class="es">Servicios</a>
-    <a href="#cards" class="en">Cards</a>
-    <a href="#cards" class="es">Tarjetas</a>
-    <a href="#how" class="en">How It Works</a>
-    <a href="#how" class="es">Cómo Funciona</a>
-    <a href="https://go.bancus.io/?ref=4EQXDGSF" target="_blank" class="en">Open Account</a>
-    <a href="https://go.bancus.io/?ref=4EQXDGSF" target="_blank" class="es">Abrir Cuenta</a>
-  </div>
-  <div class="footer-copy en">© 2026 Hash Digital Payments Solutions. All rights reserved. | <a href="admin.html" style="color:var(--muted);text-decoration:none;opacity:0.5;">Admin</a></div>
-  <div class="footer-copy es">© 2026 Hash Digital Payments Solutions. Todos los derechos reservados. | <a href="admin.html" style="color:var(--muted);text-decoration:none;opacity:0.5;">Admin</a></div>
 </footer>
 
-<script>
-  function toggleTheme() {
-    const isLight = document.body.classList.toggle('light');
-    document.getElementById('themeBtn').textContent = isLight ? '🌙' : '☀️';
-    localStorage.setItem('theme', isLight ? 'light' : 'dark');
-  }
-
-  // Restore saved theme
-  if (localStorage.getItem('theme') === 'light') {
-    document.body.classList.add('light');
-    document.getElementById('themeBtn').textContent = '☀️';
-  }
-
-  function setLang(lang) {
-    document.body.classList.toggle('lang-es', lang === 'es');
-    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-    document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
-  }
-
-  // Smooth counter animation
-  const counters = document.querySelectorAll('.stat-num');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.style.opacity = '1';
-        e.target.style.transform = 'translateY(0)';
-      }
-    });
-  });
-  counters.forEach(c => {
-    c.style.opacity = '0';
-    c.style.transform = 'translateY(20px)';
-    c.style.transition = 'opacity 0.6s, transform 0.6s';
-    observer.observe(c);
-  });
-</script>
-<!-- FLOATING CHAT BUTTON -->
+<!-- FLOATING WHATSAPP BUTTON -->
 <style>
   .chat-btn {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    z-index: 9999;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 0.75rem;
+    position: fixed; bottom: 2rem; right: 2rem; z-index: 9999;
+    display: flex; flex-direction: column; align-items: flex-end; gap: 0.75rem;
   }
   .chat-bubble {
-    background: #fff;
-    color: #0A1628;
-    padding: 0.75rem 1.2rem;
-    border-radius: 16px 16px 4px 16px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-    max-width: 220px;
-    text-align: right;
-    animation: fadeIn 0.3s ease;
-    display: none;
-    line-height: 1.4;
+    background: #fff; color: #0A1628; padding: 0.75rem 1.2rem;
+    border-radius: 16px 16px 4px 16px; font-size: 0.9rem; font-weight: 600;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3); max-width: 220px;
+    text-align: right; animation: fadeIn 0.3s ease; display: none; line-height: 1.4;
   }
   .chat-bubble.show { display: block; }
   .chat-main-btn {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: #25D366;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 20px rgba(37,211,102,0.5);
-    cursor: pointer;
-    text-decoration: none;
-    transition: transform 0.2s, box-shadow 0.2s;
-    animation: pulse 2s infinite;
+    width: 60px; height: 60px; border-radius: 50%; background: #25D366;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 20px rgba(37,211,102,0.5); cursor: pointer;
+    text-decoration: none; transition: transform 0.2s, box-shadow 0.2s;
+    animation: wa-pulse 2s infinite;
   }
-  .chat-main-btn:hover {
-    transform: scale(1.1);
-    box-shadow: 0 6px 28px rgba(37,211,102,0.6);
-  }
+  .chat-main-btn:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(37,211,102,0.6); }
   .chat-main-btn svg { width: 32px; height: 32px; }
-  @keyframes pulse {
+  @keyframes wa-pulse {
     0%, 100% { box-shadow: 0 4px 20px rgba(37,211,102,0.5); }
     50% { box-shadow: 0 4px 32px rgba(37,211,102,0.8); }
   }
   @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
   .chat-close-btn {
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: #EF4444;
-    color: #fff;
-    font-size: 0.7rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-weight: 700;
+    position: absolute; top: -8px; right: -8px; width: 20px; height: 20px;
+    border-radius: 50%; background: #EF4444; color: #fff; font-size: 0.7rem;
+    display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: 700;
   }
 </style>
 
@@ -879,11 +1111,146 @@ function showCards(type) {
   </a>
 </div>
 
+<!-- SCRIPTS -->
 <script>
-  // Show bubble after 3 seconds
-  setTimeout(function() {
+  // ── THEME ──
+  function toggleTheme() {
+    const isLight = document.body.classList.toggle('light');
+    document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙';
+    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+  }
+  if (localStorage.getItem('theme') === 'light') {
+    document.body.classList.add('light');
+    document.getElementById('themeBtn').textContent = '☀️';
+  }
+
+  // ── LANG ──
+  function setLang(lang) {
+    document.body.classList.toggle('lang-es', lang === 'es');
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
+  }
+
+  // ── TYPING ANIMATION ──
+  const textEN = "Crypto exchange, US bank accounts, crypto cards, digital remittances and more — all in one ecosystem designed for the future of finance.";
+  const textES = "Exchange cripto, cuentas bancarias en EE.UU., tarjetas cripto, remesas digitales y más — todo en un ecosistema diseñado para el futuro de las finanzas.";
+
+  function typeText(el, text, speed = 28) {
+    let i = 0;
+    el.innerHTML = '';
+    const cursor = document.createElement('span');
+    cursor.className = 'typing-cursor';
+    el.appendChild(cursor);
+    const interval = setInterval(() => {
+      el.insertBefore(document.createTextNode(text[i]), cursor);
+      i++;
+      if (i >= text.length) {
+        clearInterval(interval);
+        setTimeout(() => cursor.remove(), 1200);
+      }
+    }, speed);
+  }
+
+  window.addEventListener('load', () => {
+    const isES = document.body.classList.contains('lang-es');
+    if (!isES) {
+      typeText(document.getElementById('typingSubEN'), textEN);
+    } else {
+      document.getElementById('typingSubES').style.display = '';
+      document.getElementById('typingSubEN').style.display = 'none';
+      typeText(document.getElementById('typingSubES'), textES);
+    }
+  });
+
+  // ── CANVAS DOT GRID ──
+  (function() {
+    const canvas = document.getElementById('heroCanvas');
+    const ctx = canvas.getContext('2d');
+    let w, h, dots = [];
+    const DOT_SPACING = 40;
+    const DOT_R = 1.2;
+
+    function resize() {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+      buildDots();
+    }
+
+    function buildDots() {
+      dots = [];
+      const cols = Math.ceil(w / DOT_SPACING) + 1;
+      const rows = Math.ceil(h / DOT_SPACING) + 1;
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          dots.push({ x: c * DOT_SPACING, y: r * DOT_SPACING, phase: Math.random() * Math.PI * 2 });
+        }
+      }
+    }
+
+    let t = 0;
+    function draw() {
+      ctx.clearRect(0, 0, w, h);
+      t += 0.008;
+      dots.forEach(d => {
+        const pulse = 0.15 + 0.25 * Math.sin(t + d.phase);
+        ctx.beginPath();
+        ctx.arc(d.x, d.y, DOT_R, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0,212,212,${pulse})`;
+        ctx.fill();
+      });
+      requestAnimationFrame(draw);
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+    draw();
+  })();
+
+  // ── INTERSECTION OBSERVER — FADE UP ──
+  const fadeEls = document.querySelectorAll('.fade-up');
+  const fadeObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        fadeObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  fadeEls.forEach(el => fadeObserver.observe(el));
+
+  // ── COUNTER ANIMATION ──
+  function animateCounter(el) {
+    const target = parseFloat(el.dataset.target);
+    const prefix = el.dataset.prefix || '';
+    const suffix = el.dataset.suffix || '';
+    const decimal = parseInt(el.dataset.decimal || '0');
+    const duration = 1800;
+    const start = performance.now();
+    function update(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const val = target * eased;
+      el.textContent = prefix + (decimal ? val.toFixed(decimal) : Math.floor(val)) + suffix;
+      if (progress < 1) requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+  }
+
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.target.dataset.target) {
+        animateCounter(e.target);
+        counterObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('.counter').forEach(el => counterObserver.observe(el));
+
+  // ── WHATSAPP BUBBLE ──
+  setTimeout(() => {
     const bubble = document.getElementById('chatBubble');
-    if(bubble) bubble.classList.add('show');
+    if (bubble) bubble.classList.add('show');
   }, 3000);
 </script>
 
